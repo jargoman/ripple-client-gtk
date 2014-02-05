@@ -1,0 +1,20 @@
+Jargoman's custom semi-open license 
+
+this license may be invalid now that I've incorporated works using other open licenses. Will have to investigavte
+
+Anyone is free to read, modify or distribute this program as binary or source, for personal use and/or for profit.
+Provided the following conditions are met.
+
+The source must contain a copy of this license.
+
+Any derivatives of this software MUST include "out of the box" support for the following currencies. 
+XRP (Ripples), BTC (Bitcoin), ICE (Icecoin)
+
+NO derivatives of this work shall contain keyloggers, backdoors or trojans of any kind. Civil and/or criminal penalties may be persued.
+
+NO derivatives of this work shall be used to purchase, fund or capitalize from acts of violent terrorism, chemical weapons or weapons of mass destruction.
+
+No derivatives of this work shall be used to defraud, cheat or steal funds of any kind from any person.
+
+
+NOTE: This license does not apply to the currencies themselves XRP, BTC and ICE are free to be transacted by anyone in any application and are controlled by the people who use them. 
