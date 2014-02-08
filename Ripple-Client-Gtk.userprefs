@@ -1,20 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/RippleSeedAdress.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/Base58.cs">
     <Files>
-      <File FileName="Ripple-Client-Gtk/BinarySerializer.cs" Line="128" Column="8" />
-      <File FileName="Ripple-Client-Gtk/DenominatedIssuedCurrency.cs" Line="56" Column="5" />
-      <File FileName="Ripple-Client-Gtk/RippleSigner.cs" Line="13" Column="42" />
-      <File FileName="Ripple-Client-Gtk/ECDSASignature.cs" Line="15" Column="9" />
-      <File FileName="Ripple-Client-Gtk/RippleSeedAdress.cs" Line="18" Column="6" />
-      <File FileName="Ripple-Client-Gtk/RippleDeterministicKeyGenerator.cs" Line="200" Column="60" />
-      <File FileName="Ripple-Client-Gtk/RipplePublicGeneratorAddress.cs" Line="7" Column="86" />
+      <File FileName="Ripple-Client-Gtk/BinaryFieldType.cs" Line="343" Column="45" />
+      <File FileName="Ripple-Client-Gtk/BinaryType.cs" Line="197" Column="4" />
+      <File FileName="Ripple-Client-Gtk/SendRipple.cs" Line="181" Column="96" />
+      <File FileName="Ripple-Client-Gtk/RipplePaymentTransaction.cs" Line="35" Column="46" />
+      <File FileName="Ripple-Client-Gtk/TransactionType.cs" Line="130" Column="1" />
+      <File FileName="Ripple-Client-Gtk/Base58.cs" Line="30" Column="104" />
+      <File FileName="Ripple-Client-Gtk/RippleSeedAddress.cs" Line="36" Column="27" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Ripple-Client-Gtk" expanded="True">
-            <Node name="RippleSeedAdress.cs" selected="True" />
+            <Node name="Base58.cs" selected="True" />
           </Node>
         </State>
       </Pad>

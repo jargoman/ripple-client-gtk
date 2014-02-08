@@ -5,27 +5,37 @@ namespace RippleClientGtk
 	public static class Debug
 	{
 
-		public static bool Program = true;
 
-		public static bool AccountLines = true;
-		public static bool Console = true;
 
-		public static bool MainWindow = true;
+		public static bool AccountLines = false;
 
-		public static bool PasswordCreateDialog = true;
-		public static bool PasswordDialog = true;
+		public static bool Base58 = false;
 
-		public static bool ReceiveWidget = true;
+		public static bool Console = false;
 
-		public static bool SendIOU = true;
+		public static bool MainWindow = false;
 
-		public static bool NetworkInterface = true;
+		public static bool PasswordCreateDialog = false;
+		public static bool PasswordDialog = false;
+		public static bool Program = false;
+		public static bool ReceiveWidget = false;
 
-		public static bool NetworkSettings = true;
+		public static bool RippleDeterministicKeyGenerator = false;
 
-		public static bool Wallet = true;
+		public static bool RippleIdentifier = false;
 
-		public static bool RippleDeterministicKeyGenerator = true;
+		public static bool RippleSeedAddress = false;
+
+		public static bool SendIOU = false;
+
+		public static bool SendRipple = false;
+
+		public static bool NetworkInterface = false;
+
+		public static bool NetworkSettings = false;
+
+		public static bool Wallet = false;
+
 
 	}
 

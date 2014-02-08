@@ -17,9 +17,11 @@ namespace RippleClientGtk
 
 		String unsynced = "   --   unsynced   --   ";
 
-		protected void sendXrpPayment ( String account, String destination, double  amount, String secret) {
+		protected void sendXrpPayment ( String account, String destination, Decimal  xrpamount, String secret) {
 
-
+			/*
+			 * 
+			 * // old json way // non signed 
 			object ob = new {
 				command="submit",
 				tx_json=new {
@@ -32,15 +34,23 @@ namespace RippleClientGtk
 			};
 
 			String json = DynamicJson.Serialize(ob);
+			*/
 
+			//Logging.write(json + "\n");
 
-			Logging.write(json + "\n");
+			Logging.write(xrpamount.ToString());
 
-
+			RippleSeedAddress seed = new RippleSeedAddress(secret);
+			RippleAddress payee = new RippleAddress(destination);
+			DenominatedIssuedCurrency amnt = new DenominatedIssuedCurrency(xrpamount);
+			RipplePaymentTransaction tx = new RipplePaymentTransaction(seed.getPublicRippleAddress(),payee,amnt,23); // Todo implement sequemce number. int 23 is an arbatrary number for testing 
 		}
 
-		protected void sendDropsPayment ( String account, String destination, ulong  amount, String secret) {
 
+		protected void sendDropsPayment ( String account, String destination, ulong  amount, String secret) {
+			/*
+			 * 
+			 * // old json way // non signed
 			object ob = new {
 				command="submit",
 				tx_json = new {
@@ -64,6 +74,10 @@ namespace RippleClientGtk
 
 				}
 			}
+
+			*/
+
+
 		}
 
 
@@ -77,6 +91,14 @@ namespace RippleClientGtk
 			String account = MainWindow.currentInstance.getReceiveAddress ();
 			String secret = MainWindow.currentInstance.getSecret ();
 
+			if (destination == null) {
+
+				return;
+			} else {
+				if (Debug.SendRipple) {
+					Logging.write("SendRipple.OnSendXRPButtonClicked : destination = " + destination.ToString());
+				}
+			}
 
 			if (account == null) {
 				// no need to show dialog MainWindow.currentInstance.getReceiveAddress (); does so, simply return
@@ -140,7 +162,7 @@ namespace RippleClientGtk
 
 				try {
 
-					double amountd = Convert.ToDouble(amount);
+					Decimal amountd = Convert.ToDecimal(amount);
 
 					if (amountd < 0) {
 						MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
@@ -153,7 +175,7 @@ namespace RippleClientGtk
 
 				catch (FormatException ex) {
 
-					MessageDialog.showMessage ("Amount entered is not a valid number of xrp. e.g 1.2345");
+					MessageDialog.showMessage ("Amount entered is not a valid number of xrp. e.g 1.2345 " + ex.ToString());
 
 					return;
 				}
@@ -164,7 +186,7 @@ namespace RippleClientGtk
 				}
 
 				catch (Exception ex ) {
-					MessageDialog.showMessage ("Amount entered is not a valid number of xrp. e.g 1.2345");
+					MessageDialog.showMessage ("Amount entered is not a valid number of xrp. e.g 1.2345 " + ex.ToString());
 					return;
 				}
 
@@ -180,7 +202,7 @@ namespace RippleClientGtk
 
 		}
 
-		public void setXrpBalance (double balance) {
+		public void setXrpBalance (decimal balance) {
 
 			Gtk.Application.Invoke ( delegate 
 			                        {
@@ -203,7 +225,7 @@ namespace RippleClientGtk
 				}
 					
 				if (this.unitsSelectBox.ActiveText.Equals("XRP")) {
-					this.balanceLabel.Text = (balance / 1000000.0).ToString();
+					this.balanceLabel.Text = (balance / 1000000.0m).ToString();
 					return;
 				}
 					

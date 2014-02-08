@@ -27,7 +27,7 @@ namespace RippleClientGtk
 	{
 
 
-		private static readonly char[] ALPHABET = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz".ToCharArray();  /// 
+		private static readonly String ALPHABET = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";  /// 
 
 		private static readonly BigInteger BASE = BigInteger.ValueOf(58);
 
@@ -73,15 +73,31 @@ namespace RippleClientGtk
 		public static byte[] decode (string input)
 		{
 
-			byte[] bytes = decodeToBigInteger(input).ToByteArray();
+			if (Debug.Base58) {
+				Logging.write ("Base58.decode " + input + "\n");
+			}
 
+			byte[] bytes = decodeToBigInteger (input).ToByteArray ();
+
+			if (Debug.Base58) {
+				var sb = new StringBuilder ("ToByteArray() = { ");
+				foreach (var b in bytes) {
+					sb.Append (b + ", ");
+				}
+				sb.Append ("}\n");
+
+				Logging.write (sb.ToString ());
+
+			}
 
 			// We may have got one more byte than we wanted, if the high bit of the next-to-last byte was not zero. This
-        	// is because BigIntegers are represented with twos-compliment notation, thus if the high bit of the last
-        	// byte happens to be 1 another 8 zero bits will be added to ensure the number parses as positive. Detect
-        	// that case here and chop it off.
+			// is because BigIntegers are represented with twos-compliment notation, thus if the high bit of the last
+			// byte happens to be 1 another 8 zero bits will be added to ensure the number parses as positive. Detect
+			// that case here and chop it off.
 
-			Boolean stripSignByte = bytes.Length > 1 && bytes[0] == 0 && bytes[1] < 0;
+			Boolean stripSignByte = bytes.Length > 1 && bytes [0] == 0 && (sbyte)bytes [1] < 0;
+
+
 
 			int leadingZeros = 0;
 			for (int i = 0; input[i] == ALPHABET[0]; i++) { // Why ALPHABET[0]? I guess if the base alphabet changes the algorithm stays the same
@@ -90,23 +106,52 @@ namespace RippleClientGtk
 
 			byte[] tmp = new byte[bytes.Length - (stripSignByte ? 1 : 0) + leadingZeros]; // I think I understand this madness 
 			System.Array.Copy(bytes, stripSignByte ? 1 : 0, tmp, leadingZeros, tmp.Length - leadingZeros); //
+
+			//byte[] tmp = new byte[bytes.Length - (stripSignByte ? leadingZeros : 0)]; // I think I understand this madness 
+			//System.Array.Copy(bytes, stripSignByte ? leadingZeros : 0, tmp, 0, tmp.Length - leadingZeros); //
+
+
+			if (Debug.Base58) {
+				Logging.write("stripSignByte = " + stripSignByte + "\n");
+				Logging.write("leadingZeros = " + leadingZeros + "\n");
+				var sb = new StringBuilder ("tmp[] = { ");
+				foreach (var b in tmp) {
+					sb.Append (b + ", ");
+				}
+				sb.Append ("}\n");
+
+				Logging.write (sb.ToString ());
+
+			}
+
 			return tmp;
 		}
 
 		public static BigInteger decodeToBigInteger (String input)
 		{
+			if (Debug.Base58) {
+				Logging.write ("Base58.decodeToBigInteger " + input + "\n");
+			}
+
 			BigInteger bi = BigInteger.Zero;
 
 			//char[] inp = input.ToCharArray();
 
-			String alph = ALPHABET.ToString();
+			String alph = ALPHABET;
+			if (Debug.Base58) {
+				Logging.write ("ALPHABET = " + alph + "\n");
+			}
 
 
+			for (int i = input.Length - 1; i >=0; i--) {
+				int alphaIndex = alph.IndexOf (input [i]);
 
-			for (int i = input.Length - 1; i >=0; i++) {
-				int alphaIndex = alph.IndexOf (input[i]);
+				if (Debug.Base58) {
+					Logging.write (input [i] + " = " + alphaIndex.ToString () + ", ");
+				}
+
 				if (alphaIndex == -1) {
-					throw new IndexOutOfRangeException("Illegal character " + input[i] + " at " + i);
+					throw new IndexOutOfRangeException ("Illegal character " + input [i] + " at " + i);
 				}
 
 				// old implementation
@@ -114,8 +159,13 @@ namespace RippleClientGtk
 				//bi = bi + addme;
 
 				// new bouncy castle BigInteger Implementation is exatly the same as ported code :)
-				bi = bi.Add(BigInteger.ValueOf(alphaIndex).Multiply(BASE.Pow(input.Length-1-i)));
+				bi = bi.Add (BigInteger.ValueOf (alphaIndex).Multiply (BASE.Pow (input.Length - 1 - i)));
 			}
+
+			if (Debug.Base58) {
+				Logging.write("returning bigInt : " + bi.ToString());
+			}
+
 			return bi;
 
 		}

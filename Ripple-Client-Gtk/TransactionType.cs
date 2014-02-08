@@ -91,6 +91,39 @@ namespace RippleClientGtk
 
 			return reverseLookup[txType];
 		}
+
+		public override bool Equals (Object obj)
+		{
+			if (obj == null) {
+				return false;
+			}
+
+			TransactionType tst = obj as TransactionType;
+			if ((Object)tst == null) {
+				return false;
+			}
+
+			return this.Equals((TransactionType)tst);
+		}
+
+		public bool Equals (TransactionType tst)
+		{
+			if ((Object)tst == null) {
+				return false;
+			}
+
+			return this.byteValue == tst.byteValue;
+		}
+
+		public static bool operator ==(TransactionType left, TransactionType right)
+		{
+			return left.Equals(right);
+		}
+ 
+		public static bool operator !=(TransactionType left, TransactionType right)
+		{
+			return !left.Equals(right);
+		}
 	}
 }
 

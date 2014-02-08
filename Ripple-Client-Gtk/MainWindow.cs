@@ -68,11 +68,11 @@ public partial class MainWindow: Gtk.Window
 									try 
 									{
 
-										this.xrpBalance = Convert.ToDouble(balance);
+										this.xrpBalance = Convert.ToDecimal(balance);
 
 										this.sendripple2.setXrpBalance(this.xrpBalance);
 
-										double d = this.xrpBalance / 1000000.0;
+										decimal d = this.xrpBalance / 1000000.0m;
 
 										this.balanceLabel.Text = d.ToString();
 
@@ -179,7 +179,7 @@ public partial class MainWindow: Gtk.Window
 		this.secret = secret;
 	}
 
-	public double xrpBalance = 0;
+	public decimal xrpBalance = 0;
 
 	private String secret = null;
 

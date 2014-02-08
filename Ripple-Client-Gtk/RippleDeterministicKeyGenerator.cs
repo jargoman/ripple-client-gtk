@@ -1,7 +1,8 @@
 using System;
 using System.IO;
-using System.Security.Cryptography;
+//using System.Security.Cryptography;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Asn1.Sec;
 using Org.BouncyCastle.Math.EC;
@@ -27,13 +28,15 @@ namespace RippleClientGtk
 			X9ECParameters paramater = SecNamedCurves.GetByName(curveName);
 			SECP256k1_PARAMS = new ECDomainParameters (paramater.Curve,paramater.G,paramater.N,paramater.H);
 
+			/*
 			if (Debug.RippleDeterministicKeyGenerator) {
 				testVectors();
 
 			}
+			*/
 		}
 
-		public RippleDeterministicKeyGenerator (RippleSeedAdress secret) : this (secret.getBytes())
+		public RippleDeterministicKeyGenerator (RippleSeedAddress secret) : this (secret.getBytes())
 		{
 			//this.seedBytes = secret.getBytes();
 
@@ -51,12 +54,21 @@ namespace RippleClientGtk
 		public static byte[] halfSHA512 ( byte[] byteToHash )
 		{
 
-			byte[] result = null;
+
 			byte[] ret32 = null;
 			try {
 
-				SHA512 sha = new SHA512Managed();
-				result = sha.ComputeHash(byteToHash);
+				//SHA512 sha = new SHA512Managed();
+				//result = sha.ComputeHash(byteToHash);
+
+				Sha512Digest digest = new Sha512Digest();
+				byte[] result = new byte[digest.GetDigestSize()];
+
+				digest.BlockUpdate(byteToHash,0,byteToHash.Length);
+
+				digest.DoFinal(result,0);
+
+
 				ret32 = new byte[32];
 				Array.Copy(result,ret32,32); // copy half the bytes
 
@@ -75,23 +87,27 @@ namespace RippleClientGtk
 
 			// TODO portable? endianess? testing?
 			for (int seq=0;;seq++) { 
+				MemoryStream mem = new MemoryStream(4);
 
-				int offset = this.seedBytes.Length;
+				BigEndianWriter bew = new BigEndianWriter(mem);
 
-				byte[] seqBytes = new byte[offset + 4];
-				seqBytes[offset + 0] = (byte)(seq>>24);
-				seqBytes[offset + 1] = (byte)(seq>>16);
-				seqBytes[offset + 2] = (byte)(seq>>8);
-				seqBytes[offset + 3] = (byte) (seq);
+				bew.Write(seedBytes);
+				bew.Write(seq);
 
-				Array.Copy(this.seedBytes,seqBytes,offset); // copy seedbytes infron of the sequence int
 
-				byte[] privateGeneratorBytes = halfSHA512(seedBytes);
-				// AAAHHH after so much time coding I think the following line is wrong, System.numeric.biginteger should be replaced with bouncycastle int
-				//BigInteger bigin = new BigInteger (BinarySerializer.prepareBigIntegerBytes(privateGeneratorBytes));
+				bew.Flush();
+				mem.Flush();
 
-				BigInteger bigin = new BigInteger(privateGeneratorBytes);
-				if (bigin.CompareTo(SECP256k1_PARAMS.N)==-1) {
+				byte[] seedAndSeqBytes = mem.ToArray();
+
+				if (seedAndSeqBytes.Length != seedBytes.Length + 4) {
+					throw new Exception("I'd really like to know if this thows. seedAndSeqBytes.Length = " + seedAndSeqBytes.Length);
+				}
+
+				byte[] privateGeneratorBytes = halfSHA512(seedAndSeqBytes);
+				BigInteger privateGeneratorBI = new BigInteger(1,privateGeneratorBytes);
+
+				if (privateGeneratorBI.CompareTo(SECP256k1_PARAMS.N) == -1) {
 					return privateGeneratorBytes;
 				}
 			}
@@ -101,7 +117,7 @@ namespace RippleClientGtk
 		public ECPoint getPublicGeneratorPoint ()
 		{
 			byte[] privateGeneratorBytes = getPrivateRootKeyBytes();
-			ECPoint publicGenerator = new RipplePrivateKey(privateGeneratorBytes).getPublicKey();
+			ECPoint publicGenerator = new RipplePrivateKey(privateGeneratorBytes).getPublicKey().getPublicPoint();
 			return publicGenerator;
 		}
 
@@ -143,9 +159,11 @@ namespace RippleClientGtk
 					break;
 				}
 
-				BigInteger privateKeyForAccount = privateRootKeyBI.Add(pubGenSeqSubSeqHashBI).Mod(SECP256k1_PARAMS.N);
-				return new RipplePrivateKey(privateKeyForAccount);
+
 			}
+
+			BigInteger privateKeyForAccount = privateRootKeyBI.Add(pubGenSeqSubSeqHashBI).Mod(SECP256k1_PARAMS.N);
+			return new RipplePrivateKey(privateKeyForAccount);
 		}
 
 
@@ -195,15 +213,19 @@ namespace RippleClientGtk
 			byte[] masterseedhex = { 0x71,0xED,0x06,0x41,0x55,0xFF,0xAD,0xFA,0x38,0x78,0x2C,0x5E,0x01,0x58,0xCB,0x26};
 			String humanseed = "shHM53KPZ87Gwdqarm1bAmPeXg8Tn";
 
-			RippleSeedAdress seed = new RippleSeedAdress (masterseedhex);
+			RippleSeedAddress seed = new RippleSeedAddress (masterseedhex);
 
-			RippleSeedAdress seed2 = new RippleSeedAdress (humanseed);
+			RippleSeedAddress seed2 = new RippleSeedAddress (humanseed);
+
+			if (seed.Equals(seed2)) {
+				Logging.write("Test Vectors : seed == seed2");
+			}
 
 			Logging.write ("hex seed = " + masterseedhex.ToString() + "\n human seed = " + seed.ToString());
 
-			//RipplePrivateKey privateGen = new RipplePrivateKey();
+			RippleAddress privatekey = seed.getPublicRippleAddress();
 
-
+			Logging.write("seed shHM53KPZ87Gwdqarm1bAmPeXg8Tn becomes " + privatekey.ToString() );
 
 			return true;
 		}

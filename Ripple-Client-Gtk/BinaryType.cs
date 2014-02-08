@@ -161,7 +161,40 @@ namespace RippleClientGtk
 			return reverseLookup[type];
 		}
 
+		public override bool Equals (Object obj)
+		{
+			if (obj == null) {
+				return false;
+			}
 
+			BinaryType t = obj as BinaryType;
+			if ((Object)t == null) {
+				return false;
+			}
+
+
+			return this.Equals((BinaryType)t); // TODO is this rock solid?
+		}
+
+		public bool Equals (BinaryType type)
+		{
+			if ((Object)type == null) {
+				return false;
+			}
+
+			return (this.typeCode == type.typeCode);
+
+		}
+
+		public static bool operator ==(BinaryType left, BinaryType right)
+		{
+			return left.Equals(right);
+		}
+ 
+		public static bool operator !=(BinaryType left, BinaryType right)
+		{
+			return !left.Equals(right);
+		}
 	}
 }
 

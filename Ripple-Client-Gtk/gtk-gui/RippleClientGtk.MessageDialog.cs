@@ -48,6 +48,7 @@ namespace RippleClientGtk
 			this.textview1.Name = "textview1";
 			this.textview1.Editable = false;
 			this.textview1.CursorVisible = false;
+			this.textview1.WrapMode = ((global::Gtk.WrapMode)(2));
 			this.vbox2.Add (this.textview1);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.textview1]));
 			w4.Position = 2;

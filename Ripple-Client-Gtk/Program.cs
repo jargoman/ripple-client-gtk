@@ -21,6 +21,29 @@ namespace RippleClientGtk
 				Logging.write ("Main : init complete \n");
 			}
 
+			RippleDeterministicKeyGenerator.testVectors();
+
+			//RippleSeedAddress seed = new RippleSeedAddress ("sahrdizSew7U1hGFQsVV5ZU7rkLnY");
+			//Logging.write(seed.ToString());
+			//RippleSeedAddress seed2 = new RippleSeedAddress ("sahrdizSew7U1hGFQsVV5ZU7rkLnY");
+
+			//if (seed.Equals (seed2)) {
+			//	Logging.write ("seed == seed2");
+			//}
+
+			//RippleAddress rip = new RippleAddress ("rMVSLaAEZjHmhNWA39rHamn4WuXS2VF7Ak");
+
+			//if (rip.Equals (seed.getPublicRippleAddress ())) {
+			//	Logging.write ("yay");
+			//} else {
+			//	Logging.write("nay");
+			//}
+
+			//RippleAddress add = seed.getPublicRippleAddress();
+
+			//Logging.write("add = " + add.ToString());
+
+
 			MainWindow win = new MainWindow ();  // not visible yet
 
 			if (Debug.Program) {

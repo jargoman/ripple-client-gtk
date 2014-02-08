@@ -2341,6 +2341,7 @@ drops</property>
                 <property name="Editable">False</property>
                 <property name="CursorVisible">False</property>
                 <property name="Text" translatable="yes" />
+                <property name="WrapMode">Word</property>
               </widget>
               <packing>
                 <property name="Position">2</property>

@@ -329,6 +329,39 @@ namespace RippleClientGtk
 			return returnMe;
 		}
 
+		public override bool Equals (Object obj)
+		{
+			if (obj == null) {
+				return false;
+			}
+
+			BinaryFieldType bft = obj as BinaryFieldType;
+			if ((Object)bft == null) {
+				return false;
+			}
+
+			return this.Equals((BinaryFieldType)bft);
+		}
+
+		public bool Equals (BinaryFieldType bft)
+		{
+			if ((Object)bft == null) {
+				return false;
+			}
+
+			return ((bft.type.Equals(this.type)) && (bft.value == this.value));
+		}
+
+		public static bool operator ==(BinaryFieldType left, BinaryFieldType right)
+			{
+				return left.Equals(right);
+			}
+ 
+			public static bool operator !=(BinaryFieldType left, BinaryFieldType right)
+			{
+				return !left.Equals(right);
+			}
+
 	}
 }
 
