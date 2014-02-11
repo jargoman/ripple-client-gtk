@@ -121,23 +121,23 @@ namespace RippleClientGtk
 			 
 			 
 				using ( BigEndianReader reader = new BigEndianReader(ms) ) {
+					
 					for (int i = 0; i < ms.Length;i++) {
-						byte firstByte = reader.ReadByte();
-						int type = (0xF0 & firstByte) >> 4;
+						byte firstByte = reader.ReadByte(); 
+						int type = (0xF0 & firstByte) >> 4; // The & (AND) is redundant with unsigned bytes but I'll leave it incase I switch to sbyte
 						if (type==0) 
 						{
-							type = reader.ReadByte();
-
+							type = reader.ReadByte(); // if the type is zero, the next byte is the type
 						}
 
-						int field=0x0f & firstByte;
+						int field=0x0f & firstByte; // zero out first four bits of byte. 
 						if (field==0) {
-							field = reader.ReadByte();
-							firstByte=(byte)field;
+							field = reader.ReadByte(); 
+							//firstByte=(byte)field; // I commented this out because it's never used
 						}
 
 						BinaryFieldType serializedField = BinaryFieldType.lookup(type,field);
-						Object value = readPrimitive (reader, serializedField.type);// TODO eadprimitive func below
+						Object value = readPrimitive (reader, serializedField.type);
 						serializedObject.fields.Add(serializedField, value);
 
 
@@ -230,35 +230,40 @@ namespace RippleClientGtk
 			// TODO go back over this and make sure calculations are precise enough for financials. 
 			// Also take into account the sign byte
 
-			long offsetNativeSignMagnitudeBytes = input.ReadInt64 ();
+			//long offsetNativeSignMagnitudeBytes = input.ReadInt64 ();
+			ulong offsetNativeSignMagnitudeBytes = input.ReadUInt64();
+
 			//1 bit for Native // I'm confused because of the sign bit
 
 			// I added a cast to long.
 
-			Boolean isXRPAmount = false;
+			//Boolean isXRPAmount = false;
 
 			// TODO figure this out. ?????
-			unchecked {
-				isXRPAmount = ((long)0x8000000000000000 & offsetNativeSignMagnitudeBytes) == 0;
+			//unchecked {
+			//	isXRPAmount = ((long)0x8000000000000000 & offsetNativeSignMagnitudeBytes) == 0;
 				// 
-			}
+			//}
+
+			Boolean isXRPAmount = (0x8000000000000000 & offsetNativeSignMagnitudeBytes) == 0; // zero's everything but the isXRP bit
 
 			// checked
 			//isXRPAmount = (0x8000000000000000 & offsetNativeSignMagnitudeBytes) == 0;
 
 
-			int sign = (0x4000000000000000 & offsetNativeSignMagnitudeBytes) == 0 ? -1 : 1;
+			int sign = ((0x4000000000000000 & offsetNativeSignMagnitudeBytes) == 0) ? -1 : 1;
 
-			uint precast = (uint)(offsetNativeSignMagnitudeBytes & (long)0x3FC0000000000000);
+			ulong precast = offsetNativeSignMagnitudeBytes & 0x3FC0000000000000;
 
-			int offset = (int)(precast >> 54);
+			int offset = (int)(precast >> 54); 
 
-			long longMagnitude = offsetNativeSignMagnitudeBytes & 0x3FFFFFFFFFFFFF;
+			ulong longMagnitude = offsetNativeSignMagnitudeBytes & 0x3FFFFFFFFFFFFF;
 
 			// confused even more because of scale
 
 			if (isXRPAmount) {
-				Decimal magnitude = sign * longMagnitude;
+				Decimal magnitude = longMagnitude;
+				magnitude = magnitude * sign;
 				return new DenominatedIssuedCurrency (magnitude);
 
 			} else {
@@ -276,8 +281,12 @@ namespace RippleClientGtk
 				}
 
 				//BigInteger biMagnitude = longMagnitude;
-				Decimal fractionalValue = new decimal(longMagnitude) * new decimal(Math.Pow (10,  decimalPosition));  // veryfy this is correct
 
+
+				Decimal fractionalValue = new decimal(longMagnitude) * new decimal(Math.Pow (10,  decimalPosition));  // veryfy this is correct
+				if (sign < 0) {
+					fractionalValue *= -1m;
+				}
 
 				return new DenominatedIssuedCurrency (fractionalValue, issuer, currencyStr);
 			}
@@ -355,6 +364,9 @@ namespace RippleClientGtk
 
 		public MemoryStream writeBinaryObject (RippleBinaryObject serializedObj)
 		{
+			if (Debug.BinarySerializer) {
+				Logging.write("Binary Serializer : write binary object : " + serializedObj.toJSONString());
+			}
 
 			MemoryStream memstream = new MemoryStream ();
 			using (BigEndianWriter output = new BigEndianWriter(memstream)) {
@@ -382,7 +394,13 @@ namespace RippleClientGtk
 						output.Write((byte) field.value);
 					}
 
-					writePrimitive (output, field.type, serializedObj.getField(field));
+					object valu = serializedObj.getField(field);
+
+					if (Debug.BinarySerializer) {
+						Logging.write("BinaryFieldType : " + field.ToString() + " Type : " + field.type.ToString() + " Value : " + valu.ToString());
+					}
+
+					writePrimitive (output, field.type, valu);
 
 				}
 
@@ -401,18 +419,25 @@ namespace RippleClientGtk
 
 			// ok going to comment much of this ported code and take advantage of c#'s unsigned types.  
 			if (primitive.typeCode == BinaryType.UINT16) {
-				//int intValue = (int) value; 
-				//if (intValue>0xFFFF) {
-				//	throw new InternalBufferOverflowException( "UINT16 overflow for value " + value );
-				//}
 
+				Logging.write(value.GetType().ToString());
+
+				UInt16 intValue = (UInt16) value; 
+				/*
+				if (intValue>0xFFFF) {
+					throw new InternalBufferOverflowException( "UINT16 overflow for value " + value );
+				}
+				*/
 				//output.Write((byte) (intValue>>8&0xFF));
 				//output.Write((byte) (intValue&0xFF));
 
 				// So much easier o_O
-				output.Write ((UInt16)value);
+
+
+				output.Write (intValue);
+
 			} else if (primitive.typeCode == BinaryType.UINT32) {
-				//long longValue = (long) value;
+				UInt32 longValue = (UInt32) value;
 				//if (longValue>(long)0xFFFFFFFF) {
 				//	throw new InternalBufferOverflowException( "UINT32 overflow for value " + value );
 				//}
@@ -421,13 +446,16 @@ namespace RippleClientGtk
 				//output.Write((byte) (longValue>>8&0xFF));
 				//output.Write((byte) (longValue&0xFF));
 
+				//Logging.write(value.GetType().ToString());
+
 				output.Write ((UInt32)value);
 
 			} else if (primitive.typeCode == BinaryType.UINT64) {
 				// spend days porting RipplePrivateKey.bigIntegerToBytes() only to clue in there is an uint in c# :O
 				//byte[] biBytes = (uint) value; //  RipplePrivateKey.bigIntegerToBytes((BigInteger) value, 8);
+				UInt64 ulvalue = (UInt64)value;
+				output.Write (ulvalue);
 
-				output.Write ((UInt64)value);
 			} else if (primitive.typeCode == BinaryType.HASH128) {
 				byte[] sixteenBytes = (byte[])value;  // change to sbyte?
 				if (sixteenBytes.Length != 16) {

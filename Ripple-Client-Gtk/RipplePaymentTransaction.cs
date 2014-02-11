@@ -12,42 +12,42 @@ namespace RippleClientGtk
 
 		public String signedTransactionBlob;
 
-		public long sequenceNumber;
+		public UInt32 sequenceNumber;
 
 		public String txHash;
 		String signature;
 
 		public String publicKeyUsedToSign;
 
-		public long flags;
+		public UInt32 flags;
 
-		public RipplePaymentTransaction (RippleAddress payer, RippleAddress payee, DenominatedIssuedCurrency amount, long sequencenumber)
+		public RipplePaymentTransaction (RippleAddress payer, RippleAddress payee, DenominatedIssuedCurrency amount, DenominatedIssuedCurrency fee,UInt32 sequencenumber)
 		{
 			this.payer = payer;
 			this.payee = payee;
 			this.amount = amount;
-			this.sequenceNumber = sequenceNumber;
+			this.sequenceNumber = sequencenumber;
 			this.fee = fee;
 		}
 
 		public RipplePaymentTransaction (RippleBinaryObject serObj)
 		{
-			if (serObj.getTransactionType ().byteValue != TransactionType.PAYMENT) {
-				throw new Exception("The RippleBinaryObject is not a payment transaction, but a "+serObj.getTransactionType());
+			if (serObj.getTransactionType ().uint16Value != TransactionType.PAYMENT) {
+				throw new Exception("The RippleBinaryObject is not a payment transaction, but a " + serObj.getTransactionType().ToString());
 			}
 
 			payer = (RippleAddress) serObj.getField(BinaryFieldType.Account);
 			payee = (RippleAddress) serObj.getField(BinaryFieldType.Destination);
 			amount = (DenominatedIssuedCurrency) serObj.getField(BinaryFieldType.Amount);
-			sequenceNumber = (long) serObj.getField(BinaryFieldType.Sequence);
+			sequenceNumber = (UInt32)serObj.getField(BinaryFieldType.Sequence);
 			fee = (DenominatedIssuedCurrency) serObj.getField(BinaryFieldType.Fee);
-			flags = (long) serObj.getField(BinaryFieldType.Flags);
+			flags = (UInt32) serObj.getField(BinaryFieldType.Flags);
 		}
 
 		public RippleBinaryObject getBinaryObject ()
 		{
 			RippleBinaryObject rbo = new RippleBinaryObject();
-			rbo.putField(BinaryFieldType.TransactionType, (int) TransactionType.PAYMENT);
+			rbo.putField(BinaryFieldType.TransactionType, TransactionType.PAYMENT);
 			rbo.putField(BinaryFieldType.Account, this.payer);
 			rbo.putField(BinaryFieldType.Destination, this.payee);
 			rbo.putField(BinaryFieldType.Amount, this.amount);

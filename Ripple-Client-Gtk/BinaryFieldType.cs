@@ -1,9 +1,10 @@
 
 using System;
+using System.Collections;
 
 namespace RippleClientGtk
 {
-	public sealed class BinaryFieldType
+	public sealed class BinaryFieldType : IComparable
 	{
 		// poor mans ENUM object
 		// Note changes to the following "enum" constants should be reflected also in getValues ()
@@ -276,6 +277,449 @@ namespace RippleClientGtk
 
 		}
 
+		public static String stringFromType (BinaryFieldType typ)
+		{
+
+			if (typ == CloseResolution) {
+				return "CloseResolution";
+			}
+
+			if (typ == TemplateEntryType) {
+				return "TemplateEntryType";
+			}
+
+			if (typ == TransactionResult) {
+				return "TransactionResult";
+			}
+
+			if (typ == LedgerEntryType) {
+				return "LedgerEntryType";
+			}
+
+			if (typ == TransactionType) {
+				return "TransactionType";
+			}
+
+			if (typ == Flags) {
+				return "Flags";
+			}
+
+			if (typ == SourceTag) {
+				return "SourceTag";
+			}
+
+			if (typ == Sequence) {
+				return "Sequence";
+			}
+				
+			if (typ == PreviousTxnLgrSeq) {
+				return "PreviousTxnLgrSeq";
+			}
+
+			if (typ == LedgerSequence) {
+				return "LedgerSequence";
+			}
+
+			if (typ == CloseTime) {
+				return "CloseTime";
+			}
+
+			if (typ == ParentCloseTime) {
+				return "ParentCloseTime";
+			}
+
+			if (typ == SigningTime) {
+				return "SigningTime";
+			}
+
+			if (typ == Expiration) {
+				return "Expiration";
+			}
+
+			if (typ == TransferRate) {
+				return "TransferRate";
+			}
+
+			if (typ == WalletSize) {
+				return "WalletSize";
+			}
+
+			if (typ == OwnerCount) {
+				return "OwnerCount";
+			}
+
+			if (typ == DestinationTag) {
+				return "DestinationTag";
+			}
+
+			if (typ == HighQualityIn) {
+				return "HighQualityIn";
+			}
+
+			if (typ == HighQualityOut) {
+				return "HighQualityOut";
+			}
+
+			if (typ == LowQualityIn) {
+				return "LowQualityIn";
+			}
+
+			if (typ == LowQualityOut) {
+				return "LowQualityOut";
+			}
+
+			if (typ == QualityIn) {
+				return "QualityIn";
+			}
+
+			if (typ == QualityOut) {
+				return "QualityOut";
+			}
+
+			if (typ == StampEscrow) {
+				return "StampEscrow";
+			}
+
+			if (typ == BondAmount) {
+				return "BondAmount";
+			}
+
+			if (typ == LoadFee) {
+				return "LoadFee";
+			}
+
+			if (typ == OfferSequence) {
+				return "OfferSequence";
+			}
+
+			if (typ == FirstLedgerSequence) {
+				return "FirstLedgerSequence";
+			}
+
+			if (typ == LastLedgerSequence) {
+				return "LastLedgerSequence";
+			}
+
+			if (typ == TransactionIndex) {
+				return "TransactionIndex";
+			}
+
+			if (typ == OperationLimit) {
+				return "OperationLimit";
+			}
+
+			if (typ == ReferenceFeeUnits) {
+				return "ReferenceFeeUnits";
+			}
+
+			if (typ == ReserveBase) {
+				return "ReserveBase";
+			}
+
+			if (typ == ReserveIncrement) {
+				return "ReserveIncrement";
+			}
+
+			if (typ == SetFlag) {
+				return "SetFlag";
+			}
+
+			if (typ == ClearFlag) {
+				return "ClearFlag";
+			}
+
+			if (typ == IndexNext) {
+				return "IndexNex";
+			}
+
+			if (typ == IndexPrevious) {
+				return "IndexPrevious";
+			}
+
+			if (typ == BookNode) {
+				return "BookNode";
+			}
+
+			if (typ == OwnerNode) {
+				return "OwnerNode";
+			}
+
+			if (typ == BaseFee) {
+				return "BaseFee";
+			}
+
+			if (typ ==ExchangeRate) {
+				return "ExchangeRate";
+			}
+
+			if (typ == LowNode) {
+				return "LowNode";
+			}
+
+			if (typ == HighNode) {
+				return "HighNode";
+			}
+
+			if (typ == EmailHash) {
+				return "EmailHash";
+			}
+
+			if (typ == LedgerHash) {
+				return "LedgerHash";
+			}
+
+			if (typ == ParentHash) {
+				return "ParentHash";
+			}
+
+			if (typ == TransactionHash) {
+				return "TransactionHash";
+			}
+
+			if (typ == AccountHash) {
+				return "AccountHash";
+			}
+
+			if (typ == PreviousTxnID) {
+				return "PreviousTxnID";
+			}
+
+			if (typ == LedgerIndex) {
+				return "LedgerIndex";
+			}
+
+			if (typ == WalletLocator) {
+				return "WalletLocator";
+			}
+
+			if (typ == RootIndex) {
+				return "RootIndex";
+			}
+
+			if (typ == BookDirectory) {
+				return "BookDirectory";
+			}
+
+			if (typ == InvoiceID) {
+				return "InvoiceID";
+			}
+
+			if (typ == Nickname) {
+				return "Nickname";
+			}
+
+			if (typ == Feature) {
+				return "Feature";
+			}
+
+			if (typ == TakerPaysCurrency) {
+				return "TakerPaysCurrency";
+			}
+
+			if (typ == TakerPaysIssuer) {
+				return "TakerPaysIssuer";
+			}
+
+			if (typ == TakerGetsCurrency) {
+				return "TakerGetsCurrency";
+			}
+
+			if (typ == TakerGetsIssuer) {
+				return "TakerGetsIssuer";
+			}
+
+			if (typ == Amount) {
+				return "Amount";
+			}
+
+			if (typ == Balance) {
+				return "Balance";
+			}
+
+			if (typ == LimitAmount) {
+				return "LimitAmount";
+			}
+
+			if (typ == TakerPays) {
+				return "TakerPays";
+			}
+
+			if (typ == TakerGets) {
+				return "TakerGets";
+			}
+
+			if (typ == LowLimit) {
+				return "LowLimit";
+			}
+
+			if (typ == HighLimit) {
+				return "HighLimit";
+			}
+
+			if (typ == Fee) {
+				return "Fee";
+			}
+
+			if (typ == SendMax) {
+				return "SendMax";
+			}
+
+			if (typ == MinimumOffer) {
+				return "MinimumOffer";
+			}
+
+			if (typ == RippleEscrow) {
+				return "RippleEscrow";
+			}
+
+			if (typ == PublicKey) {
+				return "PublicKey";
+			}
+
+			if (typ == MessageKey) {
+				return "MessageKey";
+			}
+
+			if (typ == SigningPubKey) {
+				return "SigningPubKey";
+			}
+
+			if (typ == TxnSignature) {
+				return "TxnSignature";
+			}
+
+			if (typ == Generator) {
+				return "Generator";
+			}
+
+			if (typ == Signature) {
+				return "Signature";
+			}
+
+			if (typ == Domain) {
+				return "Domain";
+			}
+
+			if (typ == FundCode) {
+				return "FundCode";
+			}
+
+			if (typ == RemoveCode) {
+				return "RemoveCode";
+			}
+
+			if (typ == ExpireCode) {
+				return "ExpireCode";
+			}
+
+			if (typ == CreateCode) {
+				return "CreateCode";
+			}
+
+			if (typ == Account) {
+				return "Account";
+			}
+
+			if (typ == Owner) {
+				return "Owner";
+			}
+
+			if (typ == Destination) {
+				return "Destination";
+			}
+
+			if (typ == Issuer) {
+				return "Issuer";
+			}
+
+			if (typ == Target) {
+				return "Target";
+			}
+
+			if (typ == RegularKey) {
+				return "RegularKey";
+			}
+
+			if (typ == Paths) {
+				return "Paths";
+			}
+
+			if (typ == Indexes) {
+				return "Indexes";
+			}
+
+			if (typ == Hashes) {
+				return "Hashes";
+			}
+
+			if (typ == Features) {
+				return "Features";
+			}
+
+			if (typ == TransactionMetaData) {
+				return "TransactionMetaData";
+			}
+
+			if (typ == CreatedNode) {
+				return "CreatedNode"; 
+			}
+
+			if (typ == DeletedNode) {
+				return "DeletedNode";
+			}
+
+			if (typ == ModifiedNode) {
+				return "ModifiedNode";
+			}
+
+			if (typ == PreviousFields) {
+				return "PreviousFields";
+			}
+
+			if (typ == FinalFields) {
+				return "FinalFields";
+			}
+
+			if (typ == NewFields) {
+				return "NewFields";
+			}
+
+			if (typ == TemplateEntry) {
+				return "TemplateEntry";
+			}
+
+			if (typ == SigningAccounts) {
+				return "SigningAccounts";
+			}
+
+			if (typ == TxnSignatures) {
+				return "TxnSignatures";
+			}
+
+			if (typ == Signatures) {
+				return "Signatures";
+			}
+
+			if (typ == Template) {
+				return "Template";
+			}
+
+			if (typ == Necessary) {
+				return "Necessary";
+			}
+
+			if (typ == Sufficient) {
+				return "Sufficient";
+			}
+
+			if (typ == AffectedNodes) {
+				return "AffectedNodes";
+			}
+
+			throw new ArgumentException("No String value found for BinaryFieldType of type : " + typ.type.ToString() + " and Value : " + typ.value.ToString());
+		}
+
+
 		private static BinaryFieldType[] valuesCache = null;
 		static BinaryFieldType[,] typeFieldLookup = null;
 
@@ -287,7 +731,7 @@ namespace RippleClientGtk
 
 			MAXBYTEVALUE++;
 
-			BinaryFieldType.typeFieldLookup = new BinaryFieldType[BinaryType.MAXBYTEVALUE,BinaryFieldType.MAXBYTEVALUE];
+			BinaryFieldType.typeFieldLookup = new BinaryFieldType[BinaryType.MAXBYTEVALUE,BinaryFieldType.MAXBYTEVALUE]; // note the two MAXBYTEVALUES are different 
 
 			foreach (BinaryFieldType f in BinaryFieldType.getValues()) {
 				typeFieldLookup[f.type.typeCode,f.value] = f;
@@ -321,9 +765,9 @@ namespace RippleClientGtk
 				returnMe = typeFieldLookup[type,fieldType];
 			}
 
-			// TODO return returnme or do error
+
 			if (returnMe == null) {
-				// TODO error!!!
+				throw new MissingFieldException("Could not find type "+type+", field "+fieldType);
 			}
 
 			return returnMe;
@@ -353,15 +797,49 @@ namespace RippleClientGtk
 		}
 
 		public static bool operator ==(BinaryFieldType left, BinaryFieldType right)
-			{
-				return left.Equals(right);
-			}
+		{
+			return left.Equals(right);
+		}
  
-			public static bool operator !=(BinaryFieldType left, BinaryFieldType right)
-			{
-				return !left.Equals(right);
+		public static bool operator !=(BinaryFieldType left, BinaryFieldType right)
+		{
+			return !left.Equals(right);
+		}
+
+		public int CompareTo (object obj)
+		{
+			if (obj == null) {
+				throw new ArgumentNullException ("Can not compare BinaryFieldType to null");
 			}
 
+			BinaryFieldType bft = obj as BinaryFieldType;
+
+			if (bft != null) {
+				if (this == bft) {
+					return 0;
+				}
+
+				foreach (BinaryFieldType b in getValues()) {
+					if (b == this) {
+						return -1;
+					}
+
+					if (bft == b) {
+						return 1;
+					}
+				}
+
+			} else {
+				throw new ArgumentException("Can not compare BinaryFieldType to unknown type " + obj.GetType().ToString());
+			}
+
+			throw new ArgumentException("Unknown error comparing BinaryFieldType. Report this as a bug");
+		}
+
+		public override string ToString ()
+		{
+			return stringFromType(this);
+		}
 	}
 }
 

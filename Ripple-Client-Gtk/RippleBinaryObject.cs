@@ -22,7 +22,11 @@ namespace RippleClientGtk
 			//fields.Add(BinaryFeildType.Account, payment);
 
 			// I hope this is sufficient for a copy. TODO fix me for complete copy
-			this.fields = new Dictionary<BinaryFieldType, object>(ob.fields);
+			this.fields = new Dictionary<BinaryFieldType, object>();
+
+			foreach (var pair in ob.fields) {
+				this.fields.Add(pair.Key, pair.Value);
+			}
 
 		}
 
@@ -82,7 +86,7 @@ namespace RippleClientGtk
 			return hashOfTransaction;
 		}
 
-		public Object getField (BinaryFieldType transactiontype)
+		public Object getField (BinaryFieldType transactiontype) // why variable named transaction type O_o
 		{
 			Object obj = null;
 			fields.TryGetValue (transactiontype, out obj);
@@ -95,6 +99,18 @@ namespace RippleClientGtk
 
 		public void putField ( BinaryFieldType field, Object value )
 		{
+
+			if (Debug.RippleBinaryObject) {
+				Logging.write("RippleBinaryObject.putField ( " + field.ToString() + " " + value.ToString());
+			}
+
+			if (value == null) {
+				if (Debug.RippleBinaryObject) {
+					Logging.write("RippleBinaryObject.putField : Can not set BinaryFieldType " + field.ToString() + "to null");
+				}
+
+				throw new ArgumentNullException(field.ToString(), "Can not set BinaryFieldType " + field.ToString() + "to null");
+			}
 			fields.Add (field, value);
 		}
 
@@ -111,7 +127,9 @@ namespace RippleClientGtk
 
 		public String toJSONString ()
 		{
-
+			if (Debug.RippleBinaryObject) {
+				Logging.write("RippleBinaryObject.toJSONString() : begin ");
+			}
 
 			String json = "{";
 
@@ -128,16 +146,45 @@ namespace RippleClientGtk
 			foreach (KeyValuePair<BinaryFieldType, Object> field in fields) {
 				BinaryType primative = field.Key.type;
 
+				if (primative==null) {
+					if (Debug.RippleBinaryObject) {
+						Logging.write("BinaryType primitive should not be null");
+					}
+
+					throw new ArgumentNullException("BinaryType primitive should not be null");
+				}
+
+				else {
+					if (Debug.RippleBinaryObject) {
+						Logging.write("primative = " + primative.ToString());
+					}
+				}
+
+				if (field.Value == null) {
+					if (Debug.RippleBinaryObject) {
+						Logging.write("Field value is null");
+					}
+				}
+
+				else {
+					if (Debug.RippleBinaryObject) {
+						//if () {
+						//}
+						Logging.write("value is " + field.Value.ToString());
+					}
+				}
+
+
 				if (primative.typeCode==BinaryType.UINT8 || primative.typeCode==BinaryType.UINT16 ||
 				    primative.typeCode==BinaryType.UINT32 || primative.typeCode==BinaryType.UINT64) {
 
-					json += "\"" + primative.str + "\":" + field.Value.ToString();
+					json += "\"" + primative.ToString() + "\":" + field.Value.ToString();
 
 
 				}
 
 				else {
-					json += "\"" + primative.str + "\":\"" + field.Value.ToString() + "\"";
+					json += "\"" + primative.ToString() + "\":\"" + field.Value.ToString() + "\"";
 				}
 
 				if (count!=num) {
@@ -154,9 +201,17 @@ namespace RippleClientGtk
 		public List<BinaryFieldType> getSortedField ()
 		{
 			List<BinaryFieldType> unsortedFields = new List<BinaryFieldType> (fields.Keys);
-			List<BinaryFieldType> sortedFields = new List<BinaryFieldType> ();
 
-			BinaryFieldType[] orderarray = BinaryFieldType.getValues ();
+			unsortedFields.Sort();
+
+			return (List<BinaryFieldType>)unsortedFields;
+
+			/*
+			//List<BinaryFieldType> sortedFields = new List<BinaryFieldType> ();
+
+			//BinaryFieldType[] orderarray = BinaryFieldType.getValues ();
+
+
 
 
 			// Todo verify removal of items durring iteration is ok, may have to use an iterator type
@@ -173,8 +228,10 @@ namespace RippleClientGtk
 				throw new MissingFieldException("Class : RippleBinaryObject Method : getSortedField() : Some fields have remained unsorted");
 			}
 
-			return sortedFields;
 
+
+			return sortedFields;
+			*/
 		}
 
 	}

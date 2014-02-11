@@ -411,6 +411,64 @@ namespace RippleClientGtk
 
 		}
 
+		public void sendToServer (byte[] message)	{
+			sendToServer(message,0, message.Length);
+		}
+		
+		public void sendToServer( byte[] message, int byteoffset, int bytelength) {
+			if ( websocket == null || websocket.State != WebSocketState.Open) {
+
+				if (this.reconnect && this.shouldconnect) {
+					this.tryconnect ();
+
+					// let the server breathe
+					System.Threading.Thread.Sleep (10);
+
+					if (websocket == null || websocket.State != WebSocketState.Open) {
+						Logging.write ("You need to be connected to a server to send a message.\n");
+						return;
+					}
+
+
+				} else {
+
+					Logging.write ("You need to be connected to a server to send a message.\n");
+					return;
+				}
+			}
+
+			else {
+				Logging.write ( "Sending binary message\n"/*:\n" + message + "\n"*/ );
+				try {
+
+					this.websocket.Send ( message, byteoffset, bytelength );
+
+
+				}
+
+				catch (Exception e) {
+
+					Logging.write ( "Error sending message : An exception was thrown.\n" + e.Message);
+					return;
+				}
+
+
+			}
+
+			if (websocket != null) {
+
+				// TODO I don't think this web socket library has any error flags to check??? (websockets4net), it's event based, see on error event, also catching exceptions above
+
+
+			}
+
+			else {
+				Logging.write ("Error, websocket address is now null. Is another thread calling websocket_dispose?\n");
+			}
+
+		}
+
+
 		protected void webSocketDisposal () {
 			if (Debug.NetworkInterface) {
 				Logging.write("NetworkingInterface : method webSocketDisposal() : begin \n");

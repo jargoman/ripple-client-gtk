@@ -9,20 +9,20 @@ namespace RippleClientGtk
 		// I want them to be full fledged classes as in java
 		// this is the solution I came up with :/
 
-		public static readonly byte PAYMENT = 0x00;
-		public static readonly byte CLAIM = 0x01;
-		public static readonly byte WALLET_ADD = 0x02;
-		public static readonly byte ACCOUNT_SET = 0x03;
-		public static readonly byte PASSWORD_FUND = 0x04;
-		public static readonly byte REGULAR_KEY_SET = 0x05;
-		public static readonly byte NICKNAME_SET = 0x06;
-		public static readonly byte OFFER_CREATE =0x07;
-		public static readonly byte OFFER_CANCEL = 0x08;
-		public static readonly byte CONTRACT = 0x09;
-		public static readonly byte CONTRACT_REMOVE = 0x0a;
-		public static readonly byte TRUST_SET = 0x14;
-		public static readonly byte FEATURE = 0x64;
-		public static readonly byte FEE = 0x65;
+		public static readonly UInt16 PAYMENT = 0x00;
+		public static readonly UInt16 CLAIM = 0x01;
+		public static readonly UInt16 WALLET_ADD = 0x02;
+		public static readonly UInt16 ACCOUNT_SET = 0x03;
+		public static readonly UInt16 PASSWORD_FUND = 0x04;
+		public static readonly UInt16 REGULAR_KEY_SET = 0x05;
+		public static readonly UInt16 NICKNAME_SET = 0x06;
+		public static readonly UInt16 OFFER_CREATE =0x07;
+		public static readonly UInt16 OFFER_CANCEL = 0x08;
+		public static readonly UInt16 CONTRACT = 0x09;
+		public static readonly UInt16 CONTRACT_REMOVE = 0x0a;
+		public static readonly UInt16 TRUST_SET = 0x14;
+		public static readonly UInt16 FEATURE = 0x64;
+		public static readonly UInt16 FEE = 0x65;
 
 		public static int MAXBYTEVALUE=0;
 		static TransactionType[] reverseLookup;
@@ -30,14 +30,14 @@ namespace RippleClientGtk
 		static TransactionType ()
 		{
 			foreach (TransactionType type in getValues()) {  // note not values as is the case in the java code, values could be null
-				MAXBYTEVALUE = Math.Max (MAXBYTEVALUE, (int)type.byteValue);
+				MAXBYTEVALUE = Math.Max (MAXBYTEVALUE, (int)type.uint16Value);
 			}
 
 			MAXBYTEVALUE++;
 
 			reverseLookup = new TransactionType[MAXBYTEVALUE];
 			foreach (TransactionType type in getValues()) {
-				reverseLookup[type.byteValue] = type; // may have to cast byteValue to int
+				reverseLookup[type.uint16Value] = type; // may have to cast byteValue to int
 			}
 		}
 
@@ -72,18 +72,18 @@ namespace RippleClientGtk
 
 		}
 
-		public byte byteValue;
+		public UInt16 uint16Value;
 		//public String ToString = "";
 
-		TransactionType (byte txTypeByteValue)
+		TransactionType (UInt16 txTypeByteValue)
 		{
-			this.byteValue = txTypeByteValue;
+			this.uint16Value = txTypeByteValue;
 
 
 
 		}
 
-		public static TransactionType fromType ( byte txType )
+		public static TransactionType fromType ( UInt16 txType )
 		{
 			if (txType < 0 || txType >= MAXBYTEVALUE) {
 				return null;
@@ -112,7 +112,7 @@ namespace RippleClientGtk
 				return false;
 			}
 
-			return this.byteValue == tst.byteValue;
+			return this.uint16Value == tst.uint16Value;
 		}
 
 		public static bool operator ==(TransactionType left, TransactionType right)
@@ -124,6 +124,8 @@ namespace RippleClientGtk
 		{
 			return !left.Equals(right);
 		}
+
+
 	}
 }
 

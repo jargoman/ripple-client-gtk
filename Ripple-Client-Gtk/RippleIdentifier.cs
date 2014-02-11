@@ -27,7 +27,10 @@ namespace RippleClientGtk
 		public RippleIdentifier (String humanreadable)
 		{
 			if (Debug.RippleIdentifier) {
-				Logging.write("RippleIdentifier.const (string humanreadable = " + humanreadable + " );\n");
+				if (Debug.allowInsecureDebugging || humanreadable[0]!='s') {
+					Logging.write("RippleIdentifier.const (string humanreadable = " + humanreadable + " );\n");
+				}
+
 			}
 
 			//this.humanReadableIdentifier = humanreadable;
@@ -35,8 +38,8 @@ namespace RippleClientGtk
 
 			byte[] checksumArray = doubleSha256 (stridBytes, 0, stridBytes.Length - 4);
 
-
-			Logging.write(
+			if (Debug.RippleIdentifier) {
+				Logging.write(
 					"checksumArray = " +
 					checksumArray[0].ToString() + " " +
 					checksumArray[1].ToString() + " " +
@@ -47,7 +50,8 @@ namespace RippleClientGtk
 					stridBytes [stridBytes.Length - 3].ToString() + " " +
 					stridBytes [stridBytes.Length - 2].ToString() + " " +
 					stridBytes [stridBytes.Length - 1].ToString() + "\n"
-			);
+				);
+			}
 
 
 			if (checksumArray [0] != stridBytes [stridBytes.Length - 4]
@@ -67,9 +71,12 @@ namespace RippleClientGtk
 
 		//@Override
 
-		new public String ToString() 
+		//new 
+
+		public override String ToString() 
 		{
 			if (humanReadableIdentifier==null) {
+
 				byte[] versionPayloadChecksumBytes=new byte[1+payloadBytes.Length+4];
 				versionPayloadChecksumBytes[0]= this.identifierType;
 				Array.Copy(payloadBytes,0,versionPayloadChecksumBytes,1,payloadBytes.LongLength);
@@ -79,8 +86,6 @@ namespace RippleClientGtk
 				System.Array.Copy(hashBytes, 0, versionPayloadChecksumBytes, 1 + payloadBytes.Length, 4);
 
 				humanReadableIdentifier=Base58.encode(versionPayloadChecksumBytes);
-
-
 
 			}
 

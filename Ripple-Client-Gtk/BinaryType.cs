@@ -4,7 +4,7 @@ using System;
 
 namespace RippleClientGtk
 {
-	public class BinaryType
+	public class BinaryType : IComparable
 	{
 		// another poor mans enum lol
 
@@ -32,7 +32,7 @@ namespace RippleClientGtk
 		// new BinaryType(UINT16) != new BinaryType(UINT16)
 
 		public byte typeCode;
-		public String str;
+		private String str;
 
 		public static byte MAXBYTEVALUE = 0;
 
@@ -193,8 +193,56 @@ namespace RippleClientGtk
  
 		public static bool operator !=(BinaryType left, BinaryType right)
 		{
+
+
 			return !left.Equals(right);
 		}
+
+		public int CompareTo (object obj)
+		{
+			if (obj == null) {
+				throw new ArgumentNullException("Can not compare BinaryType to value null");
+			}
+
+			BinaryType othertype = obj as BinaryType;
+
+			if (othertype != null) {
+
+				if (this == othertype) {
+					return 0;
+				}
+
+				BinaryType[] types = getValues();
+
+				foreach (BinaryType bt in types) {
+					if (this == bt) {
+						return -1;
+					}
+
+					if (othertype == bt) {
+						return 1;
+					}
+				}
+
+			} else {
+				throw new ArgumentException("Can not compare BinaryType to unknown type " + obj.GetType().ToString());
+			}
+
+			throw new ArgumentException("Unknown error comparing BinaryType. Report this as a bug");
+		}
+
+		public override string ToString ()
+		{
+			if (this.str == null) {
+				if (Debug.BinaryType) {
+					Logging.write("BinaryType of typeCode " + this.typeCode + " has a null string value str");
+				}
+
+				throw new ArgumentNullException("BinaryType of typeCode " + this.typeCode + " has a null string value str");
+			}
+			return this.str;
+		}
+
 	}
 }
 

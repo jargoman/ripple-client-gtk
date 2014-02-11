@@ -9,7 +9,13 @@ namespace RippleClientGtk
 
 		public static bool AccountLines = false;
 
+		public static bool allowInsecureDebugging = false; // VERY IMPORTANT. IF SET SEED / OR PASSWORDS WILL BE INCLUDED IN DEBUGGING INFORMATION
+
 		public static bool Base58 = false;
+
+		public static bool BinarySerializer = true;
+
+		public static bool BinaryType = true;
 
 		public static bool Console = false;
 
@@ -19,6 +25,8 @@ namespace RippleClientGtk
 		public static bool PasswordDialog = false;
 		public static bool Program = false;
 		public static bool ReceiveWidget = false;
+
+		public static bool RippleBinaryObject = true;
 
 		public static bool RippleDeterministicKeyGenerator = false;
 

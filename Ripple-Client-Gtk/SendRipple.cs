@@ -17,7 +17,7 @@ namespace RippleClientGtk
 
 		String unsynced = "   --   unsynced   --   ";
 
-		protected void sendXrpPayment ( String account, String destination, Decimal  xrpamount, String secret) {
+		protected void sendXrpPayment ( String account, String destination, Decimal xrpamount, Decimal fee, String secret) {
 
 			/*
 			 * 
@@ -43,7 +43,16 @@ namespace RippleClientGtk
 			RippleSeedAddress seed = new RippleSeedAddress(secret);
 			RippleAddress payee = new RippleAddress(destination);
 			DenominatedIssuedCurrency amnt = new DenominatedIssuedCurrency(xrpamount);
-			RipplePaymentTransaction tx = new RipplePaymentTransaction(seed.getPublicRippleAddress(),payee,amnt,23); // Todo implement sequemce number. int 23 is an arbatrary number for testing 
+			DenominatedIssuedCurrency dafee = new DenominatedIssuedCurrency(fee);
+
+			RipplePaymentTransaction tx = new RipplePaymentTransaction(seed.getPublicRippleAddress(),payee,amnt,dafee, 23); // Todo implement sequemce number. int 23 is an arbatrary number for testing 
+			RippleBinaryObject rbo = tx.getBinaryObject();
+			rbo = new RippleSigner(seed.getPrivateKey(0)).sign(rbo);
+
+			byte[] signedTXBytes = new BinarySerializer().writeBinaryObject(rbo).ToArray();
+
+			NetworkInterface.currentInstance.sendToServer(signedTXBytes);
+
 		}
 
 
@@ -169,7 +178,7 @@ namespace RippleClientGtk
 						return;
 					}
 
-					this.sendXrpPayment (account,destination,amountd,secret);
+					this.sendXrpPayment (account,destination,amountd,10m,secret);
 					return;
 				}
 
@@ -177,16 +186,27 @@ namespace RippleClientGtk
 
 					MessageDialog.showMessage ("Amount entered is not a valid number of xrp. e.g 1.2345 " + ex.ToString());
 
+					if (Debug.SendRipple) {
+						Logging.write(ex.Message);
+					}
+
 					return;
 				}
 
 				catch (OverflowException ex) {
 					MessageDialog.showMessage ("Send amount is greater than a double. NO ONE's got that much money\n");
+					if (Debug.SendRipple) {
+						Logging.write(ex.Message);
+					}
+
 					return;
 				}
 
 				catch (Exception ex ) {
 					MessageDialog.showMessage ("Amount entered is not a valid number of xrp. e.g 1.2345 " + ex.ToString());
+					if (Debug.SendRipple) {
+						Logging.write(ex.Message);
+					}
 					return;
 				}
 
