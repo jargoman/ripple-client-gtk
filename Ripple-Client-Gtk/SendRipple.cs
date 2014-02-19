@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Gtk;
 using Codeplex.Data;
 
@@ -13,79 +14,76 @@ namespace RippleClientGtk
 
 			this.balanceLabel.Text = unsynced;
 
+			this.unitsSelectBox.Changed += OnUnitsSelectBoxChanged;
+
 		}
 
 		String unsynced = "   --   unsynced   --   ";
 
-		protected void sendXrpPayment ( String account, String destination, Decimal xrpamount, Decimal fee, String secret) {
+		public static void sendXrpPayment ( String account, String destination, Decimal xrpamount, Decimal fee, String secret) {
 
-			/*
-			 * 
-			 * // old json way // non signed 
-			object ob = new {
-				command="submit",
-				tx_json=new {
-					TransactionType = "Payment",
-					Account = account,
-					Destination = destination,
-					Amount = amount.ToString()
-				},
-				secret = secret
-			};
+			xrpamount = xrpamount * 1000000m; // convert to drops
 
-			String json = DynamicJson.Serialize(ob);
-			*/
+			try {
 
-			//Logging.write(json + "\n");
+				ulong lamount = (ulong) xrpamount;
+				sendDropsPayment(account, destination, (Decimal)lamount, fee, secret);
+			}
 
-			Logging.write(xrpamount.ToString());
+			catch (OverflowException ex) {
+
+				if (Debug.SendRipple) {
+					Logging.write("OverflowException : can't convert xrp to drops because value can't fit inside unsigned long");
+				}
+
+				MessageDialog.showMessage("OverflowException : can't convert xrp to drops because value can't fit inside unsigned long");
+
+				return;
+			}
+
+			catch (Exception ex) {
+				if (Debug.SendRipple) {
+					Logging.write("Exception thrown while converting to drops : " + ex.Message);
+				}
+
+				MessageDialog.showMessage("Exception thrown while converting to drops : " + ex.Message);
+					return;
+			}
+
+
+
+		}
+
+
+		public static void sendDropsPayment ( String account, String destination, Decimal xrpamount, Decimal fee, String secret) {
+
+			if (Debug.SendRipple) {
+				Logging.write("send drops payment of " + xrpamount.ToString() + " drops");
+			}
 
 			RippleSeedAddress seed = new RippleSeedAddress(secret);
 			RippleAddress payee = new RippleAddress(destination);
 			DenominatedIssuedCurrency amnt = new DenominatedIssuedCurrency(xrpamount);
 			DenominatedIssuedCurrency dafee = new DenominatedIssuedCurrency(fee);
 
-			RipplePaymentTransaction tx = new RipplePaymentTransaction(seed.getPublicRippleAddress(),payee,amnt,dafee, 23); // Todo implement sequemce number. int 23 is an arbatrary number for testing 
-			RippleBinaryObject rbo = tx.getBinaryObject();
+			RipplePaymentTransaction tx = new RipplePaymentTransaction(seed.getPublicRippleAddress(),payee,amnt,dafee, MainWindow.currentInstance.sequence,null); // Todo implement sequemce number. int 23 is an arbatrary number for testing 
+			RippleBinaryObject rbo = tx.getBinaryObject().getObjectSorted();
 			rbo = new RippleSigner(seed.getPrivateKey(0)).sign(rbo);
 
 			byte[] signedTXBytes = new BinarySerializer().writeBinaryObject(rbo).ToArray();
 
-			NetworkInterface.currentInstance.sendToServer(signedTXBytes);
+			String blob = Base58.ByteArrayToHexString(signedTXBytes);
 
-		}
-
-
-		protected void sendDropsPayment ( String account, String destination, ulong  amount, String secret) {
-			/*
-			 * 
-			 * // old json way // non signed
 			object ob = new {
-				command="submit",
-				tx_json = new {
-					Account = account,
-					Destination = destination,
-					Amount = amount.ToString()
-				},
-				secret = secret
+				command = "submit",
+				tx_blob = blob
 			};
 
-			String json = DynamicJson.Serialize (ob);
+			String jso = DynamicJson.Serialize(ob);
 
-			Logging.write(json + "\n");
 
-			if (NetworkInterface.currentInstance != null) {
-				AreYouSure ays = new AreYouSure ("You are about to send " + amount.ToString() + " drops to address " + destination );
 
-				int resp = ays.Run ();
-
-				if (resp == (int) ResponseType.Ok) {
-
-				}
-			}
-
-			*/
-
+			//NetworkInterface.currentInstance.sendToServer(jso);
 
 		}
 
@@ -93,6 +91,8 @@ namespace RippleClientGtk
 
 		protected void OnSendXRPButtonClicked (object sender, EventArgs e)
 		{
+
+			Thread th = new Thread( new ParameterizedThreadStart(sendThread));
 
 			String amount = this.amountEntry.Text;
 			String destination = this.destinationentry.Text;
@@ -124,22 +124,68 @@ namespace RippleClientGtk
 				return;
 			}
 
+			String units = this.unitsSelectBox.ActiveText;
+
+			threadParam tp = new threadParam (amount, destination,account,secret,units);
+
+			th.Start(tp);
+
+		}
+
+		class threadParam 
+		{
+			public threadParam(String amount, String destination, String account, String secret, String units) {
+				this.amount = amount;
+				this.destination = destination;
+				this.account = account;
+				this.secret = secret;
+				this.units = units;
+			}
+
+			public String amount;
+			public String destination;
+			public String account;
+			public String secret;
+			public String units;
+		}
+
+		private static void sendThread (object param) {
+
+			threadParam tp = param as threadParam;
+
+			Logging.write("Units = " + tp.units);
+
+			if (tp == null) {
+				throw new InvalidCastException("Unable to cast object to type threadParam");
+			}
+
+			if (Debug.SendRipple) {
+				Logging.write("Send Ripple : requesting Server Info\n");
+			}
+
+			ServerInfo.refresh_blocking();
+
+			if (Debug.SendRipple) {
+				Logging.write("Send Ripple : refresh_blocking returned, ServerInfo.transaction_fee = " + ServerInfo.transaction_fee.ToString());
+			}
 
 
-			if ("drops".Equals(this.unitsSelectBox.ActiveText)) {
+
+
+			if ("drops".Equals(tp.units)) {
 				Logging.write("drops");
 
 
 				try {
 
-					ulong amountl = Convert.ToUInt64( amount );
+					ulong amountl = Convert.ToUInt64( tp.amount );
 
 					if (amountl<0) {
 						MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
 						return;
 					}
 
-					this.sendDropsPayment(account,destination,amountl,secret);
+					sendDropsPayment(tp.account,tp.destination,(decimal)amountl,new decimal(ServerInfo.transaction_fee),tp.secret);
 				}
 
 				catch (FormatException ex) {
@@ -155,7 +201,7 @@ namespace RippleClientGtk
 				}
 
 				catch (Exception ex) {
-					MessageDialog.showMessage ("Amount is fomated incorrectly for sending drops.\n It must be a valid integer\n");
+					MessageDialog.showMessage ("Unknown error formatting string\n");
 					return;
 				}
 
@@ -166,19 +212,19 @@ namespace RippleClientGtk
 
 			}
 
-			else if ("XRP".Equals(this.unitsSelectBox.ActiveText)) {
+			else if ("XRP".Equals(tp.units)) {
 				Logging.write ("XRP");
 
 				try {
 
-					Decimal amountd = Convert.ToDecimal(amount);
+					Decimal amountd = Convert.ToDecimal(tp.amount);
 
 					if (amountd < 0) {
 						MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
 						return;
 					}
 
-					this.sendXrpPayment (account,destination,amountd,10m,secret);
+					sendXrpPayment (tp.account,tp.destination,amountd,new decimal(ServerInfo.transaction_fee),tp.secret);
 					return;
 				}
 
@@ -229,7 +275,7 @@ namespace RippleClientGtk
 
 				if (this.unitsSelectBox == null || this.unitsSelectBox.ActiveText == null ) {
 					// Todo debuging
-						
+
 					return;
 				}
 
@@ -240,12 +286,12 @@ namespace RippleClientGtk
 				}
 					
 				if (this.unitsSelectBox.ActiveText.Equals("drops")) {
-					this.balanceLabel.Text = balance.ToString();
+					this.balanceLabel.Text = Base58.truncateTrailingZerosFromString( balance.ToString() );
 					return;
 				}
 					
 				if (this.unitsSelectBox.ActiveText.Equals("XRP")) {
-					this.balanceLabel.Text = (balance / 1000000.0m).ToString();
+					this.balanceLabel.Text = Base58.truncateTrailingZerosFromString( (balance / 1000000.0m).ToString() );
 					return;
 				}
 					
@@ -263,6 +309,8 @@ namespace RippleClientGtk
 		{
 			if ( this.unsynced.Equals(this.balanceLabel.Text)) {
 				// TODO ??
+
+
 
 				return;
 			}

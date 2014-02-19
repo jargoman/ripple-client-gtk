@@ -21,8 +21,9 @@ namespace RippleClientGtk
 				Logging.write ("Main : init complete \n");
 			}
 
-			RippleDeterministicKeyGenerator.testVectors();
-
+			if (Debug.testVectors) {
+				RippleDeterministicKeyGenerator.testVectors();
+			}
 			//RippleSeedAddress seed = new RippleSeedAddress ("sahrdizSew7U1hGFQsVV5ZU7rkLnY");
 			//Logging.write(seed.ToString());
 			//RippleSeedAddress seed2 = new RippleSeedAddress ("sahrdizSew7U1hGFQsVV5ZU7rkLnY");

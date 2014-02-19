@@ -36,10 +36,15 @@ namespace RippleClientGtk
 			this.amount = new decimal(xrpAmount);
 		}
 
+		public DenominatedIssuedCurrency (long xrpAmount)
+		{
+			this.amount = new decimal ( xrpAmount );
+		}
+
 		public Boolean isNative ()
 		{
 			// TODO is this sufficient?
-			return issuer==null && this.currency == null;
+			return /*issuer==null && */ this.currency == null; 
 		}
 
 		public Boolean isNegative ()
@@ -52,13 +57,15 @@ namespace RippleClientGtk
 		}
 
 
-		new public String ToString () {
-			if (issuer==null || currency==null) {
-				return amount.ToString() + " XRP";
+		public override String ToString () {
+			if ( /*issuer==null || */ currency==null) {
+				return amount.ToString() + " drops";
 			}
 
 			return amount.ToString() + " " + currency + "/" + issuer.ToString();
 		}
+
+
 
 
 	}

@@ -131,7 +131,7 @@ namespace RippleClientGtk
 			this.label20 = new global::Gtk.Label ();
 			this.label20.WidthRequest = 40;
 			this.label20.Name = "label20";
-			this.label20.LabelProp = global::Mono.Unix.Catalog.GetString ("GWC");
+			this.label20.LabelProp = global::Mono.Unix.Catalog.GetString ("ICE");
 			this.hbox6.Add (this.label20);
 			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.label20]));
 			w9.PackType = ((global::Gtk.PackType)(1));

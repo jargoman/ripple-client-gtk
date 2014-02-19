@@ -50,7 +50,6 @@ namespace RippleClientGtk
 			w2.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.table1 = new global::Gtk.Table (((uint)(3)), ((uint)(2)), false);
-			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
@@ -175,9 +174,6 @@ namespace RippleClientGtk
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
-			this.amountEntry.Activated += new global::System.EventHandler (this.OnAmountEntryActivated);
-			this.unitsSelectBox.Changed += new global::System.EventHandler (this.OnUnitsSelectBoxChanged);
-			this.destinationentry.Activated += new global::System.EventHandler (this.OnDestinationentryActivated);
 			this.sendXRPButton.Clicked += new global::System.EventHandler (this.OnSendXRPButtonClicked);
 		}
 	}

@@ -33,15 +33,6 @@ namespace RippleClientGtk
 			*/
 		}
 
-		/*
-		public RipplePublicKey () {
-			if () {
-
-			}
-
-			return null;
-		}
-		*/
 
 		public static byte[] bigIntegerToBytes (BigInteger biToConvert, int nbBytesToReturn)
 		{

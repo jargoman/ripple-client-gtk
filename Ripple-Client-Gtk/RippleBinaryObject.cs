@@ -16,15 +16,17 @@ namespace RippleClientGtk
 			fields  = new Dictionary<BinaryFieldType,Object>();
 		}
 
-		public RippleBinaryObject (RippleBinaryObject ob)
+		public RippleBinaryObject ( RippleBinaryObject ob ) : this (ob.fields)
 		{
-			//fields.Add(BinaryFeildType.TransactionType, TransactionType.PAYMENT);
-			//fields.Add(BinaryFeildType.Account, payment);
+
+		}
+
+		public RippleBinaryObject (Dictionary<BinaryFieldType,object> fields) : this() // todo is this() necessary?
+		{
+			//this.fields = new Dictionary<BinaryFieldType, object>();
 
 			// I hope this is sufficient for a copy. TODO fix me for complete copy
-			this.fields = new Dictionary<BinaryFieldType, object>();
-
-			foreach (var pair in ob.fields) {
+			foreach (var pair in fields) {
 				this.fields.Add(pair.Key, pair.Value);
 			}
 
@@ -198,7 +200,27 @@ namespace RippleClientGtk
 
 		}
 
-		public List<BinaryFieldType> getSortedField ()
+		public RippleBinaryObject getObjectSorted ()
+		{
+			List<BinaryFieldType> fie = getSortedFields();
+
+			RippleBinaryObject sorted = new RippleBinaryObject();
+
+
+			foreach (BinaryFieldType bft in fie) {
+				object o = null;
+				bool success = this.fields.TryGetValue(bft,out o);
+				if (!success || o == null) {
+					throw new FieldAccessException("Unknown error sorting BinaryFieldType");
+				}
+
+				sorted.putField(bft, o);
+			}
+
+			return sorted;
+		}
+
+		public List<BinaryFieldType> getSortedFields ()
 		{
 			List<BinaryFieldType> unsortedFields = new List<BinaryFieldType> (fields.Keys);
 

@@ -69,7 +69,6 @@ namespace RippleClientGtk
 			w5.Fill = false;
 			// Container child vbox3.Gtk.Box+BoxChild
 			this.table1 = new global::Gtk.Table (((uint)(2)), ((uint)(2)), false);
-			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild

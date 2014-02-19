@@ -45,6 +45,8 @@ namespace RippleClientGtk
 
 		System.EventHandler ontoggle;
 
+
+
 		public byte[] walletcryptomark = System.Text.Encoding.ASCII.GetBytes ("This is an encrypted wallet:"); // Never change this string 
 
 		public string walletpath;
@@ -115,8 +117,8 @@ namespace RippleClientGtk
 			key.Account = (String)pub;
 			key.secret = (String)priv;
 
-			//Logging.write ("print");
-			// String jsonKey = "{\"Account\":\"" + pub + "\",\"secret\":\"" + priv + "\"}"; // this is the saved keypair format -- you could do it this way or this way
+
+		
 			String jsonKey = key.ToString ();
 			byte[] jsonBytearray = null;
 
@@ -800,6 +802,72 @@ namespace RippleClientGtk
 			useButton.GrabFocus ();
 
 		}
+
+
+
+		protected void getReceiveFromSecret (object sender, EventArgs e)
+		{
+			String Secret = this.secretentry.Text;
+
+			if (Secret == null || Secret.Trim().Equals("")) {
+				MessageDialog msg = new MessageDialog("Please enter or generate a secret ripple seed address");
+				msg.Run();
+
+				return;
+			}
+
+			RippleSeedAddress rsa = new RippleSeedAddress(Secret);
+
+			RippleAddress ra = rsa.getPublicRippleAddress();
+
+			this.receiveAddress.Text = ra.ToString();
+
+		}		
+
+		protected void generateRandomSecret (object sender, EventArgs e)
+		{
+
+			bool hastext = false;
+
+			if (receiveAddress.Text == null || receiveAddress.Text.Equals ("")) {
+				hastext = true;
+			}
+
+			if (secretentry.Text == null || secretentry.Text.Equals ("")) {
+				hastext = true;
+			}
+
+
+
+			if ( !hastext) {
+				AreYouSure ays = new AreYouSure("Are you sure you want to overwrite your existing keypair. If you haven't written down your secret all funds in the accound would be lost.");
+				ResponseType re = (ResponseType) ays.Run();
+				ays.Destroy();
+				if (ResponseType.Ok != re) {
+					return;
+				}
+			}
+
+			RandomSeedGenerator rsg = new RandomSeedGenerator();
+			rsg.Modal = true;
+			ResponseType resp = (ResponseType)rsg.Run ();
+
+			if (resp == ResponseType.Ok) {
+
+				RippleSeedAddress seed = rsg.getGeneratedSeed();
+
+				this.secretentry.Text = seed.ToString();
+
+				RippleAddress ra = seed.getPublicRippleAddress();
+
+				receiveAddress.Text = ra.ToString();
+			}
+
+			rsg.Destroy();
+
+		}
+
+
 	}
 }
 

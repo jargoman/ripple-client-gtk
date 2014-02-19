@@ -171,6 +171,33 @@ namespace RippleClientGtk
 		}
 
 
+		public static string ByteArrayToHexString (byte[] bytes)
+		{
+			StringBuilder result = new StringBuilder (bytes.Length * 2);
+			string HexAlphabet = "0123456789ABCDEF";
+
+			foreach (byte b in bytes) {
+				result.Append(HexAlphabet[(int) (b >> 4)]);
+				result.Append(HexAlphabet[(int) (b & 0x0F)]);
+			}
+
+			return result.ToString();
+		}
+
+		// We could move this later. I put it here so not to add another class just for a single function. Same with the hex function above
+		public static string truncateTrailingZerosFromString (String str)
+		{
+			if (str == null || str == "" ) {
+				return str;
+			}
+
+			str.Trim();
+
+			if (str.Contains(".")) return str.TrimEnd('0').TrimEnd('.');
+
+			return str;
+		}
+
 	}
 }
 

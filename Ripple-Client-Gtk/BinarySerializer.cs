@@ -371,7 +371,7 @@ namespace RippleClientGtk
 			MemoryStream memstream = new MemoryStream ();
 			using (BigEndianWriter output = new BigEndianWriter(memstream)) {
 
-				List<BinaryFieldType> sortedFeilds = serializedObj.getSortedField();
+				List<BinaryFieldType> sortedFeilds = serializedObj.getSortedFields();
 				foreach (BinaryFieldType field in sortedFeilds) {
 					byte typeHalfByte=0;
 					if (field.type.typeCode<=15) {
@@ -416,11 +416,14 @@ namespace RippleClientGtk
 
 		protected void writePrimitive (BigEndianWriter output, BinaryType primitive, Object value)
 		{
+			if (Debug.BinarySerializer) {
+				Logging.write("BinarySerializer : writePrimitive : expected BinaryType is " + primitive.ToString() + ", actual value is " + value.GetType().ToString());
+			}
 
 			// ok going to comment much of this ported code and take advantage of c#'s unsigned types.  
 			if (primitive.typeCode == BinaryType.UINT16) {
 
-				Logging.write(value.GetType().ToString());
+
 
 				UInt16 intValue = (UInt16) value; 
 				/*

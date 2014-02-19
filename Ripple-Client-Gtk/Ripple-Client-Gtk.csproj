@@ -104,13 +104,11 @@
     <Compile Include="gtk-gui\RippleClientGtk.MessageDialog.cs" />
     <Compile Include="AreYouSure.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.AreYouSure.cs" />
-    <Compile Include="NumberConverter.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="AccountLines.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.AccountLines.cs" />
     <Compile Include="Rijndaelio.cs" />
     <Compile Include="Debug.cs" />
-    <Compile Include="Hash.cs" />
     <Compile Include="BinaryType.cs" />
     <Compile Include="TransactionType.cs" />
     <Compile Include="Base58.cs" />
@@ -139,6 +137,12 @@
     <Compile Include="ECDSASignature.cs" />
     <Compile Include="RipplePublicGeneratorAddress.cs" />
     <Compile Include="RippleSeedAddress.cs" />
+    <Compile Include="RippleWallet.cs" />
+    <Compile Include="RandomSeedGenerator.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.RandomSeedGenerator.cs" />
+    <Compile Include="ServerInfo.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.ServerInfo.cs" />
+    <Compile Include="IOUPaymentTransaction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

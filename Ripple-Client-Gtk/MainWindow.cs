@@ -59,10 +59,18 @@ public partial class MainWindow: Gtk.Window
 						{
 								// basically this WILL fail. It saves from typing dynamo.IsDefined("result") && dynamo.IsDefined("result.account_data") && dynam... ect. It quickly became ridiculous. 
 							String balance = dynamo.result.account_data.Balance;
+							
+							String acc = dynamo.result.account_data.Account;
+
 							double index = dynamo.result.ledger_current_index;
 
+							double sequence = dynamo.result.account_data.Sequence;
 
-							if (this.highestLedger < index) 
+						this.sequence = (UInt32)sequence;
+
+						if (acc == this.getReceiveAddress()) {
+							
+							if (this.highestLedger < (UInt32)index) 
 							{
 									
 									try 
@@ -74,25 +82,37 @@ public partial class MainWindow: Gtk.Window
 
 										decimal d = this.xrpBalance / 1000000.0m;
 
-										this.balanceLabel.Text = d.ToString();
+										String balstr = Base58.truncateTrailingZerosFromString(d.ToString());
+										if (Debug.MainWindow) {
+											Logging.write("Set balanceLabel.Text to " + balstr);
+										}
 
-										} catch (FormatException exf) {
+										this.balanceLabel.Text = balstr;
+										this.highestLedger = (UInt32)index;
+
+									} catch (FormatException exf) {
 											Logging.write(exf.Message);	
 											return; 
 
-										} catch (OverflowException exo) {
+									} catch (OverflowException exo) {
 											Logging.write(exo.Message);
 											return;
-										}
+									}
 
 								} 
 
 								else {
 
-									Logging.write ("MainWindow : discarding old message");
+									Logging.write ("MainWindow : discarding old message\n");
 								}
 								
-								
+						}
+
+						else {
+							if (Debug.MainWindow) {
+								Logging.write("Received account info for account " + acc.ToString() + " while not current active account");
+							}
+						}
 
 								
 								
@@ -101,15 +121,15 @@ public partial class MainWindow: Gtk.Window
 
 							//Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
 							if (Debug.MainWindow) {
-								Logging.write(ex.Message);  // make sure it's ex.Message and not e.Message
+								Logging.write(ex.Message + "\n");  // make sure it's ex.Message and not e.Message
 							}
 						}
 
-
+					
 					} 
 				);
 
-
+				
 				
 			}
 
@@ -123,7 +143,7 @@ public partial class MainWindow: Gtk.Window
 
 	}
 
-	private double highestLedger = 0;
+	private UInt32 highestLedger = 0;
 
 	public static MainWindow currentInstance = null;
 
@@ -183,7 +203,7 @@ public partial class MainWindow: Gtk.Window
 
 	private String secret = null;
 
-
+	public UInt32 sequence = 0;
 
 
 

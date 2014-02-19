@@ -13,20 +13,27 @@ namespace RippleClientGtk
 
 		public static bool Base58 = false;
 
-		public static bool BinarySerializer = true;
+		public static bool BinarySerializer = false;
 
-		public static bool BinaryType = true;
+		public static bool BinaryType = false;
 
 		public static bool Console = false;
+
+		public static bool ServerInfo = true;
+
+		public static bool testVectors = false;
 
 		public static bool MainWindow = false;
 
 		public static bool PasswordCreateDialog = false;
 		public static bool PasswordDialog = false;
 		public static bool Program = false;
+
+		public static bool RandomSeedGenerator = true;
+
 		public static bool ReceiveWidget = false;
 
-		public static bool RippleBinaryObject = true;
+		public static bool RippleBinaryObject = false;
 
 		public static bool RippleDeterministicKeyGenerator = false;
 
@@ -36,7 +43,7 @@ namespace RippleClientGtk
 
 		public static bool SendIOU = false;
 
-		public static bool SendRipple = false;
+		public static bool SendRipple = true;
 
 		public static bool NetworkInterface = false;
 

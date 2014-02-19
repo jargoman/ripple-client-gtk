@@ -21,13 +21,17 @@ namespace RippleClientGtk
 
 		public UInt32 flags;
 
-		public RipplePaymentTransaction (RippleAddress payer, RippleAddress payee, DenominatedIssuedCurrency amount, DenominatedIssuedCurrency fee,UInt32 sequencenumber)
+		public DenominatedIssuedCurrency sendmax = null;
+
+		public RipplePaymentTransaction (RippleAddress payer, RippleAddress payee, DenominatedIssuedCurrency amount, DenominatedIssuedCurrency fee, UInt32 sequencenumber, DenominatedIssuedCurrency sendmax)
 		{
 			this.payer = payer;
 			this.payee = payee;
 			this.amount = amount;
 			this.sequenceNumber = sequencenumber;
 			this.fee = fee;
+
+			this.sendmax = sendmax;
 		}
 
 		public RipplePaymentTransaction (RippleBinaryObject serObj)
@@ -42,6 +46,8 @@ namespace RippleClientGtk
 			sequenceNumber = (UInt32)serObj.getField(BinaryFieldType.Sequence);
 			fee = (DenominatedIssuedCurrency) serObj.getField(BinaryFieldType.Fee);
 			flags = (UInt32) serObj.getField(BinaryFieldType.Flags);
+			//this.sendmax = 
+			int[] s = new int[0];
 		}
 
 		public RippleBinaryObject getBinaryObject ()

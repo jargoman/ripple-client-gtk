@@ -21,6 +21,8 @@ namespace RippleClientGtk
 		{
 			this.payloadBytes = payloadBytes;
 			this.identifierType = identifierType;
+
+			this.humanReadableIdentifier = this.ToString();
 		}
 
 
@@ -95,7 +97,7 @@ namespace RippleClientGtk
 
 		}
 
-		protected byte[] doubleSha256 (byte[] bytesToDoubleHash, int offset, int length)
+		public static byte[] doubleSha256 (byte[] bytesToDoubleHash, int offset, int length)
 		{
 
 			Sha256Digest digest = new Sha256Digest();
@@ -163,6 +165,9 @@ namespace RippleClientGtk
 
 			//return true;
 		}
+
+
+
 	}
 }
 
