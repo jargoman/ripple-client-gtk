@@ -74,6 +74,9 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ice_splash.png">
+      <DeployService-UseProjectRelativePath>true</DeployService-UseProjectRelativePath>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -143,6 +146,20 @@
     <Compile Include="ServerInfo.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.ServerInfo.cs" />
     <Compile Include="IOUPaymentTransaction.cs" />
+    <Compile Include="TrustSetter.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.TrustSetter.cs" />
+    <Compile Include="CurrencyWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.CurrencyWidget.cs" />
+    <Compile Include="BalanceWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.BalanceWidget.cs" />
+    <Compile Include="BalanceTab.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.BalanceTab.cs" />
+    <Compile Include="SplashWindow.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.SplashWindow.cs" />
+    <Compile Include="OptionsWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.OptionsWidget.cs" />
+    <Compile Include="BalanceTabOptionsWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.BalanceTabOptionsWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

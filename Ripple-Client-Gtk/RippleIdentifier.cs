@@ -1,3 +1,5 @@
+// gpl3
+
 using System;
 //using System.Data.Linq;
 using System.Security.Cryptography;
@@ -166,7 +168,23 @@ namespace RippleClientGtk
 			//return true;
 		}
 
+		public static bool operator == (RippleIdentifier left, RippleIdentifier right)
+		{
+			if (System.Object.ReferenceEquals(left, right)) {
+				return true;
+			}
 
+			if ((object)left == null || (object)right == null) {
+				return false;
+			}
+
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(RippleIdentifier left, RippleIdentifier right)
+		{
+			return !(left==right);
+		}
 
 	}
 }

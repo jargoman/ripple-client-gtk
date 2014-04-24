@@ -1,3 +1,7 @@
+/*
+ *	License : Le Ice Sense 
+ */
+
 using System;
 using System.Text;
 using System.IO;
@@ -13,7 +17,7 @@ namespace RippleClientGtk
 
 		}
 
-		private static readonly byte [] SALT = new byte[] { 0x24, 0xa7, 0xfc, 0x12, 0x90, 0xb3, 0x5e, 0x6d, 0xe8, 0xc1, 0xa8, 0x3d, 0x03, 0x72, 0x99, 0xf4};
+		private static readonly byte [] SALT = new byte[] { 0x24, 0xa7, 0xfc, 0x12, 0x90, 0xb3, 0x5e, 0x6d, 0xe8, 0xc1, 0xa8, 0x3d, 0x03, 0x72, 0x99, 0xf4};  // Note : although this is a randomly derived array changing it's contents may break compatibility with decrypting existing wallets.
 
 		public byte[] encrypt (String message, String password) 
 		{

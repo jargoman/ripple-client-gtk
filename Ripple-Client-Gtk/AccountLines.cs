@@ -1,3 +1,8 @@
+/*
+ *	License : Le Ice Sense 
+ */
+
+
 using System;
 using System.Collections.Generic;
 using Codeplex.Data;
@@ -20,50 +25,68 @@ namespace RippleClientGtk
 			NetworkInterface.onMessage += delegate(object sender, WebSocket4Net.MessageReceivedEventArgs e) {
 
 
+				// basically this WILL fail. It saves from typing dynamo.IsDefined("result") && dynamo.IsDefined("result.account_data") && dynam... ect. It quickly became ridiculous. 
 				try 
 				{
 
 					if (Debug.AccountLines) {
 						Logging.write ("AccountLines : on message event.\n" + e.Message + "\n");
 					}
-					 
+
 
 					dynamic dynamo = DynamicJson.Parse(e.Message);
+					var arr = dynamo.result.lines; // moved this up here
 
-
-					Gtk.Application.Invoke ( delegate 
-					                        {
-						// try must be inside of Gtk Invoke to successfully catch the exception 
-						// Therefore there MUST be two try catch, one for each thread.
-						// The try catch below is necessary for program functionality. 
-
-						try 
-						{
-							// basically this WILL fail. It saves from typing dynamo.IsDefined("result") && dynamo.IsDefined("result.account_data") && dynam... ect. It quickly became ridiculous. 
-
-
-							var arr = dynamo.result.lines;  // often throws runtime binder exception. 
-
-							List<TrustLine> lines = new List<TrustLine>(); // list of trust lines. 
+						
 
 
 
-							foreach (dynamic l in arr) {
-								TrustLine trust = new TrustLine(l);
-								// if new trust is a type safe object
+							  // often throws runtime binder exception. 
+
+					String account = "";
+
+					List<TrustLine> lines = new List<TrustLine>(); // list of trust lines. 
 
 
-								if (trust.currency.Equals(license) && trust.getBalanceAsDouble() > 0.987654321) {
-									hasIce = true;
+
+					foreach (dynamic l in arr) {
+						TrustLine trust = new TrustLine(l);
+						// if new trust is a type safe object
+
+
+						if ( trust.currency.Equals(LICENSE) ) {
+
+							if (trust.account.Equals(AccountLines.LICENSE_ISSUER)) {
+
+								if (trust.getBalanceAsDecimal() > AccountLines.LICENSE_FEE) {
+									hasIce = true; // ta da !!
 								}
 
-								lines.Add ( trust );
+								else {
+									Gtk.Application.Invoke ( delegate {
+										RippleClientGtk.MessageDialog.showMessage("Use this application requires the account " + account + "to be funded with " + AccountLines.LICENSE_FEE + " " + AccountLines.LICENSE + ".");
+									});
+									return;
+								}
 							}
 
-							AccountLines.lines = lines; // different variables with different scope, same name.
+							else {
+								Gtk.Application.Invoke( delegate {
 
-							this.setTable(lines);
-							this.addUpCurrencies();
+						
+									MessageDialog.showMessage("Warning : only " + AccountLines.LICENSE + " issued by account " + AccountLines.LICENSE_ISSUER + " are valid licenses");
+								});
+							}
+
+						}
+
+						lines.Add ( trust );
+					}
+
+					AccountLines.lines = lines; // different variables with different scope, same name.
+
+					this.setTable(lines);
+					this.addUpCurrencies();
 
 							/*
 							if (this.highestLedger < index) 
@@ -72,30 +95,29 @@ namespace RippleClientGtk
 							} 
 							*/
 
-						} catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
-							if (Debug.AccountLines) {
-								Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
-								Logging.write(ex.Message);  // make sure it's ex.Message and not e.Message
-							}
+				} 
 
-						}
-
-
-					} 
-					);
-
-
+				catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
+					if (Debug.AccountLines) {
+						Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
+						Logging.write(ex.Message);  // make sure it's ex.Message and not e.Message
+					}
 
 				}
 
+
 				catch (Exception ex) {
 
-					Logging.write ("AccountLines : Error parsing json.\n" + ex.Message + "\n");
 
 				}
 
 			};  // end NetworkInterface.onMessage += delegate
 
+		}
+
+		public void autoTrustLicense ()
+		{
+			//AreYouSure ays = new AreYouSure();
 		}
 
 		// variables !!
@@ -112,11 +134,7 @@ namespace RippleClientGtk
 
 			//Logging.write (lines[0].account);
 
-			if (tabl!=null) {
-				//this.scrolledwindow1.Remove (tabl);
-				//this.scrolledwindow1
-				tabl.Destroy ();
-			}
+
 			uint len = 0;
 
 			try {
@@ -129,122 +147,141 @@ namespace RippleClientGtk
 
 			if (len == 0) {
 				if (Debug.AccountLines) {
-					Logging.write ("No Account lines to display\n");
+					Logging.write ("AccountLines : No Account lines to display\n");
 				}
 				return;
 			}
 
 			if (Debug.AccountLines) {
-				Logging.write ("Creating Table");
+				Logging.write ("AccountLines : Creating Table");
 			}
-
-			tabl = new Table (
-				len + 1,  // add one for the title row
-				TrustLine.numColumns,
-				false
-				);
-
-
 
 			String[] titles = TrustLine.getTableTitleRow ();
 
-			//Logging.write ("Beginning for loop");
-			for (uint x = 0; x < TrustLine.numColumns; x++) {
+	
+			Gtk.Application.Invoke( delegate {
 
+		
 
-				String text = "<big><b><u> " + titles [x] + " </u></b></big>";
-				Label title = new Label (text);
-				title.UseMarkup = true;
+				if (tabl!=null) {
+					//this.scrolledwindow1.Remove (tabl);
+					//this.scrolledwindow1
+					tabl.Destroy ();
+				}
 
-				tabl.Attach (
-					title,
-					x,
-					x + 1,
-					0,
-					1,
-					AttachOptions.Expand,
-					AttachOptions.Shrink,
-					5,
-					4
-
+				tabl = new Table (
+					len + 1,  // add one for the title row
+					TrustLine.numColumns,
+					false
 				);
 
-				title.Show ();
-
-
-
-				for (uint y = 0; y < len; y++) {
-				
-					TrustLine line = lines [y];
-
-					String tex = line.getTableXIndex (x).ToString();
-
-					Label lab = new Label (tex);
-
-
-					lab.Selectable = true;
-
-					lab.Visible = true;
-
-					lab.CanFocus = false;
-
-					lab.Sensitive = true;
 
 
 
 
-					lab.Justify = Justification.Left;
+				//Logging.write ("Beginning for loop");
+				for (uint x = 0; x < TrustLine.numColumns; x++) {
+
+
+					String text = "<big><b><u> " + titles [x] + " </u></b></big>";
+					Label title = new Label (text);
+					title.UseMarkup = true;
 
 					tabl.Attach (
-						lab,
+						title,
 						x,
 						x + 1,
-						y + 1,
-						y + 2,
-						AttachOptions.Shrink,
+						0,
+						1,
+						AttachOptions.Expand,
 						AttachOptions.Shrink,
 						5,
-						2
+						4
+
 					);
 
-					lab.Yalign = 0.5f;
-					lab.Xalign = 0.0f;
-					//lab.Ypad = 0;
+					title.Show ();
+
+
+
+					for (uint y = 0; y < len; y++) {
+				
+						TrustLine line = lines [y];
+
+						String tex = line.getTableXIndex (x).ToString();
+
+						Label lab = new Label (tex);
+
+
+						lab.Selectable = true;
+
+						lab.Visible = true;
+
+						lab.CanFocus = false;
+
+						lab.Sensitive = true;
+
+
+
+
+						lab.Justify = Justification.Left;
+
+						tabl.Attach (
+							lab,
+							x,
+							x + 1,
+							y + 1,
+							y + 2,
+							AttachOptions.Shrink,
+							AttachOptions.Shrink,
+							5,
+							2
+						);
+
+						lab.Yalign = 0.5f;
+						lab.Xalign = 0.0f;
+						//lab.Ypad = 0;
 					//lab.Xpad = 0;
 
-					lab.Show ();
+						lab.Show ();
 
-					if (Debug.AccountLines) {
-						Logging.write ("Account Line Table : x = " + x.ToString() + " y = " + y.ToString() + " label " + tex );
+						if (Debug.AccountLines) {
+							Logging.write ("Account Line Table : x = " + x.ToString() + " y = " + y.ToString() + " label " + tex );
+						}
+
 					}
+
 
 				}
 
+				//this.scrolledwindow1.Add (tabl);
+				this.scrolledwindow1.AddWithViewport (tabl);
+				tabl.Show ();
 
-			}
-
-			//this.scrolledwindow1.Add (tabl);
-			this.scrolledwindow1.AddWithViewport (tabl);
-			tabl.Show ();
-
-			MainWindow.currentInstance.ShowAll ();
+				MainWindow.currentInstance.ShowAll ();
+			});
 		}
 
-		private void addUpCurrencies () {
+		private void addUpCurrencies ()
+		{
 
-			if (lines==null) {
-				// TODO  debug
+			if (lines == null) {
+				if (Debug.AccountLines) {
+					Logging.write ("AccountLines : addUpCurrencies : returning early because lines == null");
+				}
 				return;
 			}
-
-
-
-			cash = new Dictionary<string, double> ();
-
 
 			if (Debug.AccountLines) {
 				Logging.write ("AccountLines : Adding up IOU's");
 			}
+
+			if (cash != null) {
+				cash.Clear ();  // avoid calling new by clearing the old "cash cache"
+			} else {
+				cash = new Dictionary<string, decimal> ();
+			}
+
 			foreach (TrustLine line in AccountLines.lines) {
 				String cur = line.currency;
 
@@ -255,11 +292,11 @@ namespace RippleClientGtk
 
 				if (cash.ContainsKey (cur)) {
 
-					double total;
+					decimal total;
 
 					cash.TryGetValue (cur, out total);
 
-					total += line.getBalanceAsDouble ();
+					total += line.getBalanceAsDecimal ();
 
 					cash.Remove (cur);
 
@@ -271,21 +308,21 @@ namespace RippleClientGtk
 				} else {
 
 					if (Debug.AccountLines) {
-						Logging.write (cur + " = " + line.getBalanceAsDouble());
+						Logging.write (cur + " = " + line.getBalanceAsDecimal());
 					}
 
-					cash.Add (cur, line.getBalanceAsDouble());
+					cash.Add (cur, line.getBalanceAsDecimal());
 				}
 
 			}
 
-			Dictionary<String,Double>.ValueCollection vc = cash.Values;
+			Dictionary<String,Decimal>.ValueCollection vc = cash.Values;
 
 			var keys = cash.Keys;
 
 			String[] currencies = new string[keys.Count];
 
-		int x = 0;
+			int x = 0;
 			foreach (String k in keys) {
 				currencies [x++] = k;
 			}
@@ -297,20 +334,98 @@ namespace RippleClientGtk
 				// TODO debug
 			}
 
-			if (SendIOU.currentInstance != null) {
+			if (SendAndConvert.currentInstance != null) {
 				SendAndConvert.currentInstance.setCurrencies (currencies);
 
 			} else {
 				// TODO debug
 			}
+
+			if (BalanceWidget.currentInstance != null) {
+
+
+				Gtk.Application.Invoke ( delegate  {
+					List<CurrencyWidget> widglist = new List<CurrencyWidget>(x);
+
+					foreach (String str in currencies) {
+						CurrencyWidget widge = new CurrencyWidget();
+
+						widge.set(str, getCurrencyTotal(str).ToString());
+						widglist.Add(widge);
+					}
+
+
+					BalanceWidget.currentInstance.setTable(widglist);
+				});
+			}
+
+			if (BalanceTab.currentInstance != null) {
+				BalanceTab.currentInstance.set(BalanceTabOptionsWidget.actual_values);
+			}
+		}
+
+		public static decimal getCurrencyTotal (String currency)
+		{
+			if (currency == null) {
+				if (Debug.AccountLines) {
+					Logging.write("AccountLines.getCurrencyTotal : currency = null");
+				}
+				return 0m;
+			}
+
+			if (Debug.AccountLines) {
+				Logging.write("AccountLines.getCurrencyTotal : begin");
+			}
+
+			Decimal result = 0m;
+
+			if (cash == null) {
+				// TODO can cash be populated durring boot
+				return result; 
+			}
+
+			bool success = cash.TryGetValue (currency, out result);
+
+
+
+			if (success) {
+				if (result == null) {
+					return 0m;
+				}
+
+				return result;
+			} else {
+				return 0m;
+			}
+		}
+
+		public static List<String> getIssuersForCurrency (String currency)
+		{
+			List<String> strings = new List<string>();
+
+			if (lines != null) {
+				foreach (TrustLine line in lines) {
+					if (line.currency.Equals(currency)) {
+						strings.Add(line.account);
+					}
+	
+				}
+			}
+
+			return strings;
 		}
 
 
 		public static List<TrustLine> lines = null;
-		public static Dictionary <String, Double> cash = null;
+		public static Dictionary <String, Decimal> cash = null;
 
 		public static bool hasIce = false;
-		private String license = "ICE";
+
+		public static String LICENSE = "ICE";
+
+		public static String LICENSE_ISSUER = RippleAddress.RIPPLE_ADDRESS_ICE_ISSUER.ToString();
+
+		public static decimal LICENSE_FEE = 0.987654321m;
 	}
 }
 

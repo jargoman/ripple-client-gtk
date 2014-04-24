@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace RippleClientGtk
 {
@@ -23,6 +24,25 @@ namespace RippleClientGtk
 
 
 			return result;
+		}
+
+		public static string getJsonConf (String path) {
+			String str = null;
+			try {
+				if (File.Exists(path)) {
+
+					str = File.ReadAllText(path);
+					return str;
+				}
+			}
+
+			catch (Exception e) {
+				Logging.write(e.Message.ToString());
+				return null;
+			}
+
+			return str;
+
 		}
 
 		public static String DATA_FOLDER_PATH = null;

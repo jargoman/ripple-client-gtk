@@ -1,6 +1,10 @@
 /*
  * This class was abandoned because it was becoming too time consuming. If reimplemented it would replace the Decimal amount in DenominatedCurrency
  * 
+ * License : this class is fully permissive. Anyone is free to use this for any reason
+
+
+
 using System;
 //using System.Numerics;
 using Org.BouncyCastle.Math;

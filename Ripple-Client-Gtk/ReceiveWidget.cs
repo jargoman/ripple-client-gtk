@@ -1,3 +1,7 @@
+/*
+ *	License : Le Ice Sense 
+ */
+
 using System;
 using System.Collections.Generic;
 using Codeplex.Data;
@@ -32,6 +36,9 @@ namespace RippleClientGtk
 			};
 		}
 
+		static String UNSYNCED = " -- unsynced -- ";
+		String address = UNSYNCED;
+
 		/* no receive address on start */
 		private bool isSet = false;
 
@@ -41,6 +48,11 @@ namespace RippleClientGtk
 
 			Gtk.Application.Invoke ( delegate 
 			                        {
+				if (!isSet) {
+					warn();
+					return;
+				}
+
 				String address = this.receiveLabel.Text; 
 				requestInfo (address);
 			}
@@ -72,7 +84,7 @@ namespace RippleClientGtk
 
 			}
 
-			//throw new NotImplementedException ();
+
 		}
 
 		public void warn () {
@@ -81,7 +93,7 @@ namespace RippleClientGtk
 
 		public void setReceiveAddress ( String address ) {
 
-			AccountLines.cash = new Dictionary<string, Double> ();
+			AccountLines.cash = new Dictionary<string, Decimal> ();
 
 			Gtk.Application.Invoke ( delegate 
 				{
@@ -89,7 +101,7 @@ namespace RippleClientGtk
 				}
 			);
 
-
+			this.address = address;
 
 			this.isSet = true;
 
@@ -125,7 +137,7 @@ namespace RippleClientGtk
 				return null;
 			}
 
-			return this.receiveLabel.Text;
+			return this.address;
 		}
 		
 	}

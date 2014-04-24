@@ -14,6 +14,9 @@ namespace RippleClientGtk
 		public static readonly int MIN_SCALE = -96;
 		public static readonly int MAX_SCALE = 80;
 
+		public static readonly ulong MAX_MANTISSA = 9999999999999999UL;
+		public static readonly ulong MIN_MANTISSA = 1000000000000000UL;
+
 		public DenominatedIssuedCurrency ()
 		{
 		}
@@ -22,6 +25,17 @@ namespace RippleClientGtk
 		{
 			this.amount = amount;
 			this.issuer = issuer;
+
+			/*
+			if (currencyStr == null || currencyStr.Trim().Equals("")) {
+				throw new FormatException("IOU amount must have a currency value");
+			}
+
+			if (currencyStr.ToLower().Trim().Equals("xrp")) {
+				throw new FormatException("XRP is not a valid Currency value");
+			}
+			*/
+
 			this.currency = currencyStr;
 		}
 
@@ -44,7 +58,7 @@ namespace RippleClientGtk
 		public Boolean isNative ()
 		{
 			// TODO is this sufficient?
-			return /*issuer==null && */ this.currency == null; 
+			return /*issuer==null && */ this.currency == null || this.currency == ""; 
 		}
 
 		public Boolean isNegative ()
@@ -62,7 +76,7 @@ namespace RippleClientGtk
 				return amount.ToString() + " drops";
 			}
 
-			return amount.ToString() + " " + currency + "/" + issuer.ToString();
+			return amount.ToString() + " " + currency + " " + issuer.ToString();
 		}
 
 

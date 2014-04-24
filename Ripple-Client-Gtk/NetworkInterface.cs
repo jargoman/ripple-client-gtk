@@ -1,3 +1,7 @@
+/*
+ *	License : Le Ice Sense 
+ */
+
 using System;
 using System.Threading;
 using SuperSocket.ClientEngine;
@@ -23,6 +27,9 @@ namespace RippleClientGtk
 		}
 
 		int SLEEP_TIME = 2000;
+
+
+
 		//Thread.Sleep(
 		WebSocket websocket = null;
 
@@ -188,7 +195,7 @@ namespace RippleClientGtk
 			String local = this.local;
 
 			// prints in debug mode or not
-			Logging.write ("Initiating connecting to server " + this.url + "\n");
+			Logging.write ("Initiating connection to server " + this.url + "\n");
 
 			try {
 
@@ -211,7 +218,8 @@ namespace RippleClientGtk
 				Logging.write ("Exception thrown, Invalid URL : "  + url + "\n");
 
 
-				Logging.write ("Syntax is [protocol]://[domain]:[port]\nExample : ws://s1.ripple.com:80 or (ssl) wss://s1.ripple.com:443\n");
+				Logging.write ("Syntax is [protocol]://[domain]:[port]\nExample : ws://s-west.ripple.com:80 or (ssl) wss://s-west.ripple.com:443\n");
+				//Logging.write ("Syntax is [protocol]://[domain]:[port]\nExample : ws://s1.ripple.com:80 or (ssl) wss://s1.ripple.com:443\n");
 
 				if (Debug.NetworkInterface) {
 					Logging.write(e.Message);

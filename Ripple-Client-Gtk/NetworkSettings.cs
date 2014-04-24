@@ -1,3 +1,7 @@
+/*
+ *	License : Le Ice Sense 
+ */
+
 using System;
 using System.IO;
 using Codeplex.Data;
@@ -15,9 +19,7 @@ namespace RippleClientGtk
 				Logging.write ("new NetworkSettings");
 			}
 
-			this.settingsPath = FileHelper.getSettingsPath (this.settingsFileName);
 
-			this.loadSettings ();
 
 
 
@@ -54,7 +56,18 @@ namespace RippleClientGtk
 			};
 
 
+			currentInstance = this;
+		}
 
+		static NetworkSettings ()
+		{
+			if (Debug.NetworkSettings) {
+				Logging.write("NetworkSettings static method");
+			}
+
+			settingsPath = FileHelper.getSettingsPath (settingsFileName);
+
+			//this.loadSettings ();
 		}
 
 		public void setConnected ()
@@ -97,9 +110,44 @@ namespace RippleClientGtk
 
 		/*///// !!!VARIABLES!!! ///////*/ 
 
-		String settingsFileName = "networkSettings.jsn";
-		String settingsPath = "";
-		
+		//static string DEFAULT_SERVER = "wss://s-west.ripple.com";
+
+		public static NetworkSettings currentInstance = null;
+		static String settingsFileName = "networkSettings.jsn";
+		static String settingsPath = "";
+
+
+		static String json = null;
+		public static void readSettings ()
+		{
+			if (Debug.NetworkSettings) {
+				Logging.write("NetworkSettings : method readSettings : begin\n");
+			}
+
+
+
+			try {
+
+				if (File.Exists(settingsPath)) {
+
+					Logging.write ("Found network settings file at " + settingsPath + "\n");
+
+					json = File.ReadAllText(settingsPath);
+					if (json==null) {
+						Logging.write ("Unknown error, reading network settings file\n" );
+					}
+				}
+
+				else {
+					Logging.write("No network settings found\n");
+						
+					return;
+				}
+			}
+			catch (Exception e) {
+				Logging.write ("NetworkSettings : method loadSettings : Exception thrown reading " + settingsPath + "\n" + e.Message);
+			}
+		}
 
 		public void loadSettings () {
 			if (Debug.NetworkSettings) {
@@ -114,23 +162,7 @@ namespace RippleClientGtk
 					Logging.write("NetworkSettings : method loadSettings : delegate invoked\n");
 				}
 
-				try 
-				{
-					String json = null;
-					if (File.Exists(this.settingsPath)) {
-
-						Logging.write ("Found network settings file at " + this.settingsPath + "\n");
-
-						json = File.ReadAllText(this.settingsPath);
-						if (json==null) {
-							Logging.write ("Unknown error, reading network settings file\n" );
-						}
-					}
-
-					else {
-						Logging.write("No network settings found\n");
-						return;
-					}
+				
 
 
 					try {
@@ -178,11 +210,7 @@ namespace RippleClientGtk
 					catch (Exception e) {
 						Logging.write ("NetworkSettings : method loadSettings : Error parsing settings file : Excpetion thown\n" + e.Message);
 					}
-				}
-
-				catch (Exception e) {
-					Logging.write ("NetworkSettings : method loadSettings : Exception thrown reading " + this.settingsPath + "\n" + e.Message);
-				}
+				
 
 				// has to be inside the delegate code that runs AFTER everything is set up. 
 
@@ -229,7 +257,7 @@ namespace RippleClientGtk
 					Logging.write ("NetworkSettings : method saveSettings : json = " + json + "\n");
 				}
 
-				File.WriteAllText(this.settingsPath, json);
+				File.WriteAllText(settingsPath, json);
 
 
 			}
@@ -241,6 +269,10 @@ namespace RippleClientGtk
 			if (Debug.NetworkSettings) {
 				Logging.write ("NetworkSettings : method connect : begin\n");
 			}
+
+			Gtk.Application.Invoke( delegate {
+
+		
 
 			String server = serverentry.Text;
 			String local = localentry.Text;
@@ -261,6 +293,8 @@ namespace RippleClientGtk
 			if (net != null) {
 				net.connect ();
 			}
+
+			});
 		}
 
 		protected void OnConnectbuttonClicked (object sender, EventArgs e)

@@ -1,19 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/RandomSeedGenerator.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/OptionsWidget.cs">
     <Files>
-      <File FileName="Ripple-Client-Gtk/ServerInfo.cs" Line="66" Column="1" />
-      <File FileName="Ripple-Client-Gtk/MainWindow.cs" Line="90" Column="28" />
-      <File FileName="Ripple-Client-Gtk/SendRipple.cs" Line="144" Column="1" />
-      <File FileName="Ripple-Client-Gtk/RandomSeedGenerator.cs" Line="42" Column="8" />
-      <File FileName="Ripple-Client-Gtk/Debug.cs" Line="30" Column="49" />
-      <File FileName="Ripple-Client-Gtk/Program.cs" Line="25" Column="16" />
+      <File FileName="Ripple-Client-Gtk/Program.cs" Line="88" Column="21" />
+      <File FileName="Ripple-Client-Gtk/SplashWindow.cs" Line="41" Column="52" />
+      <File FileName="Ripple-Client-Gtk/OptionsWidget.cs" Line="24" Column="17" />
+      <File FileName="Ripple-Client-Gtk/MainWindow.cs" Line="121" Column="10" />
+      <File FileName="Ripple-Client-Gtk/BalanceTabOptionsWidget.cs" Line="1" Column="1" />
+      <File FileName="Ripple-Client-Gtk/Wallet.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Ripple-Client-Gtk" expanded="True">
-            <Node name="RandomSeedGenerator.cs" selected="True" />
+            <Node name="bigDecimal.cs" selected="True" />
           </Node>
         </State>
       </Pad>

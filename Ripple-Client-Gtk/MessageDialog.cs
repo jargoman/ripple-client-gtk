@@ -12,12 +12,16 @@ namespace RippleClientGtk
 		}
 
 		public static void showMessage (String message) {
+
+			Gtk.Application.Invoke( delegate {
 			MessageDialog mg = new MessageDialog (message);
 			mg.Modal = true;
 
 			mg.Run ();
 
 			mg.Destroy ();
+
+		});
 
 
 

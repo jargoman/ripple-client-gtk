@@ -12,6 +12,8 @@ namespace RippleClientGtk
 		private global::Gtk.HSeparator hseparator11;
 		private global::Gtk.HBox hbox11;
 		private global::Gtk.Entry consoleentry;
+		private global::Gtk.Button button979;
+		private global::Gtk.Button button980;
 		private global::Gtk.Button sendbutton;
 		
 		protected virtual void Build ()
@@ -82,27 +84,75 @@ namespace RippleClientGtk
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.consoleentry]));
 			w6.Position = 0;
 			// Container child hbox11.Gtk.Box+BoxChild
+			this.button979 = new global::Gtk.Button ();
+			this.button979.CanFocus = true;
+			this.button979.Name = "button979";
+			// Container child button979.Gtk.Container+ContainerChild
+			global::Gtk.Alignment w7 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
+			// Container child GtkAlignment.Gtk.Container+ContainerChild
+			global::Gtk.HBox w8 = new global::Gtk.HBox ();
+			w8.Spacing = 2;
+			// Container child GtkHBox.Gtk.Container+ContainerChild
+			global::Gtk.Image w9 = new global::Gtk.Image ();
+			w9.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "stock_up", global::Gtk.IconSize.Menu);
+			w8.Add (w9);
+			// Container child GtkHBox.Gtk.Container+ContainerChild
+			global::Gtk.Label w11 = new global::Gtk.Label ();
+			w8.Add (w11);
+			w7.Add (w8);
+			this.button979.Add (w7);
+			this.hbox11.Add (this.button979);
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.button979]));
+			w15.Position = 1;
+			w15.Expand = false;
+			w15.Fill = false;
+			// Container child hbox11.Gtk.Box+BoxChild
+			this.button980 = new global::Gtk.Button ();
+			this.button980.CanFocus = true;
+			this.button980.Name = "button980";
+			// Container child button980.Gtk.Container+ContainerChild
+			global::Gtk.Alignment w16 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
+			// Container child GtkAlignment.Gtk.Container+ContainerChild
+			global::Gtk.HBox w17 = new global::Gtk.HBox ();
+			w17.Spacing = 2;
+			// Container child GtkHBox.Gtk.Container+ContainerChild
+			global::Gtk.Image w18 = new global::Gtk.Image ();
+			w18.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "stock_down", global::Gtk.IconSize.Menu);
+			w17.Add (w18);
+			// Container child GtkHBox.Gtk.Container+ContainerChild
+			global::Gtk.Label w20 = new global::Gtk.Label ();
+			w17.Add (w20);
+			w16.Add (w17);
+			this.button980.Add (w16);
+			this.hbox11.Add (this.button980);
+			global::Gtk.Box.BoxChild w24 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.button980]));
+			w24.Position = 2;
+			w24.Expand = false;
+			w24.Fill = false;
+			// Container child hbox11.Gtk.Box+BoxChild
 			this.sendbutton = new global::Gtk.Button ();
 			this.sendbutton.CanFocus = true;
 			this.sendbutton.Name = "sendbutton";
 			this.sendbutton.UseUnderline = true;
 			this.sendbutton.Label = global::Mono.Unix.Catalog.GetString ("Send JSON");
 			this.hbox11.Add (this.sendbutton);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.sendbutton]));
-			w7.PackType = ((global::Gtk.PackType)(1));
-			w7.Position = 1;
-			w7.Expand = false;
-			w7.Fill = false;
+			global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.sendbutton]));
+			w25.PackType = ((global::Gtk.PackType)(1));
+			w25.Position = 3;
+			w25.Expand = false;
+			w25.Fill = false;
 			this.vbox6.Add (this.hbox11);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox6 [this.hbox11]));
-			w8.Position = 4;
-			w8.Expand = false;
-			w8.Fill = false;
+			global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.vbox6 [this.hbox11]));
+			w26.Position = 4;
+			w26.Expand = false;
+			w26.Fill = false;
 			this.Add (this.vbox6);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
+			this.button979.Clicked += new global::System.EventHandler (this.historyUp);
+			this.button980.Clicked += new global::System.EventHandler (this.historyDown);
 		}
 	}
 }

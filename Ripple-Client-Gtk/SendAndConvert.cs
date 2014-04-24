@@ -1,3 +1,7 @@
+/*
+ *	License : Le Ice Sense 
+ */
+
 using System;
 using Microsoft.CSharp.RuntimeBinder;
 using Gtk;
@@ -13,7 +17,12 @@ namespace RippleClientGtk
 		{
 			this.Build ();
 
-			this.issuerentry.Activated += new EventHandler (this.OnIssuerEntryActivated);
+			//this.issuerentry.enActivated += new EventHandler (this.OnIssuerEntryActivated);
+
+			this.issuerentry.Entry.Activated += new EventHandler (this.OnIssuerEntryActivated);
+			this.issuerentry.SelectionReceived += new Gtk.SelectionReceivedHandler(this.onIssuerSelection);
+
+
 			this.destinationentry.Activated += new EventHandler (this.OnDestinationEntryActivated);
 			this.sendmaxentry.Activated += new EventHandler (this.OnSendMaxEntryActivated);
 			this.receiveamountentry.Activated += new EventHandler (this.OnReceiveAmountEntryActivated);
@@ -47,7 +56,7 @@ namespace RippleClientGtk
 			Gtk.Application.Invoke (
 				delegate {
 
-				Dictionary<String, Double> cash = AccountLines.cash;
+				Dictionary<String, Decimal> cash = AccountLines.cash;
 
 				if (cash == null) {
 					// 
@@ -64,7 +73,7 @@ namespace RippleClientGtk
 				String cur = this.comboboxentry.ActiveText;
 
 				if (cash.ContainsKey (cur)) {
-					double dud;
+					decimal dud;
 
 					if (cash.TryGetValue (cur, out dud)) {
 
@@ -91,6 +100,7 @@ namespace RippleClientGtk
 		protected void OnComboboxentryChanged (object sender, EventArgs e)
 		{
 			this.updateBalance ();
+			this.updateCurrencyIssuers();
 		}
 
 		protected void OnIssuerEntryActivated (object sender, EventArgs e)
@@ -104,6 +114,15 @@ namespace RippleClientGtk
 			this.destinationentry.GrabFocus ();
 		}
 
+		protected void onIssuerSelection (object o, SelectionReceivedArgs args)
+		{
+			if (this.destinationentry == null) {
+				// TODO debug
+				return;
+			}
+
+			this.destinationentry.GrabFocus ();
+		}
 		protected void OnDestinationEntryActivated (object sender, EventArgs e)
 		{
 
@@ -145,7 +164,7 @@ namespace RippleClientGtk
 
 		private void send () {
 
-			String issuer = this.issuerentry.Text;
+			String issuer = this.issuerentry.Entry.Text;
 
 			String account = MainWindow.currentInstance.getReceiveAddress ();
 			String destination = this.destinationentry.Text;
@@ -179,19 +198,19 @@ namespace RippleClientGtk
 
 			try {
 
-				double amountd = Convert.ToDouble(amount);
+				decimal amountd = Convert.ToDecimal(amount);
 
 				if (amountd < 0) {
 					MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
 					return;
 				}
 
-				Double max = 0;
+				decimal max = 0;
 
 				if (!("".Equals (sendmax.Trim ()))) { // if sendmax is not blank
 
 					try {
-						max = Convert.ToDouble (sendmax);  // and is a valid number
+						max = Convert.ToDecimal( sendmax ); //Convert.ToDouble (sendmax);  // and is a valid number
 					} catch (FormatException ex) {
 
 						MessageDialog.showMessage ("SendMax is fomated incorrectly for sending an IOU. It must be a valid decimal number or left blank");
@@ -235,54 +254,54 @@ namespace RippleClientGtk
 
 		}
 
-		protected void sendConvertPayment ( String account, String destination, double amount, String secret, String currency, String issuer, double sendmax, String destcurrency ) {
-			dynamic Amount = null;
-			dynamic SendMax = null;
-			try {
+		protected void sendConvertPayment ( String account, String destination, decimal amount, String secret, String currency, String issuer, decimal sendmax, String destcurrency ) {
+			DenominatedIssuedCurrency Amount = null;
+			DenominatedIssuedCurrency SendMax = null;
+			DenominatedIssuedCurrency Fee = null;
+
+
 				if ("XRP".Equals (currency)) {
 
 					if ("XRP".Equals(destcurrency)) {
 						MessageDialog.showMessage ("Request denied. To send xrp to xrp just use the send ripples tab.");
+						return;
 					}
 
-					double amnt = amount * 1000000;
+					decimal amnt = amount * 1000000m;
 
-					double floored = Math.Floor(amnt);
+					decimal floored = Math.Floor( amnt );
 
-					if (!(amnt.Equals(floored))) {
+					if ( !(amnt.Equals( floored ))) {
 						// User entered too many decimals. 
 						MessageDialog.showMessage ("Warning, you entered too many decimals. Amount " + amnt.ToString() + " XRP will truncated to " + floored.ToString());
 						amnt = floored;
 					}
 
-					Amount = ((ulong)amnt).ToString() ;
+
+					Amount = new DenominatedIssuedCurrency(amnt);
 
 				} else {
-					Amount = new {
-						currency = currency,
-						value = amount.ToString (),
-						issuer = issuer
-					};
+
+					Amount = new DenominatedIssuedCurrency (amount, new RippleAddress( issuer), currency);
 				}
 
 
 				if ("XRP".Equals(destcurrency)) {
-					double snd = sendmax * 1000000;
-					double floor = Math.Floor (snd);
+					decimal snd = sendmax * 1000000m;
+					decimal floor = Math.Floor (snd);
 
 					if (!(snd.Equals(floor))) {
 						MessageDialog.showMessage ("Warning, you entered too many decimals. SendMax " + snd.ToString() + " XRP will truncated to " + floor.ToString());
 						snd = floor;
 					}
 
-					SendMax = ((ulong)snd).ToString();
+
+					SendMax = new DenominatedIssuedCurrency (snd);
+
 				} else {
-					SendMax = new 
-					{
-						currency = destcurrency,
-						value = sendmax.ToString (),
-						issuer = issuer
-					};
+
+
+					SendMax = new DenominatedIssuedCurrency (sendmax, new RippleAddress(account), destcurrency );
 				}
 			
 
@@ -291,57 +310,42 @@ namespace RippleClientGtk
 					return;
 				}
 
-				var obj = new 
-				{
-					command = "submit",
-					tx_json = new
-					{
-						TransactionType = "Payment",
-						Account = account,
-						Destination = destination,
-						Amount = Amount,
-						SendMax = SendMax
-					},
-					secret = secret
-				};
+				RipplePaymentTransaction tx = new RipplePaymentTransaction(
+					new RippleAddress(account),
+					new RippleAddress (destination),
+					Amount,
+					Fee,
+					MainWindow.currentInstance.sequence,
+					SendMax
+				);
 
-				String json = DynamicJson.Serialize (obj);
+				RippleSeedAddress seed = new RippleSeedAddress (secret );
+				tx.sign(seed);
+				tx.submit();
 
 
-
-				if (NetworkInterface.currentInstance != null) {
-
-					AreYouSure ays = new AreYouSure ("You are about to send " + amount.ToString () + " " + currency + " to address " + destination + " spending a maximum of " + sendmax.ToString () + " " + destcurrency);
-
-					int resp = ays.Run ();
-					ays.Destroy ();
-					ays = null;
-
-					if (resp == (int)ResponseType.Ok) {
-						Logging.write ("Sending to network : \n" + json + "\n");
-						NetworkInterface.currentInstance.sendToServer (json);
-					} else {
-						//user canseled
-						return;
-					}
-
-
-
-				} else {
-					MessageDialog.showMessage ("To send an IOU you need to be connected to a server. Please go to network settings and connect");
-					return;
-				}
-
-
-			} // end try
-
-			catch (RuntimeBinderException e) {
-				Logging.write (e.ToString() + " " + e.Message);
-				return;
-			}
+			
 		} // end sendConvertPayment
 
+		private void updateCurrencyIssuers ()
+		{
+			Gtk.Application.Invoke ( delegate {
 
+		
+				String cur = this.comboboxentry.ActiveText;
+
+				List<String>  lis = AccountLines.getIssuersForCurrency(cur);
+
+				ListStore store = new ListStore(typeof(string));
+
+				foreach (String s in lis) {
+					store.AppendValues(s);
+				}
+
+				this.issuerentry.Model = store;
+			});
+
+		}
 
 	} // end class
 } // end namespace

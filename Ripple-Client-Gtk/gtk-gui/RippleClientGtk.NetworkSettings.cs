@@ -122,7 +122,7 @@ namespace RippleClientGtk
 			this.serverentry = new global::Gtk.Entry ();
 			this.serverentry.CanFocus = true;
 			this.serverentry.Name = "serverentry";
-			this.serverentry.Text = global::Mono.Unix.Catalog.GetString ("wss://s1.ripple.com:443");
+			this.serverentry.Text = global::Mono.Unix.Catalog.GetString ("wss://s-west.ripple.com:443");
 			this.serverentry.IsEditable = true;
 			this.serverentry.InvisibleChar = '●';
 			this.table2.Add (this.serverentry);

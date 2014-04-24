@@ -1,3 +1,8 @@
+
+/*
+ *	License : Le Ice Sense 
+ */
+
 using System;
 using RippleClientGtk;
 using Gtk;
@@ -11,9 +16,9 @@ public partial class MainWindow: Gtk.Window
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 
-			if (Debug.MainWindow) {
-				Logging.write ("new MainWindow : begin\n");
-			}
+		if (Debug.MainWindow) {
+			Logging.write ("new MainWindow : begin\n");
+		}
 
 		Build ();
 
@@ -22,102 +27,101 @@ public partial class MainWindow: Gtk.Window
 				Logging.write ("Warning. Another instance of MainWindow already exists.\n");
 			}
 
-
 			Logging.write ("MainWindow : build complete\n");
 		}
 
 
-		currentInstance = this;
+
 
 
 
 		// we'll put some global json parsing here but every plugin can subscripe to events
 		NetworkInterface.onMessage += delegate(object sender, WebSocket4Net.MessageReceivedEventArgs e) {
-			if (Debug.MainWindow) {
-				Logging.write ("MainWindow onMessage event\n");
+		if (Debug.MainWindow) {
+			Logging.write ("MainWindow onMessage event\n");
+		}
+
+		try 
+		{
+			if ( Debug.MainWindow ) {
+				Logging.write (e.Message + "\n");
 			}
 
-			try 
-			{
-				if ( Debug.MainWindow ) {
-					Logging.write (e.Message + "\n");
-				}
+			dynamic dynamo = DynamicJson.Parse(e.Message);
 
-				dynamic dynamo = DynamicJson.Parse(e.Message);
 
-				Gtk.Application.Invoke ( delegate 
-					{
-						// try must be inside of Gtk Invoke to successfully catch the exception 
+			// try must be inside of Gtk Invoke to successfully catch the exception 
 						// Therefore there MUST be two try catch, one for each thread.
 						// The try catch below is necessary for program functionality. 
 
-						if (Debug.MainWindow) {
-							Logging.write ("MainWindow onMessage Gtk invoke\n");
+			if (Debug.MainWindow) {
+				Logging.write ("MainWindow onMessage Gtk invoke\n");
+			}
+
+			if (dynamo.IsDefined("error")) {
+
+				String s = dynamo.error as String;
+				String account = "";
+
+				if (s != null) {
+					if (s.Equals("actNotFound"))  {
+						try {
+							account = (String)dynamo.request.account;
+						}
+			
+						catch (Exception ex) {
+							account = "";
 						}
 
+									
+						Gtk.Application.Invoke( delegate {
+							RippleClientGtk.MessageDialog.showMessage("Account Not Found : To use account " + account + " it must be funded with enough reserve xrp and also an ICE");
+						});
+
+						return;
+					}
+				}
+
+
+			}
+
+			// basically this WILL fail. It saves from typing dynamo.IsDefined("result") && dynamo.IsDefined("result.account_data") && dynam... ect. It quickly became ridiculous. 
+			String balance = dynamo.result.account_data.Balance;
+							
+			String acc = dynamo.result.account_data.Account;
+
+			double index = dynamo.result.ledger_current_index;
+
+			double sequence = dynamo.result.account_data.Sequence;
+
+			this.sequence = (UInt32)sequence;
+
+			if (acc == this.getReceiveAddress()) {
+							
+				if (this.highestLedger < (UInt32)index) 
+				{
+					Gtk.Application.Invoke ( delegate {
+
+				
 						try 
 						{
-								// basically this WILL fail. It saves from typing dynamo.IsDefined("result") && dynamo.IsDefined("result.account_data") && dynam... ect. It quickly became ridiculous. 
-							String balance = dynamo.result.account_data.Balance;
-							
-							String acc = dynamo.result.account_data.Account;
 
-							double index = dynamo.result.ledger_current_index;
+							this.xrpBalance = Convert.ToDecimal(balance);
 
-							double sequence = dynamo.result.account_data.Sequence;
+							this.sendripple2.setXrpBalance(this.xrpBalance);
 
-						this.sequence = (UInt32)sequence;
-
-						if (acc == this.getReceiveAddress()) {
-							
-							if (this.highestLedger < (UInt32)index) 
-							{
+							decimal d = this.xrpBalance / 1000000.0m;
 									
-									try 
-									{
-
-										this.xrpBalance = Convert.ToDecimal(balance);
-
-										this.sendripple2.setXrpBalance(this.xrpBalance);
-
-										decimal d = this.xrpBalance / 1000000.0m;
-
-										String balstr = Base58.truncateTrailingZerosFromString(d.ToString());
-										if (Debug.MainWindow) {
-											Logging.write("Set balanceLabel.Text to " + balstr);
-										}
-
-										this.balanceLabel.Text = balstr;
-										this.highestLedger = (UInt32)index;
-
-									} catch (FormatException exf) {
-											Logging.write(exf.Message);	
-											return; 
-
-									} catch (OverflowException exo) {
-											Logging.write(exo.Message);
-											return;
-									}
-
-								} 
-
-								else {
-
-									Logging.write ("MainWindow : discarding old message\n");
-								}
-								
-						}
-
-						else {
+							String balstr = Base58.truncateTrailingZerosFromString(d.ToString());
+											
 							if (Debug.MainWindow) {
-								Logging.write("Received account info for account " + acc.ToString() + " while not current active account");
+								Logging.write("Set balanceLabel.Text to " + balstr);
 							}
-						}
 
-								
-								
+							//this.balanceLabel.Text = balstr;
+							this.highestLedger = (UInt32)index;
 
-						} catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
+						}  catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
 
 							//Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
 							if (Debug.MainWindow) {
@@ -125,22 +129,52 @@ public partial class MainWindow: Gtk.Window
 							}
 						}
 
-					
-					} 
-				);
 
-				
-				
+						catch (FormatException exf) {
+							Logging.write(exf.Message);	
+							return; 
+
+						} catch (OverflowException exo) {
+							Logging.write(exo.Message);
+							return;
+						} catch (Exception ex) {
+								Logging.write(ex.Message);
+						}
+
+					});
+
+				} 
+
+				else {
+
+					Logging.write ("MainWindow : discarding old message\n");
+				}
+								
 			}
 
-			catch (Exception ex) {
-
-				Logging.write ("Error parsing json.\n" + ex.Message + "\n");
-
+			else {
+				if (Debug.MainWindow) {
+					Logging.write("Received account info for account " + acc.ToString() + " while not current active account");
+				}
 			}
 
-		};  // end NetworkInterface.onMessage += delegate
+								
+								
 
+		} catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
+
+			//Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
+			if (Debug.MainWindow) {
+				Logging.write(ex.Message + "\n");  // make sure it's ex.Message and not e.Message
+			}
+		}
+
+		catch (Exception ex) {
+			Logging.write ("Error parsing json.\n" + ex.Message + "\n");
+		}
+
+	};  // end NetworkInterface.onMessage += delegate
+		currentInstance = this;
 	}
 
 	private UInt32 highestLedger = 0;
@@ -149,7 +183,12 @@ public partial class MainWindow: Gtk.Window
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
-		this.networksettings1.saveSettings ();
+		if (this.networksettings1!=null) {
+			this.networksettings1.saveSettings ();
+		}
+		if (RippleClientGtk.Console.currentInstance!=null) {
+			RippleClientGtk.Console.currentInstance.saveHistory();
+		}
 
 		AreYouSure aus = new AreYouSure ("Are you sure you want to close Ripple Client Gtk?");
 		aus.Modal = true;

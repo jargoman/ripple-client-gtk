@@ -52,10 +52,11 @@ namespace RippleClientGtk
 
 		}
 
-		public double getBalanceAsDouble () {
+		public decimal getBalanceAsDecimal () {
 
 			try {
-				return Convert.ToDouble(this.balance);
+				//return Convert.ToDouble(this.balance);
+				return Convert.ToDecimal(this.balance);
 			}
 
 			catch (Exception e) {

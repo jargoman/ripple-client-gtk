@@ -1,3 +1,15 @@
+/*
+ *	License : 
+ *
+ *	Le Ice Sense 
+ *
+ *	or 
+ *
+ *	GNU LESSER GENERAL PUBLIC LICENSE
+ *                     Version 3, 29 June 2007
+ */
+
+
 using System;
 
 namespace RippleClientGtk
@@ -20,10 +32,22 @@ namespace RippleClientGtk
 			
 		}
 
-		public RippleAddress (String stringID) : base (stringID)
+		public RippleAddress (String stringID) : base (verifyAddressString(stringID))
 		{
 
 		}
+
+		public static string verifyAddressString (String str)
+		{
+			if (!str.StartsWith("r") /*|| str.Length != ADDRESSLENGTH*/) {
+				throw new FormatException ("Invalid ripple address string");
+			}
+
+
+			return str;
+		}
+
+		//private static int ADDRESSLENGTH = 34; 
 	}
 }
 

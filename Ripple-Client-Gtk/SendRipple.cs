@@ -63,23 +63,34 @@ namespace RippleClientGtk
 
 			RippleSeedAddress seed = new RippleSeedAddress(secret);
 			RippleAddress payee = new RippleAddress(destination);
+
+			RippleAddress payer = new RippleAddress(account);
+
+			if (payer!=seed.getPublicRippleAddress()) {
+				// TODO debug
+			}
+
 			DenominatedIssuedCurrency amnt = new DenominatedIssuedCurrency(xrpamount);
 			DenominatedIssuedCurrency dafee = new DenominatedIssuedCurrency(fee);
 
 			RipplePaymentTransaction tx = new RipplePaymentTransaction(seed.getPublicRippleAddress(),payee,amnt,dafee, MainWindow.currentInstance.sequence,null); // Todo implement sequemce number. int 23 is an arbatrary number for testing 
-			RippleBinaryObject rbo = tx.getBinaryObject().getObjectSorted();
-			rbo = new RippleSigner(seed.getPrivateKey(0)).sign(rbo);
 
-			byte[] signedTXBytes = new BinarySerializer().writeBinaryObject(rbo).ToArray();
+			tx.sign(seed);
+			tx.submit();
 
-			String blob = Base58.ByteArrayToHexString(signedTXBytes);
+			//RippleBinaryObject rbo = tx.getBinaryObject().getObjectSorted();
+			//rbo = new RippleSigner(seed.getPrivateKey(0)).sign(rbo);
 
-			object ob = new {
-				command = "submit",
-				tx_blob = blob
-			};
+			//byte[] signedTXBytes = new BinarySerializer().writeBinaryObject(rbo).ToArray();
 
-			String jso = DynamicJson.Serialize(ob);
+			//String blob = Base58.ByteArrayToHexString(signedTXBytes);
+
+			//object ob = new {
+			//	command = "submit",
+			//	tx_blob = blob
+			//};
+
+			//String jso = DynamicJson.Serialize(ob);
 
 
 
@@ -153,13 +164,18 @@ namespace RippleClientGtk
 
 			threadParam tp = param as threadParam;
 
-			Logging.write("Units = " + tp.units);
+
 
 			if (tp == null) {
 				throw new InvalidCastException("Unable to cast object to type threadParam");
 			}
 
+
+
 			if (Debug.SendRipple) {
+
+				Logging.write("Units = " + tp.units);
+
 				Logging.write("Send Ripple : requesting Server Info\n");
 			}
 

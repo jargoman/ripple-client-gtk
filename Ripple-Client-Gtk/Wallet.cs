@@ -1,3 +1,7 @@
+/*
+ *	License : Le Ice Sense 
+ */
+
 using System;
 using System.IO;
 using System.Text;
@@ -5,6 +9,7 @@ using Gtk;
 using RippleClientGtk;
 using Codeplex.Data;
 using Microsoft.CSharp;
+using System.Security.Cryptography;
 
 
 
@@ -32,7 +37,7 @@ namespace RippleClientGtk
 			ontoggle = new global::System.EventHandler (this.OnEncryptCheckBoxClicked);
 			this.encryptCheckBox.Clicked += ontoggle;
 
-			walletpath = FileHelper.getSettingsPath ("treasure.dat");
+
 
 			showsecretcheckbox.Active = false;
 
@@ -49,7 +54,7 @@ namespace RippleClientGtk
 
 		public byte[] walletcryptomark = System.Text.Encoding.ASCII.GetBytes ("This is an encrypted wallet:"); // Never change this string 
 
-		public string walletpath;
+		public static string walletpath = FileHelper.getSettingsPath ("treasure.dat");
 
 		public bool startup = true;
 
@@ -182,9 +187,9 @@ namespace RippleClientGtk
 
 							}
 						} else {
-
-							Logging.write ("Encrypt wallet has been cancelled\n");
-
+							if (Debug.Wallet) {
+								Logging.write ("Encrypt wallet has been cancelled\n");
+							}
 							//this.setIsWalletEncrypted(false);
 							passDial.Destroy ();
 							repeat = false;
@@ -338,13 +343,8 @@ namespace RippleClientGtk
 			forget ();
 		}
 
-		public bool loadWallet () {
-
-			return this.loadWallet (walletpath);
-
-		}
-
-		public bool loadWallet ( String path) {
+		public static String path = null;
+		public static bool loadWallet ( String path ) {
 			if (Debug.Wallet) {
 				Logging.write("Wallet : method loadWallet ( " + path + " ) : begin\n");
 			}
@@ -354,15 +354,50 @@ namespace RippleClientGtk
 				Logging.write ("Looking for wallet at " + path.ToString() + "\n");
 
 				if (File.Exists(path)) { // a wallet needs to be loaded
-
 					Logging.write ("Wallet " + path + " Exists!\n");
+
+					wallet_bytes = File.ReadAllBytes(path);
+					Wallet.path = path;
+					return true;
+				}
+
+
+			}
+
+			catch (Exception e) {
+
+			}
+
+			return false;
+			//return this.loadWallet (walletpath);
+
+		}
+
+		static byte[] wallet_bytes = null;
+
+
+		public bool decryptWallet ()
+		{
+			return this.decryptWallet(wallet_bytes);
+		}
+
+		public bool decryptWallet ( byte[] bytes ) {
+
+
+			try {
+
+
+
+				if (wallet_bytes != null) { // a wallet needs to be loaded
+
+
 
 					String plain = null;
 
-					byte[] bytes = null;
+					
 
 
-					bytes = File.ReadAllBytes(path);
+
 
 
 					byte[] mark = walletcryptomark;
@@ -373,7 +408,7 @@ namespace RippleClientGtk
 
 					if (bytes.Length < mark.Length) { // seems redundant but very important, avoids index out of bounds exception by not bothering to check
 						if (Debug.Wallet) {
-							Logging.write ("Wallet : method loadwallet : The number of bytes stored in file " + path + " is less than walletcryptomark and therefore not an encrypted wallet\n");
+							Logging.write ("Wallet : method loadwallet : The number of bytes stored in file " + (path==null ? "" : path) + " is less than walletcryptomark and therefore not an encrypted wallet\n");
 						}
 						matches = false;
 					} else {
@@ -394,7 +429,7 @@ namespace RippleClientGtk
 					if (matches) {
 						// It's an encrypted wallet !!
 						if (Debug.Wallet) {
-							Logging.write ("Wallet : method loadwallet : file " + path + " has the byte signature of a ripple gtk wallet\n");
+							Logging.write ("Wallet : method loadwallet : file " + (path==null ? "" : path) + " has the byte signature of a ripple gtk wallet\n");
 						}
 
 						PasswordDialog dial = new PasswordDialog ("Enter the password you used to encrypt your wallet\n");
@@ -402,6 +437,9 @@ namespace RippleClientGtk
 
 
 						bool repeat = true;
+
+						MainClass.killSplash();
+
 						do {
 							if (Debug.Wallet) {
 								Logging.write ("Wallet : method loadwallet : Do while begin : Showing password dialog\n");
@@ -485,7 +523,7 @@ namespace RippleClientGtk
 						// load plaintext wallet instead of decrypting
 
 						if (Debug.Wallet) {
-							Logging.write ("Wallet : method loadwallet : file " + path + " is not an encrypted wallet, treating it as plaintext\n");
+							Logging.write ("Wallet : method loadwallet : file "  + (path==null ? "" : path) + " is not an encrypted wallet, treating it as plaintext\n");
 						}
 
 						plain = System.Text.ASCIIEncoding.ASCII.GetString (bytes);
@@ -618,10 +656,13 @@ namespace RippleClientGtk
 
 			//Gtk.sig
 
+			if (path == null) {
+				// todo think carefully about this one. Total brain fart
+			}
 
 
+			bool b = loadWallet (path) && decryptWallet(); // very well could be wrong. :$
 
-			bool b = this.loadWallet ();
 			if (Debug.Wallet) {
 				Logging.write ("Wallet : loadwallet result =  " + b.ToString () + "\n");
 			}
@@ -810,9 +851,7 @@ namespace RippleClientGtk
 			String Secret = this.secretentry.Text;
 
 			if (Secret == null || Secret.Trim().Equals("")) {
-				MessageDialog msg = new MessageDialog("Please enter or generate a secret ripple seed address");
-				msg.Run();
-
+				MessageDialog.showMessage("Please enter or generate a secret ripple seed address");
 				return;
 			}
 
@@ -827,19 +866,20 @@ namespace RippleClientGtk
 		protected void generateRandomSecret (object sender, EventArgs e)
 		{
 
-			bool hastext = false;
+			bool rhastext = true;
+			bool shastext = true;
 
 			if (receiveAddress.Text == null || receiveAddress.Text.Equals ("")) {
-				hastext = true;
+				rhastext = false;
 			}
 
 			if (secretentry.Text == null || secretentry.Text.Equals ("")) {
-				hastext = true;
+				shastext = false;
 			}
 
 
 
-			if ( !hastext) {
+			if ( rhastext || shastext) {
 				AreYouSure ays = new AreYouSure("Are you sure you want to overwrite your existing keypair. If you haven't written down your secret all funds in the accound would be lost.");
 				ResponseType re = (ResponseType) ays.Run();
 				ays.Destroy();
@@ -865,7 +905,73 @@ namespace RippleClientGtk
 
 			rsg.Destroy();
 
+		}		
+
+
+		protected void onVeryfyClicked (object sender, EventArgs e)
+		{
+			String secret = this.secretentry.Text;
+			String address = this.receiveAddress.Text;
+
+			RippleSeedAddress seed = null;
+			RippleAddress addr = null;
+
+			bool shouldreturn = false; // might as well verify both befor returning
+
+			if (secret == null || secret.Trim ().Equals ("")) {
+				MessageDialog.showMessage ("Secret entry is empty");
+				shouldreturn = true;
+				secret = null;
+			} else {
+				secret = secret.Trim ();
+
+				try {
+					seed = new RippleSeedAddress (secret);
+				} catch (FormatException ex) {
+					MessageDialog.showMessage ("The secret (seed address) entered is invalid");
+					shouldreturn = true;
+				}
+				catch (CryptographicException ex) {
+					MessageDialog.showMessage(ex.Message);
+				}
+
+			}
+
+			if (address == null || address.Trim ().Equals ("")) {
+				MessageDialog.showMessage ("ReceiveAddress is blank");
+				shouldreturn = true;
+				address = null;
+			} else {
+				address = address.Trim ();
+
+				try {
+					addr = new RippleAddress (address);
+				} catch (FormatException ex) {
+					MessageDialog.showMessage ("The address entered is invalid");
+					shouldreturn = true;
+				} catch (CryptographicException ex) {
+					MessageDialog.showMessage (ex.Message);
+				}
+			}
+
+			if (shouldreturn) {  // it's intentional that both secret and receiveaddress are fully verified before returning
+				return;
+			}
+
+
+			if (seed == null || addr == null) {
+				return;
+			}
+
+			if (addr.Equals (seed.getPublicRippleAddress ())) {
+				MessageDialog.showMessage ("Secret seed address and public ripple address are a matching keypair");
+			} else {
+				MessageDialog.showMessage("Secret seed address and public ripple address do not match");
+			}
+
+
 		}
+
 
 
 	}

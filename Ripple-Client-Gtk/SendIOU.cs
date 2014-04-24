@@ -1,4 +1,9 @@
+/*
+ *	License : Le Ice Sense 
+ */
+
 using System;
+using System.Threading;
 using Gtk;
 using System.Collections.Generic;
 using Codeplex.Data;
@@ -10,76 +15,155 @@ namespace RippleClientGtk
 	{
 		public SendIOU ()
 		{
+			if (Debug.SendIOU) {
+				Logging.write("SendIOU : const");
+			}
+
 			this.Build ();
 
+			if (Debug.SendIOU) {
+				Logging.write("SendIOU : Build complete");
+			}
 
-			this.currencycomboboxentry.Changed += new EventHandler (this.OnCurrencycomboboxentryChanged);
-			this.issuerentry.Activated += new EventHandler (this.OnIssuerentryActivated);
+			// lol all these didn't work :/
+			//this.currencycomboboxentry.Changed += new EventHandler (this.OnCurrencycomboboxentryChanged);
+			//this.currencycomboboxentry.EditingDone += new EventHandler (this.OnCurrencycomboboxentryChanged);
+			//this.currencycomboboxentry.SelectionReceived += //this.OnCurrencycomboboxentryChanged;
+			this.currencycomboboxentry.Entry.Activated += new EventHandler(this.OnCurrencycomboboxentryChanged);
+			this.currencycomboboxentry.SelectionReceived += new Gtk.SelectionReceivedHandler (this.OnCurrencycomboboxentryReceived);
+
+
+			//this.currencycomboboxentry.PropertyNotifyEvent += new Gtk.PropertyNotifyEventHandler (this.OnCurrencycomboboxentryChanged);
+			//this.currencycomboboxentry.SelectionNotifyEvent += OnCurrencycomboboxentryChanged;
+
+
+
+			this.issuerentry.Entry.Activated += new EventHandler (this.OnIssuerentryActivated);
+
+			this.issuerentry.SelectionReceived += new Gtk.SelectionReceivedHandler (this.OnSelectionReceivedEvent);
+			//this.issuerentry.Changed
 			this.amountentry.Activated += new EventHandler (this.OnAmountentryActivated);
 			this.sendMaxEntry.Activated += new EventHandler (this.OnSendMaxEntryActivated);
 			this.destinationentry.Activated += new EventHandler (this.OnDestinationentryActivated);
 
 			this.sendIOUButton.Clicked += new EventHandler (this.OnSendIOUButtonClicked);
+			//this.ChooseButton.Clicked += new EventHandler(this.OnChooseButtonClicked);
+
+			//this.issuerentry.
 
 			currentInstance = this;
 
 		}
+
+
+
 		public static SendIOU currentInstance = null;
 		//private double highestLedger = 0;
 
-		protected void sendIOUPayment ( String account, String destination, double amount, String secret, String currency, String issuer, double sendmax ) {
+		 
+		public static void sendIOUPayment ( String account, String destination, decimal amount, String secret, String currency, String issuer, decimal sendmax, decimal fee ) {
+			if (Debug.SendIOU) {
+				Logging.write("SendIOU : sendIOUPayment" );
 
-			object obj = new 
-			{
-				command = "submit",
-				tx_json = new
-				{
-					TransactionType = "Payment",
-					Account = account,
-					Destination = destination,
-					Amount = new 
-					{
-						currency = currency,
-						value = amount.ToString(),
-						issuer = issuer
-					},
-					SendMax = new
-					{
-						currency = currency,
-						value = sendmax.ToString(),
+			}
 
-					}
-				},
-				secret = secret
-			};
+			RippleSeedAddress seed = null;
+			RippleAddress payee = null;
+			RippleAddress issu = null;
+			RippleAddress payer = null;
 
-			String json = DynamicJson.Serialize (obj);
+			try {
+				seed = new RippleSeedAddress(secret);
 
-			Logging.write ("Sending IOU payment: " + json + "\n");
 
-			if (NetworkInterface.currentInstance != null) {
+			} catch (Exception exc) {
+				MessageDialog.showMessage("Invalid Secret\n" + exc.Message);
+				return;
+			}
 
-				AreYouSure ays = new AreYouSure ("You are about to send " + amount.ToString () + " " + currency + " to address " + destination + " spending a maximum of " + sendmax.ToString () + " " + currency);
+			try {
+				payee = new RippleAddress(destination);
 
-				int resp = ays.Run ();
-				ays.Destroy ();
+			} catch (Exception exc) {
+				MessageDialog.showMessage("Invalid destination address\n" + exc.Message);
+				return;
+			}
 
-				if (resp == (int)ResponseType.Ok) {
-					NetworkInterface.currentInstance.sendToServer (json);
+			try {
 
-				} else {
-					// user canseled
-					return;
+				issu = new RippleAddress(issuer);
+
+			} catch (Exception exc) {
+				MessageDialog.showMessage("Invalid currency issuer\n" + exc.Message);
+				return;
+			}
+
+			try {
+
+				payer = new RippleAddress(account);
+				if (Debug.SendIOU) {
+					Logging.write(payer.ToString());
 				}
 
-			} else {
-				MessageDialog.showMessage ("To send an IOU you need to be connected to a server. Please go to network settings and connect");
+
+			} catch (Exception exc) {
+				MessageDialog.showMessage("Invalid account address\n" + exc.Message);
+				return;
 			}
+
+			if (payer!=seed.getPublicRippleAddress()) {
+				// TODO make an appropriate message and debug
+				MessageDialog.showMessage("Account and secret don't match. Bug?");
+				return;
+			}
+
+			if (Debug.SendIOU) {
+				Logging.write("SendIOU : sendIOUPayment : preparing to send payment");
+			}
+
+			DenominatedIssuedCurrency amnt = new DenominatedIssuedCurrency(amount,issu,currency);
+			DenominatedIssuedCurrency dafee = new DenominatedIssuedCurrency(fee);
+
+			DenominatedIssuedCurrency sndmx = null; //new DenominatedIssuedCurrency(sendmax,issu,currency);
+
+
+
+			if (Debug.SendIOU) {
+				Logging.write("amnt = " + amnt.ToString() + ", dafee = " + dafee.ToString() + ", sndmx = " + ((sndmx == null) ? "null" : sndmx.ToString()));
+			}
+
+			RipplePaymentTransaction tx = new RipplePaymentTransaction(seed.getPublicRippleAddress(),payee,amnt,dafee, MainWindow.currentInstance.sequence,sndmx); // Todo implement sequemce number. int 23 is an arbatrary number for testing 
+			if (part) { 
+				tx.flags |= tx.tfPartialPayment;
+			}
+			//RippleBinaryObject rbo = tx.getBinaryObject().getObjectSorted();
+			//rbo = new RippleSigner(seed.getPrivateKey(0)).sign(rbo);
+
+			//byte[] signedTXBytes = new BinarySerializer().writeBinaryObject(rbo).ToArray();
+
+			//String blob = Base58.ByteArrayToHexString(signedTXBytes);
+
+			//object ob = new {
+			//	command = "submit",
+			//	tx_blob = blob
+			//};
+
+			tx.sign(seed);
+
+			tx.submit();
+
 		}
 
 
-		public void sendIOU () {
-			String issuer = this.issuerentry.Text;
+		public void sendIOU ()
+		{
+			if (Debug.SendIOU) {
+				Logging.write("SendIOU : method sendIOU begin");
+			}
+
+			String issuer = this.issuerentry.ActiveText;
+
+			//this.issuerentry.ActiveText;
 
 			String account = MainWindow.currentInstance.getReceiveAddress ();
 			String destination = this.destinationentry.Text;
@@ -93,15 +177,35 @@ namespace RippleClientGtk
 
 
 
-			if (account == null) {
+			if (account == null || account.Equals("")) {
 				// no need to show warning dialog because MainWindow.currentInstance.getReceiveAddress (); does so, simply return
-
 				return;
 			}
+
+			account = account.Trim();
 
 			if (secret == null) {
 				return;
 			}
+
+			secret = secret.Trim();
+
+			if (destination == null || destination.Trim().Equals("")) {
+				MessageDialog.showMessage("Please enter a destination address");
+				return;
+			}
+			destination = destination.Trim();
+
+			if (currency == null || currency.Trim().Equals("")) {
+				MessageDialog.showMessage("Please choose a currency to send");
+				return;
+			}
+			currency = currency.Trim();
+
+			if (amount == null || amount.Trim().Equals("")) {
+				MessageDialog.showMessage("Please enter an amount of " + currency + " to send");
+			}
+			amount = amount.Trim();
 
 			/* // Maybe I should allow self payments??
 			if (account.Equals(destination)) {
@@ -110,52 +214,59 @@ namespace RippleClientGtk
 			}
 			*/ 
 
-		
+			if (Debug.SendIOU) {
+				Logging.write(
+					"SendIOU : method sendIOU()\n\taccount = " + account +
+					"\n\tsecret = " + (Debug.allowInsecureDebugging ? secret : "--masked--") +
+					"\n\tdestination = " + destination +
+					"\n\tamount = " + amount +
+					"\n\tcurrency = " + currency +
+					"\n\tissuer = " + issuer +
+					"\n\tsendmax = " + ((sendmax == null) ? "null" : sendmax)+ "\n"
+					);
+			}
+
+			Thread th = new Thread( new ParameterizedThreadStart(sendIOUThread));
+
+			threadParam par = new threadParam(amount,destination,account,secret,currency,issuer,sendmax);
+
+			th.Start(par);
+
+		}
+
+		private static void sendIOUThread (object param) {
+			if (Debug.SendIOU) {
+				Logging.write("SendIOU : sendIOUThread begin");
+			}
+
+
+				threadParam tp = param as threadParam;
+				Decimal max = 0;
+				Decimal amountd = 0;
+
+				if (tp == null) {
+					throw new InvalidCastException("Unable to cast object to type threadParam");
+				}
+
+				if (Debug.SendIOU) {
+
+					//Logging.write("Units = " + tp.currency);
+
+					Logging.write("Send IOU : requesting Server Info\n");
+				}
+				
+				ServerInfo.refresh_blocking();
+
+				if (Debug.SendIOU) {
+					Logging.write("Send IOU : refresh_blocking returned, ServerInfo.transaction_fee = " + ServerInfo.transaction_fee.ToString());
+				}
 
 				try {
-
-					double amountd = Convert.ToDouble(amount);
-
-					if (amountd < 0) {
-						MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
-						return;
-					}
-
-				Double max = 0;
-
-				if (!("".Equals (sendmax.Trim ()))) { // if sendmax is not blank
-
-					try {
-						max = Convert.ToDouble (sendmax);  // and is a valid number
-					} catch (FormatException ex) {
-
-						MessageDialog.showMessage ("SendMax is fomated incorrectly for sending an IOU. It must be a valid decimal number or left blank");
-						return;
-
-					} catch (OverflowException ex) {
-						MessageDialog.showMessage ("SendMax is greater than a double? No one's got that much money");
-						return;
-					} catch (Exception ex) {
-						MessageDialog.showMessage ("Amount is fomated incorrectly for sending an IOU. It must be a valid decimal number or left blank");
-						return;
-					}
-
-				} else {
-					max = amountd;
+					amountd = Convert.ToDecimal(tp.amount);
 				}
-
-
-
-					
-					this.sendIOUPayment(account, destination, amountd, secret, currency, issuer, max);
-
-				}
-
 				catch (FormatException ex) {
-
 					MessageDialog.showMessage ("Amount is fomated incorrectly for sending an IOU.\n It must be a valid decimal number\n");
 					return;
-
 				}
 
 				catch (OverflowException ex) {
@@ -169,6 +280,63 @@ namespace RippleClientGtk
 				}
 
 
+				if (amountd < 0) {
+					MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
+					return;
+				}
+
+				if (tp.sendmax == null) {
+					tp.sendmax = "";
+					if (Debug.SendIOU) {
+						Logging.write("Setting sendmax to blank value because it was null");
+					}
+				}
+
+				if (!("".Equals (tp.sendmax.Trim ()))) { // if sendmax is not blank
+
+					try {
+						max = Convert.ToDecimal (tp.sendmax.Trim());  // and is a valid number
+					} catch (FormatException ex) {
+
+						MessageDialog.showMessage ("SendMax is fomated incorrectly for sending an IOU. It must be a valid decimal number or left blank");
+						return;
+
+					} catch (OverflowException ex) {
+						MessageDialog.showMessage ("SendMax is greater than a maximum decimal? No one's got that much money");
+						return;
+					} catch (Exception ex) {
+						//MessageDialog.showMessage ("SendMax is fomated incorrectly for sending an IOU. It must be a valid decimal number or left blank");
+						MessageDialog.showMessage ("Unknown exception parsing sendmax to decimal number\n" + ex.Message);
+						return;
+					}
+
+				} else {
+					max = amountd;
+				}
+
+				sendIOUPayment(tp.account,tp.destination,amountd,tp.secret,tp.currency,tp.issuer,max,new decimal(ServerInfo.transaction_fee));
+
+		}
+
+		class threadParam 
+		{
+			public threadParam(String amount, String destination, String account, String secret, String currency, String issuer, String sendmax) {
+				this.amount = amount;
+				this.destination = destination;
+				this.account = account;
+				this.secret = secret;
+				this.currency = currency;
+				this.sendmax = sendmax;
+				this.issuer = issuer;
+			}
+
+			public String amount;
+			public String destination;
+			public String account;
+			public String secret;
+			public String currency;
+			public String sendmax;
+			public String issuer;
 		}
 
 
@@ -178,12 +346,19 @@ namespace RippleClientGtk
 			sendIOU ();
 		}
 
+		/*
+		protected void OnChooseButtonClicked (object sender, EventArgs e)
+		{
+
+		}
+		*/
+
 		public void updateBalance () {
 
 			Gtk.Application.Invoke (
 				delegate {
 
-				Dictionary<String, Double> cash = AccountLines.cash;
+				Dictionary<String, Decimal> cash = AccountLines.cash;
 
 				if (cash == null) {
 					// 
@@ -200,7 +375,7 @@ namespace RippleClientGtk
 				String cur = this.currencycomboboxentry.ActiveText;
 
 				if (cash.ContainsKey (cur)) {
-					double dud;
+					Decimal dud;
 
 					if (cash.TryGetValue (cur, out dud)) {
 
@@ -223,9 +398,44 @@ namespace RippleClientGtk
 
 		} // end public void updateBalance
 
+		private void updateCurrencyIssuers ()
+		{
+			Gtk.Application.Invoke ( delegate {
+
+		
+				String cur = this.currencycomboboxentry.ActiveText;
+
+				List<String>  lis = AccountLines.getIssuersForCurrency(cur);
+
+				ListStore store = new ListStore(typeof(string));
+
+				foreach (String s in lis) {
+					store.AppendValues(s);
+				}
+
+				this.issuerentry.Model = store;
+			});
+
+		}
+
+		// no idea why this won't fire ????
+		void OnCurrencycomboboxentryReceived (object sender, EventArgs e)
+		{
+			this.updateBalance ();
+			//this.issuerentry.GrabFocus();
+
+			this.updateCurrencyIssuers();
+			this.issuerentry.Entry.GrabFocus();
+
+		}
+
 		protected void OnCurrencycomboboxentryChanged (object sender, EventArgs e)
 		{
 			this.updateBalance ();
+			//this.issuerentry.GrabFocus();
+
+			this.updateCurrencyIssuers();
+			this.issuerentry.Entry.GrabFocus();
 		}
 
 		protected void OnIssuerentryActivated (object sender, EventArgs e)
@@ -278,7 +488,41 @@ namespace RippleClientGtk
 			}
 
 			this.destinationentry.GrabFocus ();
+		}		
+
+
+		void OnSelectionReceivedEvent (object sender, EventArgs e)
+		{
+			if (this.amountentry == null) {
+				return;
+			}
+
+			this.amountentry.GrabFocus ();
+
+			//throw new NotImplementedException ();
 		}
+
+		protected void currencychanged (object sender, EventArgs e)
+		{
+			this.updateBalance ();
+			//this.issuerentry.GrabFocus();
+
+			this.updateCurrencyIssuers();
+			this.issuerentry.Entry.GrabFocus();
+		}
+
+
+
+		static bool part = true;
+
+		protected void partialtoggled (object sender, EventArgs e)
+		{
+			CheckButton c = sender as CheckButton;
+			if (c!=null) {
+				part = c.Active;
+			}
+		}
+
 	}
 }
 

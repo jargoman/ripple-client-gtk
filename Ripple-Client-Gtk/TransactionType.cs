@@ -47,6 +47,13 @@ namespace RippleClientGtk
 
 		public static TransactionType[] getValues() {
 
+			loadTransactionTypes();
+
+			return TransactionType.values;
+		}
+
+		public static void loadTransactionTypes ()
+		{
 			if (TransactionType.values==null) {
 
 				TransactionType.values = new TransactionType[] {
@@ -66,10 +73,6 @@ namespace RippleClientGtk
 					new TransactionType(TransactionType.FEE)
 				};
 			}
-
-			return TransactionType.values;
-
-
 		}
 
 		public UInt16 uint16Value;

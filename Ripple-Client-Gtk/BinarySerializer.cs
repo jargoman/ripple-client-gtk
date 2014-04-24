@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using Org.BouncyCastle.Math;
 using System.Collections.Generic;
 
@@ -53,10 +54,16 @@ namespace RippleClientGtk
 			byte[] bytes = FromDecimal(d);
 
 				
-				// because decimal is little endian an
 				
-				byte scale = bytes[14];
+				
+			sbyte scale = (sbyte) bytes[14];
+
  
+
+			if (Debug.BinarySerializer) {
+				Logging.write("BinarySerializer : getDecimalScale : scale of Decimal " + d.ToString() + " is " + scale.ToString() + "\n");
+			}
+
 			return (int)scale;
 
 
@@ -79,6 +86,11 @@ namespace RippleClientGtk
 				if (bytes[15] == 128)
 				unscaledValue = unscaledValue.Negate();  //.Multiply(BigInteger.ValueOf(-1)); // changes the sign
  
+
+			if (Debug.BinarySerializer) {
+				Logging.write("BinarySerializer : getDecimalUnscaledValue : unscaled of Decimal " + d.ToString() + " is " + unscaledValue.ToString() + "\n");
+			}
+
 			return unscaledValue;
 		}
 
@@ -397,15 +409,18 @@ namespace RippleClientGtk
 					object valu = serializedObj.getField(field);
 
 					if (Debug.BinarySerializer) {
-						Logging.write("BinaryFieldType : " + field.ToString() + " Type : " + field.type.ToString() + " Value : " + valu.ToString());
+						Logging.write("BinarySerializer : BinaryFieldType " + field.ToString() + " = Type : " + field.type.ToString() + ", Value : " + valu.ToString());
 					}
 
 					writePrimitive (output, field.type, valu);
 
+
+
+
 				}
 
-
-
+				output.Flush();
+				memstream.Flush();
 			} // end using BinaryWriter
 
 
@@ -420,22 +435,10 @@ namespace RippleClientGtk
 				Logging.write("BinarySerializer : writePrimitive : expected BinaryType is " + primitive.ToString() + ", actual value is " + value.GetType().ToString());
 			}
 
-			// ok going to comment much of this ported code and take advantage of c#'s unsigned types.  
+			// ok going to comment much of this ported code and take advantage of c#'s unsigned types
 			if (primitive.typeCode == BinaryType.UINT16) {
 
-
-
 				UInt16 intValue = (UInt16) value; 
-				/*
-				if (intValue>0xFFFF) {
-					throw new InternalBufferOverflowException( "UINT16 overflow for value " + value );
-				}
-				*/
-				//output.Write((byte) (intValue>>8&0xFF));
-				//output.Write((byte) (intValue&0xFF));
-
-				// So much easier o_O
-
 
 				output.Write (intValue);
 
@@ -546,7 +549,13 @@ namespace RippleClientGtk
 
 		protected void writeIssuer (BigEndianWriter output, RippleAddress value)
 		{
+			if (Debug.BinarySerializer) {
+				Logging.write("BinarySerializer : writeIssuer : begin");
+			}
 			byte[] issuerBytes = value.getBytes ();
+			if (Debug.BinarySerializer) {
+				Logging.write("BinarySerializer : writeIssuer : issuerBytes.Length = " + issuerBytes.Length.ToString());
+			}
 			output.Write(issuerBytes);
 		}
 
@@ -559,11 +568,25 @@ namespace RippleClientGtk
 
 		protected void writeAmount (BigEndianWriter output, DenominatedIssuedCurrency denominatedCurrency)
 		{
-			ulong offsetNativeSignMagnitudeBytes = 0;
-			if (denominatedCurrency.amount > 0) {
-				offsetNativeSignMagnitudeBytes |= 0x4000000000000000;  // Note I thought this was incorrect untill I read this https://ripple.com/wiki/Binary_Format#Native_Currency
+			if (Debug.BinarySerializer) {
+				Logging.write ("\nBinarySerializer : writeAmount begin");
 			}
-			if (denominatedCurrency.currency == null) {
+
+			ulong offsetNativeSignMagnitudeBytes = 0;
+			if (denominatedCurrency.amount > 0m) {
+
+				if (Debug.BinarySerializer) {
+					Logging.write ("BinarySerializer : writeAmount : amount > 0m");
+				}
+				offsetNativeSignMagnitudeBytes |= 0x4000000000000000;  // Note I thought this was incorrect untill I read this https://ripple.com/wiki/Binary_Format#Native_Currency
+			} 
+
+
+			if (denominatedCurrency.isNative()) {//if (denominatedCurrency.currency == null) {
+				if (Debug.BinarySerializer) {
+					Logging.write("BinarySerializer : writeAmount : is Native currency");
+				}
+
 				if (denominatedCurrency.amount > ulong.MaxValue) {
 					throw new OverflowException ("denominatedCurrency.amount is larger than long.MaxValue");
 				}
@@ -573,23 +596,69 @@ namespace RippleClientGtk
 				output.Write (offsetNativeSignMagnitudeBytes);
 
 			} else {
+				if (Debug.BinarySerializer) {
+					Logging.write("BinarySerializer : writeAmount : is Non Native");
+				}
+
 				offsetNativeSignMagnitudeBytes|=0x8000000000000000;
+
 				BigInteger unscaledValue = getDecimalUnscaledValue (denominatedCurrency.amount);
 
-				/* broken
-				if ((unscaledValue > new BigInteger ( ulong.MaxValue)) || (unscaledValue < new BigInteger (ulong.MinValue))) 
-				{ 
-					throw new OverflowException("Currency amount is out of range. long.MinValue and long.Maxvalue");
-				}
-				*/
 
-				if (unscaledValue.Equals(BigInteger.Zero)) {
-					int scale = getDecimalScale(denominatedCurrency.amount);
-					ulong offset = (ulong)(97-scale);
-					offsetNativeSignMagnitudeBytes|=(offset<<54);
-					offsetNativeSignMagnitudeBytes|= (ulong) unscaledValue.Abs().LongValue;
+				if (!(unscaledValue.Equals(BigInteger.Zero))) {
+					if (Debug.BinarySerializer) {
+						Logging.write("BinarySerializer : writeAmount : unscaledValue != 0");
+					}
+
+					int scale = getDecimalScale(denominatedCurrency.amount); // I don't think there's a such thing as a negative scale. I could be wrong. 
+					UInt64 mantissa = (UInt64)unscaledValue.Abs().LongValue;
+
+					while (mantissa > DenominatedIssuedCurrency.MAX_MANTISSA ) {
+						mantissa /= 10;
+						scale--;  // scale is flipped
+
+						if (scale > DenominatedIssuedCurrency.MAX_SCALE) {
+							throw new OverflowException("Scale is greater than MAX_SCALE");
+						}
+					}
+
+					while (mantissa < DenominatedIssuedCurrency.MIN_MANTISSA) {
+						mantissa *= 10;
+						scale++;
+
+						if (scale < DenominatedIssuedCurrency.MIN_SCALE) {
+							throw new OverflowException("Scale is smaller than MIN_SCALE");
+						}
+					}
+
+					if (Debug.BinarySerializer) {
+						Logging.write("BinarySerializer : writeAmount : mantissa = " + mantissa.ToString());
+					}
+
+					ulong orme = 97UL - (ulong)scale; // scale is flipped
+
+					orme <<= 54;
+					orme |= mantissa;
+
+					offsetNativeSignMagnitudeBytes |= orme;
+
 				}
-				output.Write((ulong)offsetNativeSignMagnitudeBytes);
+				if (Debug.BinarySerializer) {
+					byte[] bits = BitConverter.GetBytes(offsetNativeSignMagnitudeBytes);
+
+					if (BitConverter.IsLittleEndian) {
+						Array.Reverse(bits);
+					}
+
+					String bitstring = "";
+					foreach (byte b in bits) {
+						bitstring +=  Convert.ToString(b, 2).PadLeft(8,'0') + " ";
+					}
+
+					Logging.write("BinarySerializer : writeAmount : offsetNativeSignMagnitudeBytes = " + bitstring);
+				}
+
+				output.Write(offsetNativeSignMagnitudeBytes);
 				writeCurrency(output,denominatedCurrency.currency);
 				writeIssuer(output, denominatedCurrency.issuer);
 			}
@@ -626,29 +695,55 @@ namespace RippleClientGtk
 
 		protected void writeCurrency (BigEndianWriter output, String currency)
 		{
+			if (Debug.BinarySerializer) {
+				Logging.write("BinarySerializer : writeCurrency : begin : currency = " + currency);
+			}
+
 			byte[] currencyBytes = new byte[20];
-			char[] str = currency.ToCharArray ();
+			// I don't think this is needed. Trying everything to get this to work :/
+			for (int i = 0; i < currencyBytes.Length; i++) {
+				currencyBytes[i] = 0;
+			}
+			//char[] str = currency.ToCharArray ();
 
 
 
 			// TODO what to do if ripple implements currency codes larger than 3 bytes. 
-			if (str.Length > 3) {
+			/*
+			if (currency.Length > 3) {
 				throw new NotImplementedException ("Currency codes greater than 3 chars are not currently supported");
 			}
+			*/
 
+			/*
 			byte[] source = new byte[3];
 			try {
 				int i = 0;
 				foreach (char c in str) {
 					source[i++] = Convert.ToByte(c);
 				}
-				;
 			} catch (OverflowException e) {
 				// TODO debug
 				throw e;
 			}
+			*/
 
-                System.Array.Copy(source, 0, currencyBytes, 12, 3);
+			//byte[] sour = Encoding.UTF8.GetBytes(currency);
+
+			byte[] sour = ASCIIEncoding.ASCII.GetBytes(currency);
+
+			if (Debug.BinarySerializer) {
+				Logging.write("BinarySerializer : writeCurrency : Ascii length = " + sour.Length);
+			}
+			/*
+			byte[] source = Encoding.BigEndianUnicode.GetBytes(currency);
+			if (Debug.BinarySerializer) {
+				Logging.write("BinarySerializer : writeCurrency : bigendianUnicode length = " + source.Length);
+			}
+			*/
+
+
+             System.Array.Copy(sour, 0, currencyBytes, 12, 3);
 				
 				
                 output.Write(currencyBytes);

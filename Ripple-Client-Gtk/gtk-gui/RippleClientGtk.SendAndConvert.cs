@@ -15,11 +15,11 @@ namespace RippleClientGtk
 		private global::Gtk.Label balancelabel;
 		private global::Gtk.HBox hbox6;
 		private global::Gtk.Entry sendmaxentry;
-		private global::Gtk.Label label20;
+		private global::Gtk.Label sendMaxCurrencyLabel;
 		private global::Gtk.HBox hbox7;
 		private global::Gtk.Entry receiveamountentry;
 		private global::Gtk.ComboBoxEntry comboboxentry2;
-		private global::Gtk.Entry issuerentry;
+		private global::Gtk.ComboBoxEntry issuerentry;
 		private global::Gtk.Label label12;
 		private global::Gtk.Label label13;
 		private global::Gtk.Label label16;
@@ -74,7 +74,6 @@ namespace RippleClientGtk
 			w3.BottomAttach = ((uint)(3));
 			w3.LeftAttach = ((uint)(1));
 			w3.RightAttach = ((uint)(2));
-			w3.XOptions = ((global::Gtk.AttachOptions)(4));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table5.Gtk.Table+TableChild
 			this.hbox5 = new global::Gtk.HBox ();
@@ -105,6 +104,7 @@ namespace RippleClientGtk
 			this.balancelabel.LabelProp = global::Mono.Unix.Catalog.GetString ("   --   unsynced   --   ");
 			this.hbox5.Add (this.balancelabel);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.balancelabel]));
+			w6.PackType = ((global::Gtk.PackType)(1));
 			w6.Position = 2;
 			w6.Expand = false;
 			w6.Fill = false;
@@ -128,12 +128,12 @@ namespace RippleClientGtk
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.sendmaxentry]));
 			w8.Position = 0;
 			// Container child hbox6.Gtk.Box+BoxChild
-			this.label20 = new global::Gtk.Label ();
-			this.label20.WidthRequest = 40;
-			this.label20.Name = "label20";
-			this.label20.LabelProp = global::Mono.Unix.Catalog.GetString ("ICE");
-			this.hbox6.Add (this.label20);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.label20]));
+			this.sendMaxCurrencyLabel = new global::Gtk.Label ();
+			this.sendMaxCurrencyLabel.WidthRequest = 40;
+			this.sendMaxCurrencyLabel.Name = "sendMaxCurrencyLabel";
+			this.sendMaxCurrencyLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("   ");
+			this.hbox6.Add (this.sendMaxCurrencyLabel);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.sendMaxCurrencyLabel]));
 			w9.PackType = ((global::Gtk.PackType)(1));
 			w9.Position = 1;
 			w9.Expand = false;
@@ -166,7 +166,6 @@ namespace RippleClientGtk
 			this.comboboxentry2.AppendText (global::Mono.Unix.Catalog.GetString ("GWC"));
 			this.comboboxentry2.WidthRequest = 70;
 			this.comboboxentry2.Name = "comboboxentry2";
-			this.comboboxentry2.Active = 0;
 			this.hbox7.Add (this.comboboxentry2);
 			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.comboboxentry2]));
 			w12.Position = 1;
@@ -181,17 +180,15 @@ namespace RippleClientGtk
 			w13.XOptions = ((global::Gtk.AttachOptions)(4));
 			w13.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table5.Gtk.Table+TableChild
-			this.issuerentry = new global::Gtk.Entry ();
-			this.issuerentry.CanFocus = true;
+			this.issuerentry = global::Gtk.ComboBoxEntry.NewText ();
 			this.issuerentry.Name = "issuerentry";
-			this.issuerentry.IsEditable = true;
-			this.issuerentry.InvisibleChar = '●';
 			this.table5.Add (this.issuerentry);
 			global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.table5 [this.issuerentry]));
 			w14.TopAttach = ((uint)(1));
 			w14.BottomAttach = ((uint)(2));
 			w14.LeftAttach = ((uint)(1));
 			w14.RightAttach = ((uint)(2));
+			w14.XOptions = ((global::Gtk.AttachOptions)(4));
 			w14.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table5.Gtk.Table+TableChild
 			this.label12 = new global::Gtk.Label ();

@@ -12,8 +12,8 @@ namespace RippleClientGtk
 		private global::Gtk.Entry destinationentry;
 		private global::Gtk.HBox hbox5;
 		private global::Gtk.Label label1;
-		private global::Gtk.Label label14;
 		private global::Gtk.Label balancelabel;
+		private global::Gtk.Label label14;
 		private global::Gtk.Label label12;
 		private global::Gtk.Label label13;
 		private global::Gtk.Label label16;
@@ -68,7 +68,6 @@ namespace RippleClientGtk
 			w3.BottomAttach = ((uint)(3));
 			w3.LeftAttach = ((uint)(1));
 			w3.RightAttach = ((uint)(2));
-			w3.XOptions = ((global::Gtk.AttachOptions)(4));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table3.Gtk.Table+TableChild
 			this.destinationentry = new global::Gtk.Entry ();
@@ -91,7 +90,7 @@ namespace RippleClientGtk
 			// Container child hbox5.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
-			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("  <u>ICE</u>  ");
+			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("    ");
 			this.label1.UseMarkup = true;
 			this.hbox5.Add (this.label1);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.label1]));
@@ -99,22 +98,24 @@ namespace RippleClientGtk
 			w5.Expand = false;
 			w5.Fill = false;
 			// Container child hbox5.Gtk.Box+BoxChild
-			this.label14 = new global::Gtk.Label ();
-			this.label14.Name = "label14";
-			this.label14.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Balance</b>");
-			this.label14.UseMarkup = true;
-			this.hbox5.Add (this.label14);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.label14]));
-			w6.Position = 1;
-			w6.Expand = false;
-			w6.Fill = false;
-			// Container child hbox5.Gtk.Box+BoxChild
 			this.balancelabel = new global::Gtk.Label ();
 			this.balancelabel.Name = "balancelabel";
 			this.balancelabel.LabelProp = global::Mono.Unix.Catalog.GetString ("   --   unsynced   --   ");
 			this.balancelabel.Selectable = true;
 			this.hbox5.Add (this.balancelabel);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.balancelabel]));
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.balancelabel]));
+			w6.PackType = ((global::Gtk.PackType)(1));
+			w6.Position = 1;
+			w6.Expand = false;
+			w6.Fill = false;
+			// Container child hbox5.Gtk.Box+BoxChild
+			this.label14 = new global::Gtk.Label ();
+			this.label14.Name = "label14";
+			this.label14.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Balance</b>");
+			this.label14.UseMarkup = true;
+			this.hbox5.Add (this.label14);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.label14]));
+			w7.PackType = ((global::Gtk.PackType)(1));
 			w7.Position = 2;
 			w7.Expand = false;
 			w7.Fill = false;
@@ -174,7 +175,6 @@ namespace RippleClientGtk
 			// Container child table3.Gtk.Table+TableChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("r4H3F9dDaYPFwbrUsusvNAHLz2sEZk4wE5");
 			this.table3.Add (this.label2);
 			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.table3 [this.label2]));
 			w13.TopAttach = ((uint)(1));
@@ -186,8 +186,6 @@ namespace RippleClientGtk
 			this.vbox3.Add (this.table3);
 			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.table3]));
 			w14.Position = 2;
-			w14.Expand = false;
-			w14.Fill = false;
 			// Container child vbox3.Gtk.Box+BoxChild
 			this.sendIOUButton = new global::Gtk.Button ();
 			this.sendIOUButton.CanFocus = true;
@@ -214,6 +212,7 @@ namespace RippleClientGtk
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
+			this.sendIOUButton.Clicked += new global::System.EventHandler (this.OnSendIOUButtonClicked);
 		}
 	}
 }
