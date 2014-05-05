@@ -31,6 +31,9 @@ namespace RippleClientGtk
 
 		public static bool PasswordCreateDialog = false;
 		public static bool PasswordDialog = false;
+
+		public static bool PluginController = true;
+
 		public static bool Program = false;
 
 		public static bool RandomSeedGenerator = true;

@@ -8,7 +8,7 @@ using System.Text;
 using Gtk;
 using RippleClientGtk;
 using Codeplex.Data;
-using Microsoft.CSharp;
+//using Microsoft.CSharp;
 using System.Security.Cryptography;
 
 
@@ -590,11 +590,17 @@ namespace RippleClientGtk
 					if (Debug.Wallet) {
 						Logging.write ("Wallet :  method processJsonWallet : plaintext passed basic validity text\n");
 					}
-					//dynamic dynowall = JsonConvert.DeserializeObject<dynamic> (plain);
 
+					dynamic dynowall; //= JsonConvert.DeserializeObject<dynamic> (plain);
 
-					dynamic dynowall = DynamicJson.Parse(plain);
+					try {
+						dynowall = DynamicJson.Parse(plain);
+					}
 
+					catch (Exception e) {
+						Logging.write("yayayayayayay");
+						//Todo invalid wallet
+					}
 					if (dynowall.IsDefined("Account") && dynowall.IsDefined ("secret") ) {
 						if (Debug.Wallet) {
 							Logging.write("Wallet : method processJsonWallet : both Account and secret are defined\n");

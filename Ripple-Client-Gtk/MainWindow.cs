@@ -4,6 +4,7 @@
  */
 
 using System;
+using Microsoft.CSharp;
 using RippleClientGtk;
 using Gtk;
 using Codeplex.Data;
@@ -21,6 +22,9 @@ public partial class MainWindow: Gtk.Window
 		}
 
 		Build ();
+		this.loadPlugins();
+
+
 
 		if (Debug.MainWindow) {
 			if (currentInstance!=null) {
@@ -65,13 +69,21 @@ public partial class MainWindow: Gtk.Window
 
 				if (s != null) {
 					if (s.Equals("actNotFound"))  {
-						try {
-							account = (String)dynamo.request.account;
-						}
+						
+					
+						if (dynamo.isDefined("request.account")) {
+							try {
+								account = (String)dynamo.request.account;
+							}
 			
-						catch (Exception ex) {
-							account = "";
+							catch (Exception ex) {
+								account = "";
+							}
 						}
+						else {
+								account = "";
+						}
+						
 
 									
 						Gtk.Application.Invoke( delegate {
@@ -85,18 +97,45 @@ public partial class MainWindow: Gtk.Window
 
 			}
 
-			// basically this WILL fail. It saves from typing dynamo.IsDefined("result") && dynamo.IsDefined("result.account_data") && dynam... ect. It quickly became ridiculous. 
-			String balance = dynamo.result.account_data.Balance;
+			//dynamo.IsDefined("result")
+			String balance;
+			if (dynamo.IsDefined("result.account_data.Balance")) {
+				balance = dynamo.result.account_data.Balance;
+			}
+			
+			else {
+				return;
+			}
 							
-			String acc = dynamo.result.account_data.Account;
+			String acc;
+			if (dynamo.IsDefined("result.account_data.Account")) {
+				acc = dynamo.result.account_data.Account;
+			}
 
-			double index = dynamo.result.ledger_current_index;
+			else {
+				return;
+			}
 
-			double sequence = dynamo.result.account_data.Sequence;
+			double index; 
+			if (dynamo.IsDefined("result.ledger_current_index")) {
+				index = dynamo.result.ledger_current_index;
+			}
+			else {
+				return;
+			}
+
+			double sequence;
+			if (dynamo.IsDefined("result.account_data.Sequence")) {
+				sequence = dynamo.result.account_data.Sequence;
+			}
+
+			else {
+				return;
+			}
 
 			this.sequence = (UInt32)sequence;
 
-			if (acc == this.getReceiveAddress()) {
+			if (acc != null && acc == this.getReceiveAddress()) {
 							
 				if (this.highestLedger < (UInt32)index) 
 				{
@@ -105,11 +144,14 @@ public partial class MainWindow: Gtk.Window
 				
 						try 
 						{
-
+							if (balance == null) {
+									return;
+							}
 							this.xrpBalance = Convert.ToDecimal(balance);
 
-							this.sendripple2.setXrpBalance(this.xrpBalance);
-
+							if (sendripple2!=null) {
+								this.sendripple2.setXrpBalance(this.xrpBalance);
+							}
 							decimal d = this.xrpBalance / 1000000.0m;
 									
 							String balstr = Base58.truncateTrailingZerosFromString(d.ToString());
@@ -121,14 +163,14 @@ public partial class MainWindow: Gtk.Window
 							//this.balanceLabel.Text = balstr;
 							this.highestLedger = (UInt32)index;
 
-						}  catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
+						//}  catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
 
 							//Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
 							if (Debug.MainWindow) {
-								Logging.write(ex.Message + "\n");  // make sure it's ex.Message and not e.Message
+								//Logging.write(ex.Message + "\n");  // make sure it's ex.Message and not e.Message
 							}
 						}
-
+						
 
 						catch (FormatException exf) {
 							Logging.write(exf.Message);	
@@ -161,11 +203,11 @@ public partial class MainWindow: Gtk.Window
 								
 								
 
-		} catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
+		//} catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
 
 			//Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
 			if (Debug.MainWindow) {
-				Logging.write(ex.Message + "\n");  // make sure it's ex.Message and not e.Message
+		//		Logging.write(ex.Message + "\n");  // make sure it's ex.Message and not e.Message
 			}
 		}
 
@@ -206,6 +248,27 @@ public partial class MainWindow: Gtk.Window
 
 
 
+	}
+
+	public void loadPlugins ()
+	{
+		if (PluginController.currentInstance!=null && PluginController.allow_plugins) {
+			foreach (Plugin p in PluginController.pluginList) {
+				if (p==null) continue;
+
+				Gtk.Widget mainTab = p.getMainTab() as Gtk.Widget;
+				if (mainTab!=null) {
+					if (this.notebook1!=null) {
+						//if (Debug.MainWindow) {
+							Logging.write("Appending page");
+						//}
+						this.notebook1.AppendPage(mainTab,new Label(p.tab_label));
+						this.notebook1.ShowAll();
+						this.ShowAll();
+					}
+				}
+			}
+		}
 	}
 
 	public Wallet getWallet() {

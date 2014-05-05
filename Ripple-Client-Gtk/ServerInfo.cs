@@ -32,23 +32,51 @@ namespace RippleClientGtk
 					dynamic dynovar = DynamicJson.Parse(e.Message);
 
 					if (firstconnect) { // faster if we only set these values once per connect
-						build_version = dynovar.result.info.build_version;
-						hostid = dynovar.result.info.hostid;
+						if (dynovar.IsDefined("result.info.build_version")) {
+							build_version = dynovar.result.info.build_version as String;
+						}
 
-						this.build_version_label_var.Text = build_version;
-						this.host_id_label_var.Text = hostid;
+						else {
+								return;
+						}
+						if (dynovar.IsDefined("result.info.hostid")) {
+							hostid = dynovar.result.info.hostid as String;
+						}
 
+						else {
+								return;
+						}
+						
+						if (build_version!=null) {
+							this.build_version_label_var.Text = build_version;
+						}
+
+						if (hostid!=null) {
+							this.host_id_label_var.Text = hostid;
+						}
 						firstconnect = false;
 					}
+					
+					if (dynovar.IsDefined("result.info.complete_ledgers")) {
+						complete_ledgers = dynovar.result.info.complete_ledgers as String;
+					}
 
-					complete_ledgers = dynovar.result.info.complete_ledgers;
+					if (complete_ledgers!=null) {
+						this.complete_ledgers_label_var.Text = complete_ledgers;
+					}
 
-					this.complete_ledgers_label_var.Text = complete_ledgers;
-
-					load_factor = new decimal (dynovar.result.info.load_factor);
-					Decimal xrp_base_fee = new decimal (dynovar.result.info.validated_ledger.base_fee_xrp);
+					if (dynovar.IsDefined("result.info.load_factor")) {
+						load_factor = new decimal (dynovar.result.info.load_factor);
+					}
+					
+					Decimal xrp_base_fee;
+					if (dynovar.IsDefined("result.info.validated_ledger.base_fee_xrp")) {
+						xrp_base_fee = new decimal (dynovar.result.info.validated_ledger.base_fee_xrp);
+					}
+					else {
+							return;
+					}
 					base_fee_drops = (ulong)(xrp_base_fee * 1000000m);
-
 					transaction_fee = (ulong)((xrp_base_fee * 1000000m) * load_factor);
 
 					Gtk.Application.Invoke (delegate {  // exceptions in this thread are not caught but placing it here ensures it only runs if server returns valid info

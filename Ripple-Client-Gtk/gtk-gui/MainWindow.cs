@@ -18,21 +18,21 @@ public partial class MainWindow
 	private global::RippleClientGtk.NetworkSettings networksettings1;
 	private global::Gtk.Label label25;
 	private global::RippleClientGtk.BalanceTab balancetab1;
-	private global::Gtk.Label label33;
+	private global::Gtk.Label label35;
 	private global::RippleClientGtk.SendRipple sendripple2;
 	private global::Gtk.Label label2;
 	private global::RippleClientGtk.SendIOU sendiou1;
-	private global::Gtk.Label label45;
+	private global::Gtk.Label label47;
 	private global::RippleClientGtk.SendIce sendice1;
-	private global::Gtk.Label label54;
+	private global::Gtk.Label label56;
 	private global::RippleClientGtk.SendAndConvert sendandconvert1;
-	private global::Gtk.Label label62;
+	private global::Gtk.Label label64;
 	private global::RippleClientGtk.TrustSetter trustsetter1;
-	private global::Gtk.Label label68;
+	private global::Gtk.Label label69;
 	private global::RippleClientGtk.AccountLines accountlines1;
-	private global::Gtk.Label label70;
+	private global::Gtk.Label label71;
 	private global::RippleClientGtk.ServerInfo serverinfo1;
-	private global::Gtk.Label label73;
+	private global::Gtk.Label label74;
 	private global::RippleClientGtk.Console console1;
 	private global::Gtk.Label label76;
 	
@@ -115,6 +115,7 @@ public partial class MainWindow
 		this.notebook1.CanFocus = true;
 		this.notebook1.Name = "notebook1";
 		this.notebook1.CurrentPage = 0;
+		this.notebook1.Scrollable = true;
 		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.wallet1 = new global::RippleClientGtk.Wallet ();
 		this.wallet1.Events = ((global::Gdk.EventMask)(256));
@@ -147,11 +148,11 @@ public partial class MainWindow
 		global::Gtk.Notebook.NotebookChild w10 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1 [this.balancetab1]));
 		w10.Position = 2;
 		// Notebook tab
-		this.label33 = new global::Gtk.Label ();
-		this.label33.Name = "label33";
-		this.label33.LabelProp = global::Mono.Unix.Catalog.GetString ("Balances");
-		this.notebook1.SetTabLabel (this.balancetab1, this.label33);
-		this.label33.ShowAll ();
+		this.label35 = new global::Gtk.Label ();
+		this.label35.Name = "label35";
+		this.label35.LabelProp = global::Mono.Unix.Catalog.GetString ("Balances");
+		this.notebook1.SetTabLabel (this.balancetab1, this.label35);
+		this.label35.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.sendripple2 = new global::RippleClientGtk.SendRipple ();
 		this.sendripple2.Events = ((global::Gdk.EventMask)(256));
@@ -173,11 +174,11 @@ public partial class MainWindow
 		global::Gtk.Notebook.NotebookChild w12 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1 [this.sendiou1]));
 		w12.Position = 4;
 		// Notebook tab
-		this.label45 = new global::Gtk.Label ();
-		this.label45.Name = "label45";
-		this.label45.LabelProp = global::Mono.Unix.Catalog.GetString ("Send IOU");
-		this.notebook1.SetTabLabel (this.sendiou1, this.label45);
-		this.label45.ShowAll ();
+		this.label47 = new global::Gtk.Label ();
+		this.label47.Name = "label47";
+		this.label47.LabelProp = global::Mono.Unix.Catalog.GetString ("Send IOU");
+		this.notebook1.SetTabLabel (this.sendiou1, this.label47);
+		this.label47.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.sendice1 = new global::RippleClientGtk.SendIce ();
 		this.sendice1.Events = ((global::Gdk.EventMask)(256));
@@ -186,11 +187,11 @@ public partial class MainWindow
 		global::Gtk.Notebook.NotebookChild w13 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1 [this.sendice1]));
 		w13.Position = 5;
 		// Notebook tab
-		this.label54 = new global::Gtk.Label ();
-		this.label54.Name = "label54";
-		this.label54.LabelProp = global::Mono.Unix.Catalog.GetString ("Send ICE");
-		this.notebook1.SetTabLabel (this.sendice1, this.label54);
-		this.label54.ShowAll ();
+		this.label56 = new global::Gtk.Label ();
+		this.label56.Name = "label56";
+		this.label56.LabelProp = global::Mono.Unix.Catalog.GetString ("Send ICE");
+		this.notebook1.SetTabLabel (this.sendice1, this.label56);
+		this.label56.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.sendandconvert1 = new global::RippleClientGtk.SendAndConvert ();
 		this.sendandconvert1.Events = ((global::Gdk.EventMask)(256));
@@ -199,11 +200,11 @@ public partial class MainWindow
 		global::Gtk.Notebook.NotebookChild w14 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1 [this.sendandconvert1]));
 		w14.Position = 6;
 		// Notebook tab
-		this.label62 = new global::Gtk.Label ();
-		this.label62.Name = "label62";
-		this.label62.LabelProp = global::Mono.Unix.Catalog.GetString ("Send And Convert");
-		this.notebook1.SetTabLabel (this.sendandconvert1, this.label62);
-		this.label62.ShowAll ();
+		this.label64 = new global::Gtk.Label ();
+		this.label64.Name = "label64";
+		this.label64.LabelProp = global::Mono.Unix.Catalog.GetString ("Send And Convert");
+		this.notebook1.SetTabLabel (this.sendandconvert1, this.label64);
+		this.label64.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.trustsetter1 = new global::RippleClientGtk.TrustSetter ();
 		this.trustsetter1.Events = ((global::Gdk.EventMask)(256));
@@ -212,11 +213,11 @@ public partial class MainWindow
 		global::Gtk.Notebook.NotebookChild w15 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1 [this.trustsetter1]));
 		w15.Position = 7;
 		// Notebook tab
-		this.label68 = new global::Gtk.Label ();
-		this.label68.Name = "label68";
-		this.label68.LabelProp = global::Mono.Unix.Catalog.GetString ("Set Trust");
-		this.notebook1.SetTabLabel (this.trustsetter1, this.label68);
-		this.label68.ShowAll ();
+		this.label69 = new global::Gtk.Label ();
+		this.label69.Name = "label69";
+		this.label69.LabelProp = global::Mono.Unix.Catalog.GetString ("Set Trust");
+		this.notebook1.SetTabLabel (this.trustsetter1, this.label69);
+		this.label69.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.accountlines1 = new global::RippleClientGtk.AccountLines ();
 		this.accountlines1.Events = ((global::Gdk.EventMask)(256));
@@ -225,11 +226,11 @@ public partial class MainWindow
 		global::Gtk.Notebook.NotebookChild w16 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1 [this.accountlines1]));
 		w16.Position = 8;
 		// Notebook tab
-		this.label70 = new global::Gtk.Label ();
-		this.label70.Name = "label70";
-		this.label70.LabelProp = global::Mono.Unix.Catalog.GetString ("Lines");
-		this.notebook1.SetTabLabel (this.accountlines1, this.label70);
-		this.label70.ShowAll ();
+		this.label71 = new global::Gtk.Label ();
+		this.label71.Name = "label71";
+		this.label71.LabelProp = global::Mono.Unix.Catalog.GetString ("Lines");
+		this.notebook1.SetTabLabel (this.accountlines1, this.label71);
+		this.label71.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.serverinfo1 = new global::RippleClientGtk.ServerInfo ();
 		this.serverinfo1.Events = ((global::Gdk.EventMask)(256));
@@ -238,11 +239,11 @@ public partial class MainWindow
 		global::Gtk.Notebook.NotebookChild w17 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1 [this.serverinfo1]));
 		w17.Position = 9;
 		// Notebook tab
-		this.label73 = new global::Gtk.Label ();
-		this.label73.Name = "label73";
-		this.label73.LabelProp = global::Mono.Unix.Catalog.GetString ("Server Info");
-		this.notebook1.SetTabLabel (this.serverinfo1, this.label73);
-		this.label73.ShowAll ();
+		this.label74 = new global::Gtk.Label ();
+		this.label74.Name = "label74";
+		this.label74.LabelProp = global::Mono.Unix.Catalog.GetString ("Server Info");
+		this.notebook1.SetTabLabel (this.serverinfo1, this.label74);
+		this.label74.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
 		this.console1 = new global::RippleClientGtk.Console ();
 		this.console1.Events = ((global::Gdk.EventMask)(256));
@@ -264,7 +265,7 @@ public partial class MainWindow
 			this.Child.ShowAll ();
 		}
 		this.DefaultWidth = 851;
-		this.DefaultHeight = 369;
+		this.DefaultHeight = 365;
 		this.Hide ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
 	}

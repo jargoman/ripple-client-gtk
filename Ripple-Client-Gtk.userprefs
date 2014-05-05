@@ -1,19 +1,21 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/OptionsWidget.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/FileHelper.cs">
     <Files>
-      <File FileName="Ripple-Client-Gtk/Program.cs" Line="88" Column="21" />
-      <File FileName="Ripple-Client-Gtk/SplashWindow.cs" Line="41" Column="52" />
-      <File FileName="Ripple-Client-Gtk/OptionsWidget.cs" Line="24" Column="17" />
-      <File FileName="Ripple-Client-Gtk/MainWindow.cs" Line="121" Column="10" />
-      <File FileName="Ripple-Client-Gtk/BalanceTabOptionsWidget.cs" Line="1" Column="1" />
-      <File FileName="Ripple-Client-Gtk/Wallet.cs" Line="1" Column="1" />
+      <File FileName="Ripple-Client-Gtk/Plugin.cs" Line="32" Column="32" />
+      <File FileName="Ripple-Client-Gtk/Console.cs" Line="1" Column="1" />
+      <File FileName="Ripple-Client-Gtk/IPlugin.cs" Line="14" Column="3" />
+      <File FileName="Ripple-Client-Gtk/PluginController.cs" Line="173" Column="42" />
+      <File FileName="Ripple-Client-Gtk/Program.cs" Line="108" Column="6" />
+      <File FileName="Ripple-Client-Gtk/FileHelper.cs" Line="101" Column="9" />
+      <File FileName="Ripple-Client-Gtk/MainWindow.cs" Line="264" Column="5" />
+      <File FileName="Ripple-Client-Gtk/SplashWindow.cs" Line="182" Column="3" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Ripple-Client-Gtk" expanded="True">
-            <Node name="bigDecimal.cs" selected="True" />
+            <Node name="FileHelper.cs" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -26,4 +28,5 @@
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <AuthorInfo Name="Karim Jouar" Email="karim@live.ca" Copyright="ICE lisence" Company="ICE industries" Trademark="frozen ocean productions" />
 </Properties>

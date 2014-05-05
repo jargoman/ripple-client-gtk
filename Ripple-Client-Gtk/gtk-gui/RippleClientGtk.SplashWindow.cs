@@ -25,7 +25,7 @@ namespace RippleClientGtk
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.image87 = new global::Gtk.Image ();
 			this.image87.Name = "image87";
-			this.image87.Pixbuf = new global::Gdk.Pixbuf (global::System.IO.Path.Combine (global::System.AppDomain.CurrentDomain.BaseDirectory, "./ice_splash.png"));
+			this.image87.Pixbuf = global::Gdk.Pixbuf.LoadFromResource ("RippleClientGtk.ice_splash.png");
 			this.vbox2.Add (this.image87);
 			global::Gtk.Box.BoxChild w1 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.image87]));
 			w1.Position = 0;
@@ -33,8 +33,8 @@ namespace RippleClientGtk
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 374;
-			this.DefaultHeight = 456;
+			this.DefaultWidth = 300;
+			this.DefaultHeight = 300;
 			this.Show ();
 		}
 	}

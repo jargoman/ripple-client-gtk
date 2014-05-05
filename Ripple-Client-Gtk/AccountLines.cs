@@ -25,7 +25,7 @@ namespace RippleClientGtk
 			NetworkInterface.onMessage += delegate(object sender, WebSocket4Net.MessageReceivedEventArgs e) {
 
 
-				// basically this WILL fail. It saves from typing dynamo.IsDefined("result") && dynamo.IsDefined("result.account_data") && dynam... ect. It quickly became ridiculous. 
+				//  
 				try 
 				{
 
@@ -35,58 +35,55 @@ namespace RippleClientGtk
 
 
 					dynamic dynamo = DynamicJson.Parse(e.Message);
-					var arr = dynamo.result.lines; // moved this up here
 
-						
+					if (dynamo.isDefined("result.lines")) {
+						var arr = dynamo.result.lines; // moved this up here
+					
+						// often throws runtime binder exception. 
+						String account = "";
 
+						List<TrustLine> lines = new List<TrustLine>(); // list of trust lines. 
 
-
-							  // often throws runtime binder exception. 
-
-					String account = "";
-
-					List<TrustLine> lines = new List<TrustLine>(); // list of trust lines. 
-
-
-
-					foreach (dynamic l in arr) {
-						TrustLine trust = new TrustLine(l);
-						// if new trust is a type safe object
+						foreach (dynamic l in arr) {
+							TrustLine trust = new TrustLine(l);
+							// if new trust is a type safe object
 
 
-						if ( trust.currency.Equals(LICENSE) ) {
+							if ( trust.currency.Equals(LICENSE) ) {
 
-							if (trust.account.Equals(AccountLines.LICENSE_ISSUER)) {
+								if (trust.account.Equals(AccountLines.LICENSE_ISSUER)) {
 
-								if (trust.getBalanceAsDecimal() > AccountLines.LICENSE_FEE) {
-									hasIce = true; // ta da !!
+									if (trust.getBalanceAsDecimal() > AccountLines.LICENSE_FEE) {
+										hasIce = true; // ta da !!
+									}
+
+									else {
+										Gtk.Application.Invoke ( delegate {
+											RippleClientGtk.MessageDialog.showMessage("Use this application requires the account " + account + "to be funded with " + AccountLines.LICENSE_FEE + " " + AccountLines.LICENSE + ".");
+										});
+										return;
+									}
 								}
 
 								else {
-									Gtk.Application.Invoke ( delegate {
-										RippleClientGtk.MessageDialog.showMessage("Use this application requires the account " + account + "to be funded with " + AccountLines.LICENSE_FEE + " " + AccountLines.LICENSE + ".");
-									});
-									return;
-								}
-							}
-
-							else {
-								Gtk.Application.Invoke( delegate {
+									Gtk.Application.Invoke( delegate {
 
 						
-									MessageDialog.showMessage("Warning : only " + AccountLines.LICENSE + " issued by account " + AccountLines.LICENSE_ISSUER + " are valid licenses");
-								});
+										MessageDialog.showMessage("Warning : only " + AccountLines.LICENSE + " issued by account " + AccountLines.LICENSE_ISSUER + " are valid licenses");
+									});
+								}
+
 							}
 
+							lines.Add ( trust );
 						}
 
-						lines.Add ( trust );
+						AccountLines.lines = lines; // different variables with different scope, same name.
+
+						this.setTable(lines);
+						this.addUpCurrencies();
 					}
 
-					AccountLines.lines = lines; // different variables with different scope, same name.
-
-					this.setTable(lines);
-					this.addUpCurrencies();
 
 							/*
 							if (this.highestLedger < index) 
@@ -99,7 +96,7 @@ namespace RippleClientGtk
 
 				catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
 					if (Debug.AccountLines) {
-						Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
+						//Logging.write ("");
 						Logging.write(ex.Message);  // make sure it's ex.Message and not e.Message
 					}
 

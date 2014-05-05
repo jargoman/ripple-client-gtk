@@ -57,10 +57,6 @@
       <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="DynamicJson">
-      <HintPath>bin\Debug\DynamicJson.dll</HintPath>
-    </Reference>
     <Reference Include="WebSocket4Net">
       <HintPath>bin\Debug\WebSocket4Net.dll</HintPath>
     </Reference>
@@ -69,6 +65,21 @@
       <HintPath>bin\Debug\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Linq" />
+    <Reference Include="CSScriptLibrary.v1.1">
+      <HintPath>..\..\..\Downloads\cs-script\Lib\Bin\NET 1.1\CSScriptLibrary.v1.1.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Dynamic" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Core" />
+    <Reference Include="CSSCodeProvider.v1.1">
+      <HintPath>..\..\..\Downloads\cs-script\Lib\Bin\NET 1.1\CSSCodeProvider.v1.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CSharp">
+      <HintPath>..\..\..\Downloads\cs-script\Lib\Mono.CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -94,7 +105,6 @@
     <Compile Include="Console.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.Console.cs" />
     <Compile Include="Logging.cs" />
-    <Compile Include="Plugin.cs" />
     <Compile Include="SendRipple.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.SendRipple.cs" />
     <Compile Include="ReceiveWidget.cs" />
@@ -160,6 +170,14 @@
     <Compile Include="gtk-gui\RippleClientGtk.OptionsWidget.cs" />
     <Compile Include="BalanceTabOptionsWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.BalanceTabOptionsWidget.cs" />
+    <Compile Include="SplashOptionsWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.SplashOptionsWidget.cs" />
+    <Compile Include="OrderBookTableWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.OrderBookTableWidget.cs" />
+    <Compile Include="PluginController.cs" />
+    <Compile Include="IPlugin.cs" />
+    <Compile Include="DynamicJson.cs" />
+    <Compile Include="Plugin.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

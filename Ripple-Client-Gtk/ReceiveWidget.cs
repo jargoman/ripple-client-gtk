@@ -126,6 +126,8 @@ namespace RippleClientGtk
 				NetworkInterface.currentInstance.sendToServer (request2);
 			}
 
+			OrderBookTableWidget.subscribe();
+
 
 		}
 

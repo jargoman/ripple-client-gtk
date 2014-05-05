@@ -1,4 +1,5 @@
 using System;
+//using Mono.CSharp;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace RippleClientGtk
 			}
 
 			currentInstance = this;
+
 
 		}
 

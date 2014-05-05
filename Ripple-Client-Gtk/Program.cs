@@ -9,6 +9,7 @@ using System.Threading;
 using Gtk;
 
 
+
 namespace RippleClientGtk
 {
 	class MainClass
@@ -31,7 +32,7 @@ namespace RippleClientGtk
 			//Logging.write ("Thread priority = " + Thread.CurrentThread.Priority);
 			//}
 
-			SplashWindow.loadIsSplash(); // loads splash config // must be first
+			SplashWindow.loadSplash(); // loads splash config // must be first
 
 			Gtk.Application.Invoke (
 				delegate {
@@ -70,6 +71,7 @@ namespace RippleClientGtk
 			 * ect...
 			 */
 
+			//Mono.CSharp.Evaluator.
 
 			//Thread.Sleep(2);
 			Gtk.Application.Invoke (
@@ -84,37 +86,29 @@ namespace RippleClientGtk
 				}
 			);
 
+			while (!SplashWindow.loaded) {
+				//Logging.write("sleeping...");
+				Thread.Sleep(10);
+			}
 
-			Thread.Sleep(5000);
-			Gtk.Application.Invoke (
-				delegate {
-					if (SplashWindow.isSplash) {
-						//splash = new SplashWindow ();
-						splash.ShowAll();
-						//splash.
-						//splash.QueueDraw();
-						//splash.Realize();
-					}
-				}
-			);
-			Thread.Sleep(100);
+			if (SplashWindow.delay == null) {
+				SplashWindow.delay = SplashWindow.default_delay;
+			}
 
-			//while (Gtk.Application.EventsPending()) {
-			//	Gtk.Application.RunIteration();
-			//}
+			if (SplashWindow.delay!=null) {
+				Thread.Sleep((Int32)SplashWindow.delay);
+			}
 
+			PluginController.initPlugins ();
 
-			/* instead of wasting time sleeping 
-			 * we'll put loading tasks here to let the splash screen load 
-			 * before opening the behemoth of an invoke. 
-			 */
+			Thread.Sleep (5);
 
-			//
+			//PluginController.
+
+			//Thread.Sleep(5);
 
 
-			//Thread.Sleep (100);
-			//RandomSeedGenerator.startupSeed();
-
+			NetworkSettings.readSettings();
 
 			if (Debug.testVectors) {
 				RippleDeterministicKeyGenerator.testVectors ();
@@ -123,17 +117,15 @@ namespace RippleClientGtk
 			}
 
 
-			Thread.Sleep(10);
 
-			NetworkSettings.readSettings();
-
-
-			Thread.Sleep(3);
 
 			Wallet.loadWallet (Wallet.walletpath); // NOT DECRYPTED
 
 			Thread.Sleep(3);
 
+			if (PluginController.currentInstance!=null) {
+				PluginController.currentInstance.preStartUp();
+			}
 
 			Gtk.Application.Invoke (delegate {
 
@@ -148,7 +140,9 @@ namespace RippleClientGtk
 			}
 			);
 
-			Thread.Sleep(2);
+
+
+			//Thread.Sleep(2);
 
 			Console.loadHistory ();
 
@@ -220,7 +214,7 @@ namespace RippleClientGtk
 			BalanceTab.currentInstance.set (BalanceTabOptionsWidget.actual_values);
 
 			Thread.Sleep(3);
-
+	
 			TransactionType.loadTransactionTypes();
 
 			Thread.Sleep(5);
@@ -232,7 +226,11 @@ namespace RippleClientGtk
 			}
 			);
 
+			Thread.Sleep(10);
 
+			if (PluginController.currentInstance!=null) {
+				PluginController.currentInstance.postStartUp();
+			}
 				
 
 		}

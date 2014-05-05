@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using Codeplex.Data;
 
 namespace RippleClientGtk
 {
@@ -8,59 +11,49 @@ namespace RippleClientGtk
 		public OptionsWidget ()
 		{
 			this.Build ();
+
+			if ( plugWidgets == null && PluginController.currentInstance!=null ) {
+				plugWidgets = PluginController.currentInstance.getOptionsWidgets();
+			}
 		}
 
-		private UInt32 parseInt (String s)
-		{
-			/*
-			try {
-				mills = Convert.ToUInt32(millstr);
-			}
+		private static List<Gtk.Widget> plugWidgets = null;
 
-			catch (Exception e) {
-				// TODO debug
-				return;
-			}
 
-			return mills;*/
 
-			return 0;
-		}
+		//private dynamic dynamo = null;
+		//private DynamicJson dynamo = null;
 
 		public void processOptions ()
 		{
 
-			Gtk.Application.Invoke(
-				delegate {
 
-			
-					// following must be run by gtk thread
-			
-					string[] faves = this.balancetaboptionswidget2.getFavorites();
-
-					bool showsplash = this.checkbutton1.Active;
-
-					String millstr = this.entry4.Text;
-					int mills;
-					
-
-					string path = label16.Text;
-
-					int splshwidth;
-
-					try {
-						//splshwidth =
-					}
-
-					catch (Exception e) {
-
-					}
-				}
-
-					
-			);
 
 		}
+
+		private void processConsole ()
+		{
+
+		}
+
+		private void processFavorites ()
+		{
+
+			string[] faves = this.balancetaboptionswidget2.getFavorites();
+
+			
+		}
+
+		private void processSplash ()
+		{
+
+		}
+
+
+
+
+
+
 
 	}
 }
