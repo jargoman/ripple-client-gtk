@@ -92,11 +92,6 @@ namespace RippleClientGtk
 		public static String jsonConfig = null;
 		public static String configPath = null;
 
-		static SplashWindow ()
-		{
-			configPath = FileHelper.getSettingsPath( configName );
-
-		}
 
 
 		public static void loadSplash ()
@@ -104,7 +99,7 @@ namespace RippleClientGtk
 
 
 
-
+			configPath = FileHelper.getSettingsPath( configName );
 			jsonConfig = FileHelper.getJsonConf(configPath);
 
 			if (jsonConfig != null) {

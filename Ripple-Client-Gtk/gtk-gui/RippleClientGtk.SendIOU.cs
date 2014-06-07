@@ -266,8 +266,6 @@ namespace RippleClientGtk
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
-			this.currencycomboboxentry.Changed += new global::System.EventHandler (this.currencychanged);
-			this.checkbuttonpartial.Toggled += new global::System.EventHandler (this.partialtoggled);
 		}
 	}
 }

@@ -145,8 +145,6 @@
     <Compile Include="BigEndianReader.cs" />
     <Compile Include="BigEndianWriter.cs" />
     <Compile Include="bigDecimal.cs" />
-    <Compile Include="Wallet.cs" />
-    <Compile Include="gtk-gui\RippleClientGtk.Wallet.cs" />
     <Compile Include="ECDSASignature.cs" />
     <Compile Include="RipplePublicGeneratorAddress.cs" />
     <Compile Include="RippleSeedAddress.cs" />
@@ -178,6 +176,32 @@
     <Compile Include="IPlugin.cs" />
     <Compile Include="DynamicJson.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="IEncrypt.cs" />
+    <Compile Include="CommandLineParser.cs" />
+    <Compile Include="WalletManager.cs" />
+    <Compile Include="WalletWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.WalletWidget.cs" />
+    <Compile Include="WalletViewPort.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.WalletViewPort.cs" />
+    <Compile Include="WalletManagerWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.WalletManagerWidget.cs" />
+    <Compile Include="FromSecretDialog.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.FromSecretDialog.cs" />
+    <Compile Include="WalletManagerWindow.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.WalletManagerWindow.cs" />
+    <Compile Include="WalletTree.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.WalletTree.cs" />
+    <Compile Include="WalletUtil.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.WalletUtil.cs" />
+    <Compile Include="Wallet.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.Wallet.cs" />
+    <Compile Include="FromScriptDialog.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.FromScriptDialog.cs" />
+    <Compile Include="RippleTrustSetTransaction.cs" />
+    <Compile Include="RippleTransaction.cs" />
+    <Compile Include="ProcessSplash.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.ProcessSplash.cs" />
+    <Compile Include="HistoryRecall.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

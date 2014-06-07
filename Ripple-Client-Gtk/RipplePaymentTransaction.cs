@@ -1,10 +1,11 @@
 using System;
 using Gtk;
 using Codeplex.Data;
+using RippleClientGtk;
 
 namespace RippleClientGtk
 {
-	public class RipplePaymentTransaction
+	public class RipplePaymentTransaction : RippleClientGtk.RippleTransaction
 	{
 		public RippleAddress payer; 
 		public RippleAddress payee;
@@ -14,25 +15,25 @@ namespace RippleClientGtk
 
 		public String signedTransactionBlob = null;
 
-		public UInt32 sequenceNumber;
+
 
 		public String txHash;
 		//String signature;
 
 		public String publicKeyUsedToSign;
 
-		public UInt32 flags = 0;
+
 
 		public UInt32 tfPartialPayment = 0x00020000;
 
 		public DenominatedIssuedCurrency sendmax = null;
 
-		public RipplePaymentTransaction (RippleAddress payer, RippleAddress payee, DenominatedIssuedCurrency amount, DenominatedIssuedCurrency fee, UInt32 sequencenumber, DenominatedIssuedCurrency sendmax)
+		public RipplePaymentTransaction (RippleAddress payer, RippleAddress payee, DenominatedIssuedCurrency amount, DenominatedIssuedCurrency fee, UInt32 sequencenumber, DenominatedIssuedCurrency sendmax) : base (sequencenumber)
 		{
 			this.payer = payer;
 			this.payee = payee;
 			this.amount = amount;
-			this.sequenceNumber = sequencenumber;
+
 			this.fee = fee;
 
 			this.sendmax = sendmax;
@@ -59,7 +60,7 @@ namespace RippleClientGtk
 			//int[] s = new int[0];
 		}
 
-		public RippleBinaryObject getBinaryObject ()
+		public override RippleBinaryObject getBinaryObject ()
 		{
 			RippleBinaryObject rbo = new RippleBinaryObject();
 			rbo.putField(BinaryFieldType.TransactionType, TransactionType.PAYMENT);
@@ -78,30 +79,11 @@ namespace RippleClientGtk
 			return rbo;
 		}
 
-		public String getSignedTxBlob() {
-			return signedTransactionBlob;
-		}
 
 
 
-		public void sign ( RippleSeedAddress seed )
-		{
-			//RipplePaymentTransaction tx = new RipplePaymentTransaction(seed.getPublicRippleAddress(),payee,amnt,dafee, MainWindow.currentInstance.sequence,sndmx); // Todo implement sequemce number. int 23 is an arbatrary number for testing 
-			//if (part) { 
-			//	tx.flags |= tx.tfPartialPayment;
-			//}
-
-			RippleBinaryObject rbo = this.getBinaryObject().getObjectSorted();
-			rbo = new RippleSigner(seed.getPrivateKey(0)).sign(rbo);
-
-			byte[] signedTXBytes = new BinarySerializer().writeBinaryObject(rbo).ToArray();
-
-			String blob = Base58.ByteArrayToHexString(signedTXBytes);
-
-			this.signedTransactionBlob = blob;
 
 
-		}
 
 		public void submit ()
 		{

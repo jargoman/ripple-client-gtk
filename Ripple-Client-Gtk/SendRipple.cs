@@ -12,13 +12,13 @@ namespace RippleClientGtk
 		{
 			this.Build ();
 
-			this.balanceLabel.Text = unsynced;
+			this.balanceLabel.Text = ReceiveWidget.UNSYNCED; // unsynced;
 
 			this.unitsSelectBox.Changed += OnUnitsSelectBoxChanged;
 
 		}
 
-		String unsynced = "   --   unsynced   --   ";
+		//String unsynced = "   --   unsynced   --   ";
 
 		public static void sendXrpPayment ( String account, String destination, Decimal xrpamount, Decimal fee, String secret) {
 
@@ -62,6 +62,7 @@ namespace RippleClientGtk
 			}
 
 			RippleSeedAddress seed = new RippleSeedAddress(secret);
+
 			RippleAddress payee = new RippleAddress(destination);
 
 			RippleAddress payer = new RippleAddress(account);
@@ -102,14 +103,27 @@ namespace RippleClientGtk
 
 		protected void OnSendXRPButtonClicked (object sender, EventArgs e)
 		{
+			if (MainWindow.currentInstance == null) {
+				return;
+			}
+
+			RippleWallet rw = MainWindow.currentInstance.getRippleWallet();
+
+			if (rw==null) {
+				return;
+			}
+
+			if (rw.seed == null) {
+				// TODO TOO F'N DOOOO!!!
+			}
 
 			Thread th = new Thread( new ParameterizedThreadStart(sendThread));
 
-			String amount = this.amountEntry.Text;
-			String destination = this.destinationentry.Text;
+			String amount = this.amountcomboboxentry.ActiveText;		//this.amountEntry.Text; // used to be a text entry
+			String destination = this.destinationcomboboxentry.ActiveText;		//this.destinationentry.Text;
 
-			String account = MainWindow.currentInstance.getReceiveAddress ();
-			String secret = MainWindow.currentInstance.getSecret ();
+			String account = MainWindow.currentInstance.getRippleWallet().getStoredReceiveAddress();//getReceiveAddress ();
+			String secret = rw.seed.ToString();
 
 			if (destination == null) {
 
@@ -174,7 +188,7 @@ namespace RippleClientGtk
 
 			if (Debug.SendRipple) {
 
-				Logging.write("Units = " + tp.units);
+				Logging.write("Units = " + (string)((tp.units == null) ? "null" : tp.units));
 
 				Logging.write("Send Ripple : requesting Server Info\n");
 			}
@@ -192,38 +206,11 @@ namespace RippleClientGtk
 				Logging.write("drops");
 
 
-				try {
-
-					ulong amountl = Convert.ToUInt64( tp.amount );
-
-					if (amountl<0) {
-						MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
-						return;
-					}
-
+				ulong? amountl = DenominatedIssuedCurrency.parseUInt64(tp.amount, "Amount of drops");
+				if (amountl!=null) {
 					sendDropsPayment(tp.account,tp.destination,(decimal)amountl,new decimal(ServerInfo.transaction_fee),tp.secret);
 				}
-
-				catch (FormatException ex) {
-
-					MessageDialog.showMessage ("Amount is fomated incorrectly for sending drops.\n It must be a valid integer\n");
-					return;
-
-				}
-
-				catch (OverflowException ex) {
-					MessageDialog.showMessage ("Send amount is greater than an unsignd long. No one's got that much money\n");
-					return;
-				}
-
-				catch (Exception ex) {
-					MessageDialog.showMessage ("Unknown error formatting string\n");
-					return;
-				}
-
-
-
-
+				return;
 
 
 			}
@@ -231,46 +218,11 @@ namespace RippleClientGtk
 			else if ("XRP".Equals(tp.units)) {
 				Logging.write ("XRP");
 
-				try {
-
-					Decimal amountd = Convert.ToDecimal(tp.amount);
-
-					if (amountd < 0) {
-						MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
-						return;
-					}
-
-					sendXrpPayment (tp.account,tp.destination,amountd,new decimal(ServerInfo.transaction_fee),tp.secret);
-					return;
+				Decimal? amountd = DenominatedIssuedCurrency.parseDecimal(tp.amount, "Amount Entered");
+				if (amountd!=null) {
+					sendXrpPayment (tp.account,tp.destination,(Decimal)amountd,new decimal(ServerInfo.transaction_fee),tp.secret);
 				}
-
-				catch (FormatException ex) {
-
-					MessageDialog.showMessage ("Amount entered is not a valid number of xrp. e.g 1.2345 " + ex.ToString());
-
-					if (Debug.SendRipple) {
-						Logging.write(ex.Message);
-					}
-
-					return;
-				}
-
-				catch (OverflowException ex) {
-					MessageDialog.showMessage ("Send amount is greater than a double. NO ONE's got that much money\n");
-					if (Debug.SendRipple) {
-						Logging.write(ex.Message);
-					}
-
-					return;
-				}
-
-				catch (Exception ex ) {
-					MessageDialog.showMessage ("Amount entered is not a valid number of xrp. e.g 1.2345 " + ex.ToString());
-					if (Debug.SendRipple) {
-						Logging.write(ex.Message);
-					}
-					return;
-				}
+				return;
 
 			}
 
@@ -284,7 +236,8 @@ namespace RippleClientGtk
 
 		}
 
-		public void setXrpBalance (decimal balance) {
+
+		public void setDropBalance (decimal balance) {
 
 			Gtk.Application.Invoke ( delegate 
 			                        {
@@ -323,7 +276,7 @@ namespace RippleClientGtk
 
 		protected void OnUnitsSelectBoxChanged (object sender, EventArgs e)
 		{
-			if ( this.unsynced.Equals(this.balanceLabel.Text)) {
+			if ( ReceiveWidget.UNSYNCED.Equals(this.balanceLabel.Text)) {
 				// TODO ??
 
 
@@ -333,7 +286,7 @@ namespace RippleClientGtk
 
 			if (MainWindow.currentInstance != null) {
 
-				this.setXrpBalance ( MainWindow.currentInstance.xrpBalance );
+				this.setDropBalance ( MainWindow.currentInstance.dropBalance );
 				return;
 			}
 			//
@@ -342,10 +295,12 @@ namespace RippleClientGtk
 		protected void OnAmountEntryActivated (object sender, EventArgs e)
 		{
 
-			if (this.destinationentry == null) {
+			if (this.destinationcomboboxentry == null) {
 				return;
 			}
-			this.destinationentry.GrabFocus ();
+
+			this.destinationcomboboxentry.GrabFocus();
+
 		}
 
 		protected void OnDestinationentryActivated (object sender, EventArgs e)

@@ -3,6 +3,7 @@
  */
 
 using System;
+using Mono;
 using System.Text;
 using System.IO;
 using System.Threading;
@@ -16,15 +17,27 @@ namespace RippleClientGtk
 	{
 		static Thread thr = new Thread( new ThreadStart(ThreadRoutine));
 
-		static ThreadNotify notify;
+		//static ThreadNotify notify;
 
 		public static SplashWindow splash = null;
 		public static MainWindow win = null;
+		public static WalletManagerWindow wmw = null;
+
+		public static readonly string appname = "Ice Captain";
 
 		public static void Main (string[] args)
 		{
+			 //r = new Mono.CSharp.CommandLineParser.ParseResult();
+			//Application.Init ();
 
-			Application.Init ();
+			CommandLineParser parse = new CommandLineParser();
+			parse.parseCommands(args);
+
+			FileHelper.setFolderPath(CommandLineParser.path);
+
+			Application.Init (appname, ref args);
+
+
 
 			//Thread.CurrentThread.Priority = ThreadPriority.Highest;
 			//Thread.Yield()
@@ -73,6 +86,7 @@ namespace RippleClientGtk
 
 			//Mono.CSharp.Evaluator.
 
+
 			//Thread.Sleep(2);
 			Gtk.Application.Invoke (
 				delegate {
@@ -119,7 +133,7 @@ namespace RippleClientGtk
 
 
 
-			Wallet.loadWallet (Wallet.walletpath); // NOT DECRYPTED
+			//Wallet.loadWallet (Wallet.walletpath); // NOT DECRYPTED
 
 			Thread.Sleep(3);
 
@@ -142,11 +156,11 @@ namespace RippleClientGtk
 
 
 
-			//Thread.Sleep(2);
+			Thread.Sleep(2);
 
 			Console.loadHistory ();
 
-			//Thread.Sleep (1);
+			Thread.Sleep (1);
 
 
 			// make sure window is loaded
@@ -173,30 +187,16 @@ namespace RippleClientGtk
 
 			Thread.Sleep(3);
 
-			RandomSeedGenerator.startupSeed ();
+			// not static anymore :/
+			//RandomSeedGenerator.startupSeed ();
 
 			Thread.Sleep(3);
 
 			Gtk.Application.Invoke (delegate {
 
+				wmw = new WalletManagerWindow();
+				wmw.ShowAll();
 
-				Wallet wall = MainWindow.currentInstance.getWallet ();
-
-				if (wall!=null) {
-					if (Debug.Program) {
-						Logging.write ("Main : Gtk Invoke : wall!=null \n");
-					}
-					wall.decryptWallet();
-					wall.startup = false;
-				}
-
-				else {
-					if (Debug.Program) {
-						Logging.write ("Main : Gtk Invoke : wall==null \n");
-					}
-				}
-
-				//win.Show (); // show and run the main program
 			});
 
 
@@ -211,7 +211,7 @@ namespace RippleClientGtk
 
 
 			// uses gtk invoke
-			BalanceTab.currentInstance.set (BalanceTabOptionsWidget.actual_values);
+			BalanceTab.currentInstance.set ();
 
 			Thread.Sleep(3);
 	
@@ -221,7 +221,8 @@ namespace RippleClientGtk
 
 
 			Gtk.Application.Invoke( delegate {
-				win.Show();
+				//win.Show();
+				wmw.Show();
 				killSplash();
 			}
 			);
@@ -246,6 +247,8 @@ namespace RippleClientGtk
 			}
 
 		}
+
+
 
 
 	}  // end class

@@ -16,26 +16,38 @@ public partial class MainWindow: Gtk.Window
 {	
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
+		this.Hide();
 
 		if (Debug.MainWindow) {
 			Logging.write ("new MainWindow : begin\n");
 		}
 
+
+
 		Build ();
+
+		if (this.currencywidget10 != null) {
+			this.currencywidget10.setAsUnset("XRP");
+		}
+
+		if (this.currencywidget9 != null) {
+			this.currencywidget9.setAsUnset("ICE");
+		}
+
+
+
 		this.loadPlugins();
 
 
 
 		if (Debug.MainWindow) {
-			if (currentInstance!=null) {
-				Logging.write ("Warning. Another instance of MainWindow already exists.\n");
-			}
-
 			Logging.write ("MainWindow : build complete\n");
 		}
 
 
-
+		if (currentInstance!=null) {
+			Logging.write ("Warning. Another instance of MainWindow already exists.\n");
+		}
 
 
 
@@ -71,7 +83,7 @@ public partial class MainWindow: Gtk.Window
 					if (s.Equals("actNotFound"))  {
 						
 					
-						if (dynamo.isDefined("request.account")) {
+						if (dynamo.IsDefined("request.account")) {
 							try {
 								account = (String)dynamo.request.account;
 							}
@@ -135,7 +147,7 @@ public partial class MainWindow: Gtk.Window
 
 			this.sequence = (UInt32)sequence;
 
-			if (acc != null && acc == this.getReceiveAddress()) {
+			if (acc != null && acc == this.receivewidget2.getReceiveAddress()) {
 							
 				if (this.highestLedger < (UInt32)index) 
 				{
@@ -147,17 +159,26 @@ public partial class MainWindow: Gtk.Window
 							if (balance == null) {
 									return;
 							}
-							this.xrpBalance = Convert.ToDecimal(balance);
 
-							if (sendripple2!=null) {
-								this.sendripple2.setXrpBalance(this.xrpBalance);
-							}
-							decimal d = this.xrpBalance / 1000000.0m;
+							this.dropBalance = Convert.ToDecimal(balance);  // this throwing would be a ripple bug.
+
+							
+
+							
+							this.xrpBalance = this.dropBalance / 1000000.0m;
 									
-							String balstr = Base58.truncateTrailingZerosFromString(d.ToString());
+							//if (currencywidget10!=null) {
+							//	currencywidget10.set("XRP", this.xrpBalance.ToString()); // I 
+							//}
+							
+							String balstr = Base58.truncateTrailingZerosFromString(this.xrpBalance.ToString());
 											
 							if (Debug.MainWindow) {
-								Logging.write("Set balanceLabel.Text to " + balstr);
+								Logging.write("Set XRP.Text to " + balstr);
+							}
+
+							if (sendripple2!=null) {
+								this.sendripple2.setDropBalance(this.dropBalance);
 							}
 
 							//this.balanceLabel.Text = balstr;
@@ -169,6 +190,8 @@ public partial class MainWindow: Gtk.Window
 							if (Debug.MainWindow) {
 								//Logging.write(ex.Message + "\n");  // make sure it's ex.Message and not e.Message
 							}
+
+								this.updateUIBalance();
 						}
 						
 
@@ -205,7 +228,7 @@ public partial class MainWindow: Gtk.Window
 
 		//} catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException ex) {
 
-			//Logging.write ("This exception is propably intended. If client functions as inteded all is well\n");
+			
 			if (Debug.MainWindow) {
 		//		Logging.write(ex.Message + "\n");  // make sure it's ex.Message and not e.Message
 			}
@@ -219,6 +242,12 @@ public partial class MainWindow: Gtk.Window
 		currentInstance = this;
 	}
 
+	/*
+	public void setICE ()
+	{
+		throw new NotImplementedException ();
+	}
+	*/
 	private UInt32 highestLedger = 0;
 
 	public static MainWindow currentInstance = null;
@@ -252,43 +281,71 @@ public partial class MainWindow: Gtk.Window
 
 	public void loadPlugins ()
 	{
-		if (PluginController.currentInstance!=null && PluginController.allow_plugins) {
-			foreach (Plugin p in PluginController.pluginList) {
-				if (p==null) continue;
+		if (PluginController.currentInstance != null && PluginController.allow_plugins) {
+			if (PluginController.pluginList== null) {
+				// todo debug
+				return;
+			}
 
-				Gtk.Widget mainTab = p.getMainTab() as Gtk.Widget;
-				if (mainTab!=null) {
-					if (this.notebook1!=null) {
+			var vals = PluginController.pluginList.Values;
+
+
+			foreach (Plugin p in vals) {
+				if (p == null)
+					continue;
+
+				Gtk.Widget mainTab = p.getMainTab () as Gtk.Widget;
+				if (mainTab != null) {
+					if (this.notebook1 != null) {
 						//if (Debug.MainWindow) {
-							Logging.write("Appending page");
+						Logging.write ("Appending page");
 						//}
-						this.notebook1.AppendPage(mainTab,new Label(p.tab_label));
-						this.notebook1.ShowAll();
-						this.ShowAll();
+						this.notebook1.AppendPage (mainTab, new Label (p.tab_label));
+						this.notebook1.ShowAll ();
+						this.ShowAll ();
 					}
 				}
 			}
+		} else {
+			// TODO plugings have been disabled. post user warning
 		}
 	}
 
-	public Wallet getWallet() {
+	public void updateUIBalance ()
+	{
 
-		return this.wallet1;
-	}
+		this.currencywidget10.set("XRP");
 
-	public void setReceiveAddress (String address) {
-
-
-
-		this.receivewidget2.setReceiveAddress (address);
+		this.currencywidget9.set("ICE");
 
 	}
 
-	public String getReceiveAddress () {
+	public void setRippleWallet (RippleWallet rw) {
 
-		return this.receivewidget2.getReceiveAddress();
+
+		this.wallet1.setWallet(rw);
+		this.receivewidget2.setRippleWallet(rw);
+
+
+
 	}
 
+	public RippleWallet getRippleWallet () {
+
+		return this.wallet1.getWallet(); //this.receivewidget2.
+	}
+
+	private void unSetAll ()
+	{
+		// this is important !! clean out old values before using aother wallet
+
+		this.xrpBalance = 0;
+		this.dropBalance = 0;
+
+		sequence = 0;
+	}
+
+	/*
 	public String getSecret() {
 
 		if (this.secret == null) {
@@ -300,10 +357,12 @@ public partial class MainWindow: Gtk.Window
 	public void setSecret (String secret) {
 		this.secret = secret;
 	}
+	*/
 
 	public decimal xrpBalance = 0;
+	public decimal dropBalance = 0;
 
-	private String secret = null;
+	//private String secret = null;
 
 	public UInt32 sequence = 0;
 

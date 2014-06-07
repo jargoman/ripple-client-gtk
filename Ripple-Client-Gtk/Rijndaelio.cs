@@ -10,16 +10,25 @@ using Gtk;
 
 namespace RippleClientGtk
 {
-	public class Rijndaelio
+	public class Rijndaelio : RippleClientGtk.IEncrypt
 	{
 		public Rijndaelio ()
 		{
+			this.Name = default_name;
+		}
 
+		public static readonly string default_name = "Rijndaelio";
+
+		public static bool isDescribedByString (String s) {
+
+
+			return (s.Equals(default_name) || s.Equals("default") || s.Equals("default_encryption"));
+			
 		}
 
 		private static readonly byte [] SALT = new byte[] { 0x24, 0xa7, 0xfc, 0x12, 0x90, 0xb3, 0x5e, 0x6d, 0xe8, 0xc1, 0xa8, 0x3d, 0x03, 0x72, 0x99, 0xf4};  // Note : although this is a randomly derived array changing it's contents may break compatibility with decrypting existing wallets.
 
-		public byte[] encrypt (String message, String password) 
+		public byte[] encrypt (byte[] message, String password) 
 		{
 
 			try {
@@ -41,8 +50,8 @@ namespace RippleClientGtk
 
 							
 
-									byte[] encode = Encoding.ASCII.GetBytes(message);
-
+									//byte[] encode = Encoding.ASCII.GetBytes(message);
+									byte[] encode = message;
 									cryptostream.Write(encode,0,encode.Length);
 									cryptostream.Close();
 
@@ -68,7 +77,7 @@ namespace RippleClientGtk
 
 		}
 
-		public String decrypt ( byte [] cipher, String password) {
+		public byte[] decrypt ( byte [] cipher, String password) {
 
 			try {
 
@@ -87,8 +96,10 @@ namespace RippleClientGtk
 								cryptostream.Close();
 
 								byte[] array = memorystream.ToArray();
-								string value = ASCIIEncoding.ASCII.GetString(array);
-								return value;
+								//string value = ASCIIEncoding.ASCII.GetString(array);
+								//return value;
+
+								return array;
 							}
 						}
 
@@ -101,6 +112,12 @@ namespace RippleClientGtk
 				Logging.write ("Decryption Error, Exception Thrown\n" + e.Message + "\n");
 				return null;
 			}
+		}
+
+		public string Name {
+			get {return "Rijndaelio";}
+			set {}
+
 		}
 
 

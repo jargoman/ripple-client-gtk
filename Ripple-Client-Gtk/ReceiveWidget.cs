@@ -36,7 +36,7 @@ namespace RippleClientGtk
 			};
 		}
 
-		static String UNSYNCED = " -- unsynced -- ";
+		public static String UNSYNCED = " -- unsynced -- ";
 		String address = UNSYNCED;
 
 		/* no receive address on start */
@@ -91,27 +91,34 @@ namespace RippleClientGtk
 			MessageDialog.showMessage ("You need a public and private key. Go to wallet tab and enter your wallet key pair\n");
 		}
 
-		public void setReceiveAddress ( String address ) {
+		public void setRippleWallet ( RippleWallet rw ) {
 
-			AccountLines.cash = new Dictionary<string, Decimal> ();
 
+
+			String ad = (string)((rw == null) ? UNSYNCED : rw.getStoredReceiveAddress());
+			//AccountLines.cash = new Dictionary<string, Decimal> ();
 			Gtk.Application.Invoke ( delegate 
 				{
-					this.receiveLabel.Text = address;
+					this.receiveLabel.Text = (String)((rw == null) ? UNSYNCED : ad);
 				}
 			);
 
-			this.address = address;
+			this.address = (rw == null) ? null : (String) ad;
 
-			this.isSet = true;
+			this.isSet = (rw == null) ? false : true;
 
-			requestInfo (address);
+
+			if (rw != null) requestInfo (ad);
 
 		}
 
 		private void requestInfo (String address) {
 
 			//String request = "{\"command\":\"account_info\",\"account\":\"" + address + "\"}";
+			if (address == null) {
+				return;
+			}
+
 
 			Object ob = new {command="account_info", account=address};
 

@@ -73,46 +73,77 @@ namespace RippleClientGtk
 		}
 
 		public static readonly String[] default_values = {"BTC", "LTC", "USD", "CAD", "EUR", "NMC"};
-		public static String[] actual_values = null;
+		public static String[] actual_values = null; // values being used live
 
 		public static readonly String configName = "favorites.jsn";
 		public static String balanceConfigPath = "";
 
 		public static String jsonConfig = null;
 
-		static BalanceTabOptionsWidget ()
-		{
-			balanceConfigPath = FileHelper.getSettingsPath(configName);
 
-			jsonConfig = FileHelper.getJsonConf (balanceConfigPath);
-		}
 
 		public static bool loadBalanceConfig ()
 		{
 
+			balanceConfigPath = FileHelper.getSettingsPath (configName);
 
+			jsonConfig = FileHelper.getJsonConf (balanceConfigPath);
 			//jsonConfig = FileHelper.getJsonConf (balanceConfigPath);  // from harddisk
 
-			// if there is no config then generate a default one
-			if (jsonConfig == null || actual_values == null) {
-				jsonConfig = getJson (default_values);
-				actual_values = default_values;
-			} else {
-				actual_values = favoritesFromJson (jsonConfig);
 
-				if (actual_values!= null) {
-					return true;
+			// if favorites weren't set via command line
+			if (actual_values == null) {
+
+				// if there is no config then generate a default one
+				if (jsonConfig == null) {
+					jsonConfig = getJson (default_values);
+					actual_values = default_values;
+
+				} else {
+
+					actual_values = favoritesFromJson (jsonConfig);
+
+					if (actual_values != null) {
+						return true;
+					}
 				}
+			} else {
+				saveConfig(actual_values);
 			}
 
 			return false;
 
 		}
 
+		public static void setFavoriteParam (String param)
+		{
+			if (param==null) {
+				// todo debug
+			}
+
+			String[] values = param.Split(',');
+
+			if (values.Length!=6) {
+				Logging.write("Commad line argument Favorites must specify six currencies");
+				Logging.write("Example : favorites=CAD,BTC,EUR,LTC,JED,CNY");
+			}
+
+			// todo sanity check. valid currencies?
+
+			actual_values = values;
+
+
+		}
+
 		public static void saveConfig (String[] values) {
 			jsonConfig = getJson(values);
-
-			File.WriteAllText(balanceConfigPath,jsonConfig);
+			try {
+				File.WriteAllText(balanceConfigPath,jsonConfig);
+			}
+			catch (Exception e) {
+				// todo debug
+				Logging.write(e.Message);
+			}
 
 		}
 

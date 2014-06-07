@@ -1,22 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/FileHelper.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/RandomSeedGenerator.cs">
     <Files>
-      <File FileName="Ripple-Client-Gtk/Plugin.cs" Line="32" Column="32" />
-      <File FileName="Ripple-Client-Gtk/Console.cs" Line="1" Column="1" />
-      <File FileName="Ripple-Client-Gtk/IPlugin.cs" Line="14" Column="3" />
-      <File FileName="Ripple-Client-Gtk/PluginController.cs" Line="173" Column="42" />
-      <File FileName="Ripple-Client-Gtk/Program.cs" Line="108" Column="6" />
-      <File FileName="Ripple-Client-Gtk/FileHelper.cs" Line="101" Column="9" />
-      <File FileName="Ripple-Client-Gtk/MainWindow.cs" Line="264" Column="5" />
-      <File FileName="Ripple-Client-Gtk/SplashWindow.cs" Line="182" Column="3" />
+      <File FileName="Ripple-Client-Gtk/FromScriptDialog.cs" Line="58" Column="37" />
+      <File FileName="Ripple-Client-Gtk/RippleSeedAddress.cs" Line="1" Column="1" />
+      <File FileName="Ripple-Client-Gtk/PasswordCreateDialog.cs" Line="1" Column="1" />
+      <File FileName="Ripple-Client-Gtk/Wallet.cs" Line="1" Column="1" />
+      <File FileName="Ripple-Client-Gtk/RandomSeedGenerator.cs" Line="162" Column="6" />
+      <File FileName="Ripple-Client-Gtk/Program.cs" Line="93" Column="15" />
+      <File FileName="Ripple-Client-Gtk/Base58.cs" Line="36" Column="29" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="Ripple-Client-Gtk" expanded="True">
-            <Node name="FileHelper.cs" selected="True" />
-          </Node>
+          <Node name="Ripple-Client-Gtk" expanded="True" selected="True" />
         </State>
       </Pad>
     </Pads>
@@ -25,6 +22,7 @@
     <BreakpointStore>
       <Breakpoint file="/home/karim/Downloads/ripple-client-gtk-master/Ripple-Client-Gtk/Base58.cs" line="72" />
       <Breakpoint file="/home/karim/Downloads/ripple-client-gtk-master/Ripple-Client-Gtk/RipplePublicKey.cs" line="14" />
+      <Breakpoint file="/home/karim/Documents/ripple-client-gtk-master/Ripple-Client-Gtk/gtk-gui/RippleClientGtk.FromSecret.cs" line="2" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

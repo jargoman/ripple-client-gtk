@@ -35,7 +35,14 @@ namespace RippleClientGtk
 		}
 
 		public void set (String currency) {
-			this.set(currency, AccountLines.getCurrencyTotal(currency).ToString());
+
+
+			this.set(currency, Base58.truncateTrailingZerosFromString(AccountLines.getCurrencyTotal(currency).ToString()));
+		}
+
+		// 
+		public void setAsUnset (String currency) {
+			this.set(currency, "  --  Unsynced-- ");
 		}
 	}
 }

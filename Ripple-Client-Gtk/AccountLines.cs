@@ -18,7 +18,7 @@ namespace RippleClientGtk
 			this.Build ();
 
 			if (Debug.AccountLines) {
-				Logging.write ("new AccountLine :\n");
+				Logging.write (clsstr + "new");
 			}
 
 
@@ -36,7 +36,7 @@ namespace RippleClientGtk
 
 					dynamic dynamo = DynamicJson.Parse(e.Message);
 
-					if (dynamo.isDefined("result.lines")) {
+					if (dynamo.IsDefined("result.lines")) {
 						var arr = dynamo.result.lines; // moved this up here
 					
 						// often throws runtime binder exception. 
@@ -82,6 +82,14 @@ namespace RippleClientGtk
 
 						this.setTable(lines);
 						this.addUpCurrencies();
+
+						if (BalanceTab.currentInstance!=null) {
+							BalanceTab.currentInstance.set();
+						}
+
+						if (MainWindow.currentInstance!=null) {
+							MainWindow.currentInstance.updateUIBalance();
+						}
 					}
 
 
@@ -121,12 +129,25 @@ namespace RippleClientGtk
 
 
 
+		public void clearTable ()
+		{
+			if (tabl!=null) {
+				tabl.Destroy();
+				tabl = null;
+			}
+		}
+
 		public Table tabl = null;
 
 		public void setTable (List<TrustLine> li) {
 			if (Debug.AccountLines) {
-				Logging.write ("AccountLines : setTable Fired\n" + li.ToString() + "\n");
+				Logging.write ("AccountLines : setTable Fired\n" + (String) ((li == null) ? "null" : li.ToString()) + "\n");
 			}
+
+			if (li == null) {
+				clearTable();
+			}
+
 			TrustLine[] lines = li.ToArray ();
 
 			//Logging.write (lines[0].account);
@@ -163,6 +184,7 @@ namespace RippleClientGtk
 				if (tabl!=null) {
 					//this.scrolledwindow1.Remove (tabl);
 					//this.scrolledwindow1
+
 					tabl.Destroy ();
 				}
 
@@ -180,8 +202,11 @@ namespace RippleClientGtk
 				for (uint x = 0; x < TrustLine.numColumns; x++) {
 
 
-					String text = "<big><b><u> " + titles [x] + " </u></b></big>";
+					String text = " <big><b><u>" + titles [x] + "</u></b></big> ";
 					Label title = new Label (text);
+					title.Justify = Justification.Left;
+
+
 					title.UseMarkup = true;
 
 					tabl.Attach (
@@ -196,6 +221,8 @@ namespace RippleClientGtk
 						4
 
 					);
+
+					//tabl.
 
 					title.Show ();
 
@@ -262,13 +289,6 @@ namespace RippleClientGtk
 		private void addUpCurrencies ()
 		{
 
-			if (lines == null) {
-				if (Debug.AccountLines) {
-					Logging.write ("AccountLines : addUpCurrencies : returning early because lines == null");
-				}
-				return;
-			}
-
 			if (Debug.AccountLines) {
 				Logging.write ("AccountLines : Adding up IOU's");
 			}
@@ -278,6 +298,15 @@ namespace RippleClientGtk
 			} else {
 				cash = new Dictionary<string, decimal> ();
 			}
+
+
+			if (lines == null) {
+				if (Debug.AccountLines) {
+					Logging.write ("AccountLines : addUpCurrencies : returning early because lines == null");
+				}
+				return;
+			}
+
 
 			foreach (TrustLine line in AccountLines.lines) {
 				String cur = line.currency;
@@ -313,7 +342,7 @@ namespace RippleClientGtk
 
 			}
 
-			Dictionary<String,Decimal>.ValueCollection vc = cash.Values;
+			//Dictionary<String,Decimal>.ValueCollection vc = cash.Values;
 
 			var keys = cash.Keys;
 
@@ -363,6 +392,11 @@ namespace RippleClientGtk
 
 		public static decimal getCurrencyTotal (String currency)
 		{
+
+			if (Debug.AccountLines) {
+				Logging.write("AccountLines.getCurrencyTotal : begin");
+			}
+
 			if (currency == null) {
 				if (Debug.AccountLines) {
 					Logging.write("AccountLines.getCurrencyTotal : currency = null");
@@ -370,9 +404,13 @@ namespace RippleClientGtk
 				return 0m;
 			}
 
-			if (Debug.AccountLines) {
-				Logging.write("AccountLines.getCurrencyTotal : begin");
+			if (currency.Equals("XRP")) {
+				if (MainWindow.currentInstance != null) {
+					return MainWindow.currentInstance.xrpBalance;
+				}
+				//return 
 			}
+
 
 			Decimal result = 0m;
 
@@ -385,19 +423,16 @@ namespace RippleClientGtk
 
 
 
-			if (success) {
-				if (result == null) {
-					return 0m;
-				}
-
-				return result;
-			} else {
-				return 0m;
-			}
+			return result;
 		}
 
 		public static List<String> getIssuersForCurrency (String currency)
 		{
+
+			if (currency == null) {
+				// todo debug 
+				return null;
+			}
 			List<String> strings = new List<string>();
 
 			if (lines != null) {
@@ -412,7 +447,7 @@ namespace RippleClientGtk
 			return strings;
 		}
 
-
+		public static readonly String clsstr = "AccountLines : ";
 		public static List<TrustLine> lines = null;
 		public static Dictionary <String, Decimal> cash = null;
 

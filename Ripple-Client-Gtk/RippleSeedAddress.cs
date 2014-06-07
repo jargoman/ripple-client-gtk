@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace RippleClientGtk
 {
@@ -60,7 +61,25 @@ namespace RippleClientGtk
 			}
 
 			return str;
+		}		
+
+		private String hiddenString = null;
+		public string ToHiddenString ()
+		{
+			if (hiddenString == null) {
+				int len = this.ToString().Length;
+
+				StringBuilder bob = new StringBuilder(len);
+				for (int i = 0; i < len; i++) {
+					bob.Append('*');
+				}
+
+				hiddenString = bob.ToString();
+			}
+
+			return hiddenString;
 		}
+
 
 	}
 }

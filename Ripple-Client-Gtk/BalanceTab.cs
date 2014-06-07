@@ -19,12 +19,25 @@ namespace RippleClientGtk
 
 		CurrencyWidget[] wedgies = null;
 
+
+		public void set ()
+		{
+			if (BalanceTabOptionsWidget.actual_values == null) {
+				BalanceTabOptionsWidget.actual_values = BalanceTabOptionsWidget.default_values;
+			}
+
+			set (BalanceTabOptionsWidget.actual_values);
+		}
+
 		public void set (String[] str)
 		{
 			// this sets the balance as well. 
+			Gtk.Application.Invoke( delegate {
+
+		
 
 			if (this.currencywidget1 != null) {
-				this.currencywidget1.set ("XRP", MainWindow.currentInstance.xrpBalance.ToString ());
+				this.currencywidget1.set ( "XRP", Base58.truncateTrailingZerosFromString(MainWindow.currentInstance.xrpBalance.ToString () ));
 			} else {
 				return;
 			}
@@ -58,10 +71,11 @@ namespace RippleClientGtk
 			}
 
 
+			}); // end delegate
 
 
+		} // end public set() (str[] str) 
 
-		}
 
 		public static BalanceTab currentInstance = null;
 

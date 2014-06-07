@@ -161,15 +161,26 @@ namespace RippleClientGtk
 				Logging.write("SendIOU : method sendIOU begin");
 			}
 
+			if (MainWindow.currentInstance==null) {
+				return;
+			}
+
+			RippleWallet rw = MainWindow.currentInstance.getRippleWallet();
+
+			if (rw == null || rw.seed == null) {
+				// todo debug
+				return;
+			}
+
 			String issuer = this.issuerentry.ActiveText;
 
 			//this.issuerentry.ActiveText;
 
-			String account = MainWindow.currentInstance.getReceiveAddress ();
+			String account = MainWindow.currentInstance.getRippleWallet().getStoredReceiveAddress(); //.getReceiveAddress ();
 			String destination = this.destinationentry.Text;
 
 			String amount = this.amountentry.Text;
-			String secret = MainWindow.currentInstance.getSecret ();
+			String secret = rw.seed.ToString();
 
 			String currency = currencycomboboxentry.ActiveText;
 
@@ -234,87 +245,73 @@ namespace RippleClientGtk
 
 		}
 
-		private static void sendIOUThread (object param) {
+		private static void sendIOUThread (object param)
+		{
 			if (Debug.SendIOU) {
-				Logging.write("SendIOU : sendIOUThread begin");
+				Logging.write ("SendIOU : sendIOUThread begin");
 			}
 
 
-				threadParam tp = param as threadParam;
-				Decimal max = 0;
-				Decimal amountd = 0;
+			threadParam tp = param as threadParam;
+			Decimal max = 0;
+			Decimal amountd = 0;
 
-				if (tp == null) {
-					throw new InvalidCastException("Unable to cast object to type threadParam");
-				}
+			if (tp == null) {
+				throw new InvalidCastException ("Unable to cast object to type threadParam");
+			}
 
-				if (Debug.SendIOU) {
+			if (Debug.SendIOU) {
 
-					//Logging.write("Units = " + tp.currency);
+				//Logging.write("Units = " + tp.currency);
 
-					Logging.write("Send IOU : requesting Server Info\n");
-				}
+				Logging.write ("Send IOU : requesting Server Info\n");
+			}
 				
-				ServerInfo.refresh_blocking();
+			ServerInfo.refresh_blocking ();
 
+			if (Debug.SendIOU) {
+				Logging.write ("Send IOU : refresh_blocking returned, ServerInfo.transaction_fee = " + ServerInfo.transaction_fee.ToString ());
+			}
+
+				
+			//amountd = 
+				
+
+			Decimal? dee = DenominatedIssuedCurrency.parseDecimal (tp.amount, "Send Amount");  // send amount is not a valid string ect
+			if (dee != null) {
+				amountd = (decimal)dee;
+			} else {
+				return;
+			}
+				
+			if (amountd < 0) {
+				MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
+				return;
+			}
+
+			if (tp.sendmax == null) {
+				tp.sendmax = "";
 				if (Debug.SendIOU) {
-					Logging.write("Send IOU : refresh_blocking returned, ServerInfo.transaction_fee = " + ServerInfo.transaction_fee.ToString());
+					Logging.write("Setting sendmax to blank value because it was null");
 				}
+			}
 
-				try {
-					amountd = Convert.ToDecimal(tp.amount);
-				}
-				catch (FormatException ex) {
-					MessageDialog.showMessage ("Amount is fomated incorrectly for sending an IOU.\n It must be a valid decimal number\n");
+			if (!("".Equals (tp.sendmax.Trim ()))) { // if sendmax is not blank
+
+					
+				Decimal? m = DenominatedIssuedCurrency.parseDecimal (tp.sendmax.Trim(), "SendMax");  // and is a valid number
+					
+				if (m == null) {
 					return;
 				}
 
-				catch (OverflowException ex) {
-					MessageDialog.showMessage ("Send amount is greater than a double? No one's got that much money\n");
-					return;
-				}
+				max = (Decimal)m;
 
-				catch (Exception ex) {
-					MessageDialog.showMessage ("Amount is fomated incorrectly for sending an IOU.\n It must be a valid decimal number\n");
-					return;
-				}
+			} else {
+				max = amountd;
+			}
 
-
-				if (amountd < 0) {
-					MessageDialog.showMessage("Sending negative amounts is not supported. Please enter a valid amount");
-					return;
-				}
-
-				if (tp.sendmax == null) {
-					tp.sendmax = "";
-					if (Debug.SendIOU) {
-						Logging.write("Setting sendmax to blank value because it was null");
-					}
-				}
-
-				if (!("".Equals (tp.sendmax.Trim ()))) { // if sendmax is not blank
-
-					try {
-						max = Convert.ToDecimal (tp.sendmax.Trim());  // and is a valid number
-					} catch (FormatException ex) {
-
-						MessageDialog.showMessage ("SendMax is fomated incorrectly for sending an IOU. It must be a valid decimal number or left blank");
-						return;
-
-					} catch (OverflowException ex) {
-						MessageDialog.showMessage ("SendMax is greater than a maximum decimal? No one's got that much money");
-						return;
-					} catch (Exception ex) {
-						//MessageDialog.showMessage ("SendMax is fomated incorrectly for sending an IOU. It must be a valid decimal number or left blank");
-						MessageDialog.showMessage ("Unknown exception parsing sendmax to decimal number\n" + ex.Message);
-						return;
-					}
-
-				} else {
-					max = amountd;
-				}
-
-				sendIOUPayment(tp.account,tp.destination,amountd,tp.secret,tp.currency,tp.issuer,max,new decimal(ServerInfo.transaction_fee));
+			sendIOUPayment(tp.account,tp.destination,amountd,tp.secret,tp.currency,tp.issuer,max,new decimal(ServerInfo.transaction_fee));
 
 		}
 
@@ -471,8 +468,11 @@ namespace RippleClientGtk
 
 				ListStore store = new ListStore(typeof(string));
 
-				foreach (String s in currencies) {
-					store.AppendValues(s);
+				//foreach (String s in currencies) {
+				//	store.AppendValues(s);
+				//}
+				if (currencies!=null) {
+					store.AppendValues(currencies);
 				}
 
 				this.currencycomboboxentry.Model = store;

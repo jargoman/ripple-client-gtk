@@ -12,6 +12,7 @@ namespace RippleClientGtk
 			if (Debug.ServerInfo) {
 				Logging.write("Server Info : constructor\n");
 			}
+
 			this.Build ();
 
 			if (Debug.ServerInfo) {
@@ -37,14 +38,14 @@ namespace RippleClientGtk
 						}
 
 						else {
-								return;
+							return;
 						}
 						if (dynovar.IsDefined("result.info.hostid")) {
 							hostid = dynovar.result.info.hostid as String;
 						}
 
 						else {
-								return;
+							return;
 						}
 						
 						if (build_version!=null) {
@@ -127,25 +128,41 @@ namespace RippleClientGtk
 
 		public static void refresh ()
 		{
+			if (NetworkInterface.currentInstance != null) {
 
-			Object ob = new {
-				command = "server_info"
-			};
+				Object ob = new {
 
-			String str = DynamicJson.Serialize(ob);
-			NetworkInterface.currentInstance.sendToServer(str);
+					command = "server_info"
+
+				};
+
+				String str = DynamicJson.Serialize (ob);
+
+				NetworkInterface.currentInstance.sendToServer (str);
+
+			} else {
+				// todo debug
+			}
 		}
 
 		public static void refresh_blocking ()
 		{
 			if (Debug.ServerInfo) {
+
 				Logging.write("Server Info : refresh_blocking\n");
+
 			}
+
 			_waitHandle.Reset();
+
 			refresh();
+
 			_waitHandle.WaitOne(); // race condition if network fires before method return?
+
 			if (Debug.ServerInfo) {
+
 				Logging.write("Server Info : refresh_continue\n");
+
 			}
 		}
 
@@ -154,15 +171,20 @@ namespace RippleClientGtk
 		bool firstconnect = true;
 
 		public static String build_version = "";
+
 		public static String complete_ledgers = "";
+
 		public static String hostid = "";
 
 		public static Decimal load_factor = 1;
+
+
 		public static ulong base_fee_drops = 10;
 
 		public static ulong transaction_fee = 10;
 
-		static EventWaitHandle _waitHandle = new ManualResetEvent(true);
+		static EventWaitHandle _waitHandle = new ManualResetEvent( true );
+
 	}
 }
 

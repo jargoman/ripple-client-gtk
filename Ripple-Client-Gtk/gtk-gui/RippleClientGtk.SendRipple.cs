@@ -9,9 +9,9 @@ namespace RippleClientGtk
 		private global::Gtk.HSeparator hseparator4;
 		private global::Gtk.Table table1;
 		private global::Gtk.Label balanceLabel;
-		private global::Gtk.Entry destinationentry;
+		private global::Gtk.ComboBoxEntry destinationcomboboxentry;
 		private global::Gtk.HBox hbox1;
-		private global::Gtk.Entry amountEntry;
+		private global::Gtk.ComboBoxEntry amountcomboboxentry;
 		private global::Gtk.ComboBoxEntry unitsSelectBox;
 		private global::Gtk.Label label12;
 		private global::Gtk.Label label14;
@@ -65,13 +65,10 @@ namespace RippleClientGtk
 			w3.RightAttach = ((uint)(2));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.destinationentry = new global::Gtk.Entry ();
-			this.destinationentry.CanFocus = true;
-			this.destinationentry.Name = "destinationentry";
-			this.destinationentry.IsEditable = true;
-			this.destinationentry.InvisibleChar = '●';
-			this.table1.Add (this.destinationentry);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.destinationentry]));
+			this.destinationcomboboxentry = global::Gtk.ComboBoxEntry.NewText ();
+			this.destinationcomboboxentry.Name = "destinationcomboboxentry";
+			this.table1.Add (this.destinationcomboboxentry);
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.destinationcomboboxentry]));
 			w4.TopAttach = ((uint)(2));
 			w4.BottomAttach = ((uint)(3));
 			w4.LeftAttach = ((uint)(1));
@@ -83,14 +80,13 @@ namespace RippleClientGtk
 			this.hbox1.Name = "hbox1";
 			this.hbox1.Spacing = 6;
 			// Container child hbox1.Gtk.Box+BoxChild
-			this.amountEntry = new global::Gtk.Entry ();
-			this.amountEntry.CanFocus = true;
-			this.amountEntry.Name = "amountEntry";
-			this.amountEntry.IsEditable = true;
-			this.amountEntry.InvisibleChar = '●';
-			this.hbox1.Add (this.amountEntry);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.amountEntry]));
+			this.amountcomboboxentry = global::Gtk.ComboBoxEntry.NewText ();
+			this.amountcomboboxentry.Name = "amountcomboboxentry";
+			this.hbox1.Add (this.amountcomboboxentry);
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.amountcomboboxentry]));
 			w5.Position = 0;
+			w5.Expand = false;
+			w5.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.unitsSelectBox = global::Gtk.ComboBoxEntry.NewText ();
 			this.unitsSelectBox.AppendText (global::Mono.Unix.Catalog.GetString ("XRP"));

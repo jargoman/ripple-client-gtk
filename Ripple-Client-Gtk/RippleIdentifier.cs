@@ -19,6 +19,8 @@ namespace RippleClientGtk
 		protected byte[] payloadBytes = null;
 		byte identifierType; // the first byte is the identifier
 
+		private static Sha256Digest digest = new Sha256Digest();
+
 		public RippleIdentifier (byte[] payloadBytes, byte identifierType)
 		{
 			this.payloadBytes = payloadBytes;
@@ -101,8 +103,8 @@ namespace RippleClientGtk
 
 		public static byte[] doubleSha256 (byte[] bytesToDoubleHash, int offset, int length)
 		{
+			digest.Reset();
 
-			Sha256Digest digest = new Sha256Digest();
 			byte[] firstrun = new byte[digest.GetDigestSize()];
 			digest.BlockUpdate(bytesToDoubleHash, offset, length);
 			digest.DoFinal(firstrun,0);

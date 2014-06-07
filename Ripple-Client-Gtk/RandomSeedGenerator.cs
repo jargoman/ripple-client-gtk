@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Org.BouncyCastle.Math;
 
 namespace RippleClientGtk
@@ -9,7 +10,7 @@ namespace RippleClientGtk
 		{
 			this.Build ();
 
-
+			startupSeed();
 
 			Gdk.Window gwin = this.drawingarea1.GdkWindow;
 			Gdk.Color background = new Gdk.Color(150,150,150);
@@ -51,7 +52,9 @@ namespace RippleClientGtk
 			update ();
 		}
 
-		private static BigInteger initBigint (int timeseed)
+		public string clsstr = "RandomSeedGenerator : ";
+
+		private BigInteger initBigint (int timeseed)
 		{
 			String hostname = System.Environment.MachineName;
 
@@ -65,6 +68,12 @@ namespace RippleClientGtk
 			return new BigInteger(1, bytesBuff);
 		}
 
+		public BigInteger getBigInt ()
+		{
+
+			return bigInteger;
+		}
+
 		public void update ()
 		{
 			Gtk.Application.Invoke( delegate {
@@ -72,26 +81,33 @@ namespace RippleClientGtk
 			});
 		}
 
+		byte[] seedbuff = new byte[16];
+
+		// returns a different number each time
 		public RippleSeedAddress getGeneratedSeed ()
 		{
 			int timeseed = timeSeed();
 
+			/*
 			if (bigInteger == null) { // won't happen
-				bigInteger = initBigint(timeSeed());
+
 			}
+			*/
 
 			String userstring = this.entry1.Text;
 
-			if (userstring!=null || userstring.Equals("")) {
+			if (userstring!=null && !userstring.Equals("")) {
 				timeseed*= getIntFromString(userstring);
 			}
 
 			Random rand = new Random(timeseed);
 
+
+
 			byte[] seedbuff = new byte[16];
 
 			int count = 0;
-			while (count < 7) { // seven should be more than enough, the purpose of the loop is the unlikely event that the xor causes
+			while (count < 7) { // seven should be more than enough, the purpose of the loop is the unlikely event that the xor leads to a number with less than 16 bytes
 
 				rand.NextBytes(bytesBuff);
 
@@ -99,17 +115,18 @@ namespace RippleClientGtk
 
 				byte[] buffer = bigInteger.ToByteArray();
 
-				if (buffer.Length < 16) {
+				if (buffer.Length < 16) { // 
 					continue;
 				}
 
 				System.Array.Copy( buffer, buffer.Length - 16, seedbuff, 0, 16);
 
-				return new RippleSeedAddress(seedbuff);
+				return new RippleSeedAddress(seedbuff);  // used to be seedbuff that was copied. trying to optimise. 
 			}
 
 			throw new Exception("The generated seedbytes aren't 16 bytes long");
 		}
+
 
 		private static int timeSeed ()
 		{
@@ -134,7 +151,8 @@ namespace RippleClientGtk
 			return result;
 		}
 
-		public static void startupSeed ()
+
+		public void startupSeed ()
 		{
 			bigInteger = initBigint(timeSeed());
 		}
@@ -142,8 +160,8 @@ namespace RippleClientGtk
 		//public static RandomSeedGenerator currentInstance
 
 
-		static BigInteger bigInteger = null;
-		static byte[] bytesBuff = new byte[16];
+		private BigInteger bigInteger = null;
+		private byte[] bytesBuff = new byte[16];
 	}
 }
 

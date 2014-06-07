@@ -27,9 +27,34 @@ namespace RippleClientGtk
 	{
 
 
-		private static readonly String ALPHABET = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";  /// 
+		public static readonly String ALPHABET = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";  /// 
 
 		private static readonly BigInteger BASE = BigInteger.ValueOf(58);
+
+		public static bool isBase58 (String str)
+		{
+			foreach (char c in str) {
+				if (!isBase58(c)) {
+					return false;
+				}
+
+				else {
+					continue;
+				}
+			}
+
+			return true;
+
+		}
+
+		public static bool isBase58 (Char c)
+		{
+			foreach (char a in ALPHABET) {
+				if (a.Equals(c)) {return true;};
+			}
+
+			return false;
+		}
 
 		public static String encode (byte[] input)
 		{

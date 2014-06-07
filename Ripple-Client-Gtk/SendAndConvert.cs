@@ -37,10 +37,12 @@ namespace RippleClientGtk
 
 				ListStore store = new ListStore(typeof(string));
 
-				foreach (String s in currencies) {
-					store.AppendValues(s);
+				//foreach (String s in currencies) {
+				//	store.AppendValues(s);
+				//}
+				if (currencies !=null) {
+					store.AppendValues(currencies);
 				}
-
 
 				comboboxentry.Model = store;
 
@@ -164,13 +166,23 @@ namespace RippleClientGtk
 
 		private void send () {
 
+			if (MainWindow.currentInstance==null) {
+				return;
+			}
+
+			RippleWallet rw = MainWindow.currentInstance.getRippleWallet();
+
+			if (rw == null) {
+				return;
+			}
+
 			String issuer = this.issuerentry.Entry.Text;
 
-			String account = MainWindow.currentInstance.getReceiveAddress ();
+			String account = MainWindow.currentInstance.getRippleWallet().getStoredReceiveAddress();//getReceiveAddress ();
 			String destination = this.destinationentry.Text;
 
 			String amount = this.receiveamountentry.Text; 
-			String secret = MainWindow.currentInstance.getSecret ();
+			String secret = rw.seed.ToString();
 
 			String currency = this.comboboxentry2.ActiveText;
 			String sendmax = this.sendmaxentry.Text; 

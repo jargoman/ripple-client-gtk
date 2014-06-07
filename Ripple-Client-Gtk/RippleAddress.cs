@@ -39,10 +39,17 @@ namespace RippleClientGtk
 
 		public static string verifyAddressString (String str)
 		{
+			if (str == null) {
+				throw new FormatException("Ripple Address value is null");
+			}
+
 			if (!str.StartsWith("r") /*|| str.Length != ADDRESSLENGTH*/) {
 				throw new FormatException ("Invalid ripple address string");
 			}
 
+			if (str.Equals("")) {
+				throw new FormatException("Ripple Address vale is empty");
+			}
 
 			return str;
 		}

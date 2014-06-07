@@ -22,7 +22,9 @@ namespace RippleClientGtk
 			// Container child table2.Gtk.Table+TableChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("XRP");
+			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>XRP</b>");
+			this.label3.UseMarkup = true;
+			this.label3.Selectable = true;
 			this.table2.Add (this.label3);
 			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table2 [this.label3]));
 			w1.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -31,6 +33,7 @@ namespace RippleClientGtk
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("100,000,000,000,000.000,000,000");
+			this.label4.Selectable = true;
 			this.table2.Add (this.label4);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table2 [this.label4]));
 			w2.LeftAttach = ((uint)(1));
