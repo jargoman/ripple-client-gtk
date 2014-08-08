@@ -20,6 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <Commandlineparameters>--debug all</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -75,137 +76,177 @@
     <Reference Include="CSSCodeProvider.v1.1">
       <HintPath>..\..\..\Downloads\cs-script\Lib\Bin\NET 1.1\CSSCodeProvider.v1.1.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.CSharp">
       <HintPath>..\..\..\Downloads\cs-script\Lib\Mono.CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="ice_splash.png">
+    <EmbeddedResource Include="Images\ice_splash.png">
       <DeployService-UseProjectRelativePath>true</DeployService-UseProjectRelativePath>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\Pictures\icebutton.png" />
+    <EmbeddedResource Include="..\..\iceberg.png" />
+    <EmbeddedResource Include="..\..\icecaptain.png" />
+    <EmbeddedResource Include="..\..\icepick.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="MainWindow.cs" />
-    <Compile Include="gtk-gui\MainWindow.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SendIOU.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.SendIOU.cs" />
-    <Compile Include="SendAndConvert.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.SendAndConvert.cs" />
-    <Compile Include="NetworkSettings.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.NetworkSettings.cs" />
-    <Compile Include="NetworkInterface.cs" />
-    <Compile Include="Console.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.Console.cs" />
-    <Compile Include="Logging.cs" />
-    <Compile Include="SendRipple.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.SendRipple.cs" />
-    <Compile Include="ReceiveWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.ReceiveWidget.cs" />
-    <Compile Include="PasswordDialog.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.PasswordDialog.cs" />
-    <Compile Include="PasswordCreateDialog.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.PasswordCreateDialog.cs" />
-    <Compile Include="MessageDialog.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.MessageDialog.cs" />
-    <Compile Include="AreYouSure.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.AreYouSure.cs" />
-    <Compile Include="FileHelper.cs" />
-    <Compile Include="AccountLines.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.AccountLines.cs" />
-    <Compile Include="Rijndaelio.cs" />
-    <Compile Include="Debug.cs" />
-    <Compile Include="BinaryType.cs" />
-    <Compile Include="TransactionType.cs" />
-    <Compile Include="Base58.cs" />
-    <Compile Include="RippleDeterministicKeyGenerator.cs" />
     <Compile Include="TrustLine.cs" />
-    <Compile Include="RippleIdentifier.cs" />
-    <Compile Include="BinarySerializer.cs" />
-    <Compile Include="SendIce.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.SendIce.cs" />
-    <Compile Include="RippleSigner.cs" />
-    <Compile Include="RipplePaymentTransaction.cs" />
-    <Compile Include="RippleAddress.cs" />
-    <Compile Include="DenominatedIssuedCurrency.cs" />
-    <Compile Include="RipplePrivateKey.cs" />
-    <Compile Include="RipplePublicKey.cs" />
-    <Compile Include="RippleBinaryObject.cs" />
-    <Compile Include="RipplePath.cs" />
-    <Compile Include="RipplePathElement.cs" />
-    <Compile Include="RipplePathSet.cs" />
-    <Compile Include="BinaryFieldType.cs" />
-    <Compile Include="BigEndianReader.cs" />
-    <Compile Include="BigEndianWriter.cs" />
-    <Compile Include="bigDecimal.cs" />
-    <Compile Include="ECDSASignature.cs" />
-    <Compile Include="RipplePublicGeneratorAddress.cs" />
-    <Compile Include="RippleSeedAddress.cs" />
     <Compile Include="RippleWallet.cs" />
-    <Compile Include="RandomSeedGenerator.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.RandomSeedGenerator.cs" />
-    <Compile Include="ServerInfo.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.ServerInfo.cs" />
-    <Compile Include="IOUPaymentTransaction.cs" />
-    <Compile Include="TrustSetter.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.TrustSetter.cs" />
-    <Compile Include="CurrencyWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.CurrencyWidget.cs" />
-    <Compile Include="BalanceWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.BalanceWidget.cs" />
-    <Compile Include="BalanceTab.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.BalanceTab.cs" />
-    <Compile Include="SplashWindow.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.SplashWindow.cs" />
-    <Compile Include="OptionsWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.OptionsWidget.cs" />
-    <Compile Include="BalanceTabOptionsWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.BalanceTabOptionsWidget.cs" />
-    <Compile Include="SplashOptionsWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.SplashOptionsWidget.cs" />
-    <Compile Include="OrderBookTableWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.OrderBookTableWidget.cs" />
-    <Compile Include="PluginController.cs" />
-    <Compile Include="IPlugin.cs" />
     <Compile Include="DynamicJson.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="IEncrypt.cs" />
-    <Compile Include="CommandLineParser.cs" />
-    <Compile Include="WalletManager.cs" />
-    <Compile Include="WalletWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.WalletWidget.cs" />
-    <Compile Include="WalletViewPort.cs" />
-    <Compile Include="gtk-gui\RippleClientGtk.WalletViewPort.cs" />
-    <Compile Include="WalletManagerWidget.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.WalletManagerWidget.cs" />
-    <Compile Include="FromSecretDialog.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.FromSecretDialog.cs" />
-    <Compile Include="WalletManagerWindow.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.WalletManagerWindow.cs" />
-    <Compile Include="WalletTree.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.WalletTree.cs" />
-    <Compile Include="WalletUtil.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.WalletUtil.cs" />
-    <Compile Include="Wallet.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.Wallet.cs" />
-    <Compile Include="FromScriptDialog.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.FromScriptDialog.cs" />
-    <Compile Include="RippleTrustSetTransaction.cs" />
-    <Compile Include="RippleTransaction.cs" />
-    <Compile Include="ProcessSplash.cs" />
     <Compile Include="gtk-gui\RippleClientGtk.ProcessSplash.cs" />
-    <Compile Include="HistoryRecall.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleSeedAddress.cs" />
+    <Compile Include="Ripple-Lib-sharp\DenominatedIssuedCurrency.cs" />
+    <Compile Include="Ripple-Lib-sharp\Base58.cs" />
+    <Compile Include="Ripple-Lib-sharp\bigDecimal.cs" />
+    <Compile Include="Ripple-Lib-sharp\BigEndianReader.cs" />
+    <Compile Include="Ripple-Lib-sharp\BinaryFieldType.cs" />
+    <Compile Include="Ripple-Lib-sharp\BinarySerializer.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleTrustSetTransaction.cs" />
+    <Compile Include="Ripple-Lib-sharp\ECDSASignature.cs" />
+    <Compile Include="Ripple-Lib-sharp\IOUPaymentTransaction.cs" />
+    <Compile Include="Ripple-Lib-sharp\RipplePublicKey.cs" />
+    <Compile Include="Ripple-Lib-sharp\TransactionType.cs" />
+    <Compile Include="Ripple-Lib-sharp\BinaryType.cs" />
+    <Compile Include="Ripple-Lib-sharp\BigEndianWriter.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleDeterministicKeyGenerator.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleAddress.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleBinaryObject.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleSigner.cs" />
+    <Compile Include="Ripple-Lib-sharp\RipplePublicGeneratorAddress.cs" />
+    <Compile Include="Ripple-Lib-sharp\RipplePaymentTransaction.cs" />
+    <Compile Include="Source\AccountLines.cs" />
+    <Compile Include="Source\AreYouSure.cs" />
+    <Compile Include="Source\BalanceTab.cs" />
+    <Compile Include="Source\BalanceTabOptionsWidget.cs" />
+    <Compile Include="Source\BalanceWidget.cs" />
+    <Compile Include="Source\CommandLineParser.cs" />
+    <Compile Include="Source\Console.cs" />
+    <Compile Include="Source\CurrencyWidget.cs" />
+    <Compile Include="Source\Debug.cs" />
+    <Compile Include="Source\FileHelper.cs" />
+    <Compile Include="Source\FromScriptDialog.cs" />
+    <Compile Include="Source\FromSecretDialog.cs" />
+    <Compile Include="Source\HistoryRecall.cs" />
+    <Compile Include="Source\Logging.cs" />
+    <Compile Include="Source\IPlugin.cs" />
+    <Compile Include="Source\IEncrypt.cs" />
+    <Compile Include="Source\MainWindow.cs" />
+    <Compile Include="Source\MessageDialog.cs" />
+    <Compile Include="Source\NetworkInterface.cs" />
+    <Compile Include="Source\NetworkSettings.cs" />
+    <Compile Include="Source\OptionsWidget.cs" />
+    <Compile Include="Source\OrderBookTableWidget.cs" />
+    <Compile Include="Source\PasswordCreateDialog.cs" />
+    <Compile Include="Source\PasswordDialog.cs" />
+    <Compile Include="Source\Plugin.cs" />
+    <Compile Include="Source\PluginController.cs" />
+    <Compile Include="Source\ProcessSplash.cs" />
+    <Compile Include="Source\Program.cs" />
+    <Compile Include="Source\RandomSeedGenerator.cs" />
+    <Compile Include="Source\ReceiveWidget.cs" />
+    <Compile Include="Source\Rijndaelio.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleIdentifier.cs" />
+    <Compile Include="Ripple-Lib-sharp\RipplePath.cs" />
+    <Compile Include="Ripple-Lib-sharp\RipplePathElement.cs" />
+    <Compile Include="Ripple-Lib-sharp\RipplePathSet.cs" />
+    <Compile Include="Ripple-Lib-sharp\RipplePrivateKey.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleTransaction.cs" />
+    <Compile Include="Source\SendAndConvert.cs" />
+    <Compile Include="Source\SendIce.cs" />
+    <Compile Include="Source\SendIOU.cs" />
+    <Compile Include="Source\SendRipple.cs" />
+    <Compile Include="Source\SplashOptionsWidget.cs" />
+    <Compile Include="Source\SplashWindow.cs" />
+    <Compile Include="Source\ServerInfo.cs" />
+    <Compile Include="Source\Wallet.cs" />
+    <Compile Include="Source\TrustSetter.cs" />
+    <Compile Include="Source\WalletTree.cs" />
+    <Compile Include="Source\WalletManagerWindow.cs" />
+    <Compile Include="Source\WalletWidget.cs" />
+    <Compile Include="Source\WalletUtil.cs" />
+    <Compile Include="Source\WalletManagerWidget.cs" />
+    <Compile Include="Source\WalletManager.cs" />
+    <Compile Include="Source\PagerWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.PagerWidget.cs" />
+    <Compile Include="Source\AccountLinesCache.cs" />
+    <Compile Include="Source\NewButtonDialog.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.NewButtonDialog.cs" />
+    <Compile Include="Source\ConnectionInfo.cs" />
+    <Compile Include="Source\NetworkSettingsDialog.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.NetworkSettingsDialog.cs" />
+    <Compile Include="Source\TradeWindow.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.TradeWindow.cs" />
+    <Compile Include="Source\TradePairWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.TradePairWidget.cs" />
+    <Compile Include="Source\BuyWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.BuyWidget.cs" />
+    <Compile Include="Source\SellWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.SellWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.MainWindow.cs" />
+    <Compile Include="Source\OrderBookWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.OrderBookWidget.cs" />
+    <Compile Include="Ripple-Lib-sharp\Offer.cs" />
+    <Compile Include="Source\TradePair.cs" />
+    <Compile Include="Source\SpreadWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.SpreadWidget.cs" />
+    <Compile Include="Source\CurrencyWidgetSelector.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.CurrencyWidgetSelector.cs" />
+    <Compile Include="Ripple-Lib-sharp\RippleOfferTransaction.cs" />
+    <Compile Include="Source\BuyOffer.cs" />
+    <Compile Include="Source\ChatWidget.cs" />
+    <Compile Include="gtk-gui\RippleClientGtk.ChatWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="README.txt" />
     <None Include="LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Ripple-Lib-sharp\" />
+    <Folder Include="Source\" />
+    <Folder Include="Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\icebutton.png">
+      <DeployService-UseProjectRelativePath>true</DeployService-UseProjectRelativePath>
+    </Content>
   </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@ namespace RippleClientGtk
 			// Widget RippleClientGtk.SplashWindow
 			this.Name = "RippleClientGtk.SplashWindow";
 			this.Title = global::Mono.Unix.Catalog.GetString ("SplashWindow");
+			this.Icon = global::Gdk.Pixbuf.LoadFromResource ("RippleClientGtk.Images.ice_splash.png");
 			this.TypeHint = ((global::Gdk.WindowTypeHint)(4));
 			this.WindowPosition = ((global::Gtk.WindowPosition)(3));
 			this.Resizable = false;
@@ -33,8 +34,8 @@ namespace RippleClientGtk
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 300;
-			this.DefaultHeight = 300;
+			this.DefaultWidth = 305;
+			this.DefaultHeight = 224;
 			this.Show ();
 		}
 	}

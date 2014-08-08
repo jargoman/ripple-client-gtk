@@ -98,6 +98,7 @@ namespace RippleClientGtk
 			w8.Add (w9);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w11 = new global::Gtk.Label ();
+			w11.LabelProp = "";
 			w8.Add (w11);
 			w7.Add (w8);
 			this.button979.Add (w7);
@@ -121,6 +122,7 @@ namespace RippleClientGtk
 			w17.Add (w18);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w20 = new global::Gtk.Label ();
+			w20.LabelProp = "";
 			w17.Add (w20);
 			w16.Add (w17);
 			this.button980.Add (w16);

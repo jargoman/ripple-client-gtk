@@ -81,7 +81,6 @@ namespace RippleClientGtk
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboboxentry1]));
 			w4.LeftAttach = ((uint)(1));
 			w4.RightAttach = ((uint)(3));
-			w4.XOptions = ((global::Gtk.AttachOptions)(4));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.comboboxentry2 = global::Gtk.ComboBoxEntry.NewText ();
@@ -139,7 +138,6 @@ namespace RippleClientGtk
 			w9.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label1 = new global::Gtk.Label ();
-			this.label1.Name = "label1";
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Quality In");
 			this.table1.Add (this.label1);
 			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label1]));
@@ -188,7 +186,7 @@ namespace RippleClientGtk
 			// Container child table1.Gtk.Table+TableChild
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
-			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("(optional)");
+			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("(optional, requires an ICE)");
 			this.table1.Add (this.label6);
 			global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.table1 [this.label6]));
 			w15.TopAttach = ((uint)(5));
@@ -200,7 +198,7 @@ namespace RippleClientGtk
 			// Container child table1.Gtk.Table+TableChild
 			this.label7 = new global::Gtk.Label ();
 			this.label7.Name = "label7";
-			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("(optional)");
+			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("(optional, requires an ICE)");
 			this.table1.Add (this.label7);
 			global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.table1 [this.label7]));
 			w16.TopAttach = ((uint)(4));
@@ -212,8 +210,6 @@ namespace RippleClientGtk
 			this.vbox6.Add (this.table1);
 			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.vbox6 [this.table1]));
 			w17.Position = 2;
-			w17.Expand = false;
-			w17.Fill = false;
 			// Container child vbox6.Gtk.Box+BoxChild
 			this.button2 = new global::Gtk.Button ();
 			this.button2.CanFocus = true;

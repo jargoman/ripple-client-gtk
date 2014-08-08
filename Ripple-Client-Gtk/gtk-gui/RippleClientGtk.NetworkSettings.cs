@@ -13,7 +13,10 @@ namespace RippleClientGtk
 		private global::Gtk.Label label5;
 		private global::Gtk.Label label7;
 		private global::Gtk.Entry localentry;
-		private global::Gtk.Entry serverentry;
+		private global::Gtk.ScrolledWindow scrolledwindow2;
+		private global::Gtk.TextView servertextview;
+		private global::Gtk.ScrolledWindow scrolledwindow1;
+		private global::RippleClientGtk.ServerInfo serverinfo2;
 		private global::Gtk.HBox hbox8;
 		private global::Gtk.Button connectbutton;
 		private global::Gtk.Button disconnectbutton;
@@ -60,7 +63,6 @@ namespace RippleClientGtk
 			this.agententry = new global::Gtk.Entry ();
 			this.agententry.CanFocus = true;
 			this.agententry.Name = "agententry";
-			this.agententry.Text = global::Mono.Unix.Catalog.GetString ("RippleClientGtk/0.1 (mono/.net; en-us) Websockets/client");
 			this.agententry.IsEditable = true;
 			this.agententry.InvisibleChar = '●';
 			this.table2.Add (this.agententry);
@@ -69,12 +71,14 @@ namespace RippleClientGtk
 			w3.BottomAttach = ((uint)(3));
 			w3.LeftAttach = ((uint)(1));
 			w3.RightAttach = ((uint)(2));
+			w3.XOptions = ((global::Gtk.AttachOptions)(4));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table2.Gtk.Table+TableChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Server URL</b>");
+			this.label3.Yalign = 0.1F;
+			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Server URL's</b>");
 			this.label3.UseMarkup = true;
 			this.table2.Add (this.label3);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table2 [this.label3]));
@@ -108,7 +112,6 @@ namespace RippleClientGtk
 			this.localentry = new global::Gtk.Entry ();
 			this.localentry.CanFocus = true;
 			this.localentry.Name = "localentry";
-			this.localentry.Text = global::Mono.Unix.Catalog.GetString ("*");
 			this.localentry.IsEditable = true;
 			this.localentry.InvisibleChar = '●';
 			this.table2.Add (this.localentry);
@@ -117,24 +120,45 @@ namespace RippleClientGtk
 			w7.BottomAttach = ((uint)(2));
 			w7.LeftAttach = ((uint)(1));
 			w7.RightAttach = ((uint)(2));
+			w7.XOptions = ((global::Gtk.AttachOptions)(4));
 			w7.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table2.Gtk.Table+TableChild
-			this.serverentry = new global::Gtk.Entry ();
-			this.serverentry.CanFocus = true;
-			this.serverentry.Name = "serverentry";
-			this.serverentry.Text = global::Mono.Unix.Catalog.GetString ("wss://s-west.ripple.com:443");
-			this.serverentry.IsEditable = true;
-			this.serverentry.InvisibleChar = '●';
-			this.table2.Add (this.serverentry);
-			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table2 [this.serverentry]));
-			w8.LeftAttach = ((uint)(1));
-			w8.RightAttach = ((uint)(2));
-			w8.YOptions = ((global::Gtk.AttachOptions)(4));
+			this.scrolledwindow2 = new global::Gtk.ScrolledWindow ();
+			this.scrolledwindow2.HeightRequest = 75;
+			this.scrolledwindow2.CanFocus = true;
+			this.scrolledwindow2.Name = "scrolledwindow2";
+			this.scrolledwindow2.ShadowType = ((global::Gtk.ShadowType)(1));
+			// Container child scrolledwindow2.Gtk.Container+ContainerChild
+			this.servertextview = new global::Gtk.TextView ();
+			this.servertextview.CanFocus = true;
+			this.servertextview.Name = "servertextview";
+			this.scrolledwindow2.Add (this.servertextview);
+			this.table2.Add (this.scrolledwindow2);
+			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table2 [this.scrolledwindow2]));
+			w9.LeftAttach = ((uint)(1));
+			w9.RightAttach = ((uint)(2));
 			this.vbox2.Add (this.table2);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.table2]));
-			w9.Position = 2;
-			w9.Expand = false;
-			w9.Fill = false;
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.table2]));
+			w10.Position = 2;
+			w10.Expand = false;
+			w10.Fill = false;
+			// Container child vbox2.Gtk.Box+BoxChild
+			this.scrolledwindow1 = new global::Gtk.ScrolledWindow ();
+			this.scrolledwindow1.CanFocus = true;
+			this.scrolledwindow1.Name = "scrolledwindow1";
+			this.scrolledwindow1.ShadowType = ((global::Gtk.ShadowType)(1));
+			// Container child scrolledwindow1.Gtk.Container+ContainerChild
+			global::Gtk.Viewport w11 = new global::Gtk.Viewport ();
+			w11.ShadowType = ((global::Gtk.ShadowType)(0));
+			// Container child GtkViewport.Gtk.Container+ContainerChild
+			this.serverinfo2 = new global::RippleClientGtk.ServerInfo ();
+			this.serverinfo2.Events = ((global::Gdk.EventMask)(256));
+			this.serverinfo2.Name = "serverinfo2";
+			w11.Add (this.serverinfo2);
+			this.scrolledwindow1.Add (w11);
+			this.vbox2.Add (this.scrolledwindow1);
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.scrolledwindow1]));
+			w14.Position = 3;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.hbox8 = new global::Gtk.HBox ();
 			this.hbox8.Name = "hbox8";
@@ -146,10 +170,10 @@ namespace RippleClientGtk
 			this.connectbutton.UseUnderline = true;
 			this.connectbutton.Label = global::Mono.Unix.Catalog.GetString ("Connect");
 			this.hbox8.Add (this.connectbutton);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.connectbutton]));
-			w10.Position = 0;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.connectbutton]));
+			w15.Position = 0;
+			w15.Expand = false;
+			w15.Fill = false;
 			// Container child hbox8.Gtk.Box+BoxChild
 			this.disconnectbutton = new global::Gtk.Button ();
 			this.disconnectbutton.CanFocus = true;
@@ -157,10 +181,10 @@ namespace RippleClientGtk
 			this.disconnectbutton.UseUnderline = true;
 			this.disconnectbutton.Label = global::Mono.Unix.Catalog.GetString ("Disconnect");
 			this.hbox8.Add (this.disconnectbutton);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.disconnectbutton]));
-			w11.Position = 1;
-			w11.Expand = false;
-			w11.Fill = false;
+			global::Gtk.Box.BoxChild w16 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.disconnectbutton]));
+			w16.Position = 1;
+			w16.Expand = false;
+			w16.Fill = false;
 			// Container child hbox8.Gtk.Box+BoxChild
 			this.autoconnectbutton = new global::Gtk.CheckButton ();
 			this.autoconnectbutton.CanFocus = true;
@@ -169,39 +193,37 @@ namespace RippleClientGtk
 			this.autoconnectbutton.DrawIndicator = true;
 			this.autoconnectbutton.UseUnderline = true;
 			this.hbox8.Add (this.autoconnectbutton);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.autoconnectbutton]));
-			w12.Position = 2;
+			global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.autoconnectbutton]));
+			w17.Position = 2;
 			// Container child hbox8.Gtk.Box+BoxChild
 			this.connectStatusLabel = new global::Gtk.Label ();
 			this.connectStatusLabel.Name = "connectStatusLabel";
 			this.connectStatusLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Disconnected");
 			this.hbox8.Add (this.connectStatusLabel);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.connectStatusLabel]));
-			w13.PackType = ((global::Gtk.PackType)(1));
-			w13.Position = 3;
-			w13.Expand = false;
-			w13.Fill = false;
+			global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox8 [this.connectStatusLabel]));
+			w18.PackType = ((global::Gtk.PackType)(1));
+			w18.Position = 3;
+			w18.Expand = false;
+			w18.Fill = false;
 			this.vbox2.Add (this.hbox8);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox8]));
-			w14.PackType = ((global::Gtk.PackType)(1));
-			w14.Position = 3;
-			w14.Expand = false;
-			w14.Fill = false;
+			global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hbox8]));
+			w19.PackType = ((global::Gtk.PackType)(1));
+			w19.Position = 4;
+			w19.Expand = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.hseparator13 = new global::Gtk.HSeparator ();
 			this.hseparator13.Name = "hseparator13";
 			this.vbox2.Add (this.hseparator13);
-			global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hseparator13]));
-			w15.PackType = ((global::Gtk.PackType)(1));
-			w15.Position = 4;
-			w15.Expand = false;
-			w15.Fill = false;
+			global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.hseparator13]));
+			w20.PackType = ((global::Gtk.PackType)(1));
+			w20.Position = 5;
+			w20.Expand = false;
+			w20.Fill = false;
 			this.Add (this.vbox2);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
-			this.serverentry.Activated += new global::System.EventHandler (this.OnServerentryActivated);
 			this.localentry.Activated += new global::System.EventHandler (this.OnLocalentryActivated);
 			this.agententry.Activated += new global::System.EventHandler (this.OnAgententryActivated);
 			this.connectbutton.Clicked += new global::System.EventHandler (this.OnConnectbuttonClicked);

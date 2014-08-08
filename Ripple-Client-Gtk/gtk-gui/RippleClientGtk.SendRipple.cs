@@ -85,8 +85,6 @@ namespace RippleClientGtk
 			this.hbox1.Add (this.amountcomboboxentry);
 			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.amountcomboboxentry]));
 			w5.Position = 0;
-			w5.Expand = false;
-			w5.Fill = false;
 			// Container child hbox1.Gtk.Box+BoxChild
 			this.unitsSelectBox = global::Gtk.ComboBoxEntry.NewText ();
 			this.unitsSelectBox.AppendText (global::Mono.Unix.Catalog.GetString ("XRP"));

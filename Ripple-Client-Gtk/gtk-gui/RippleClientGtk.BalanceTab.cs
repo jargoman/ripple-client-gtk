@@ -31,7 +31,6 @@ namespace RippleClientGtk
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
-			this.label1.Name = "label1";
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("<big><b><u>Balances</u></b></big>");
 			this.label1.UseMarkup = true;
 			this.vbox1.Add (this.label1);

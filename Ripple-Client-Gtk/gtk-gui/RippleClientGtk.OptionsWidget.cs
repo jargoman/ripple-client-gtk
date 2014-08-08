@@ -42,7 +42,6 @@ namespace RippleClientGtk
 			this.vbox1.Spacing = 6;
 			// Container child vbox1.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
-			this.label1.Name = "label1";
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("<big><b><u>Options</u></b></big>");
 			this.label1.UseMarkup = true;
 			this.vbox1.Add (this.label1);
@@ -229,7 +228,7 @@ namespace RippleClientGtk
 			// Container child table3.Gtk.Table+TableChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
-			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("label1");
+			this.label2.LabelProp = "";
 			this.table3.Add (this.label2);
 			global::Gtk.Table.TableChild w19 = ((global::Gtk.Table.TableChild)(this.table3 [this.label2]));
 			w19.TopAttach = ((uint)(2));

@@ -1,29 +1,22 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/RandomSeedGenerator.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Ripple-Client-Gtk/Source/TradeWindow.cs">
     <Files>
-      <File FileName="Ripple-Client-Gtk/FromScriptDialog.cs" Line="58" Column="37" />
-      <File FileName="Ripple-Client-Gtk/RippleSeedAddress.cs" Line="1" Column="1" />
-      <File FileName="Ripple-Client-Gtk/PasswordCreateDialog.cs" Line="1" Column="1" />
-      <File FileName="Ripple-Client-Gtk/Wallet.cs" Line="1" Column="1" />
-      <File FileName="Ripple-Client-Gtk/RandomSeedGenerator.cs" Line="162" Column="6" />
-      <File FileName="Ripple-Client-Gtk/Program.cs" Line="93" Column="15" />
-      <File FileName="Ripple-Client-Gtk/Base58.cs" Line="36" Column="29" />
+      <File FileName="Ripple-Client-Gtk/Source/NetworkSettings.cs" Line="78" Column="6" />
+      <File FileName="Ripple-Client-Gtk/Source/NetworkSettingsDialog.cs" Line="56" Column="4" />
+      <File FileName="Ripple-Client-Gtk/Source/TradeWindow.cs" Line="1" Column="1" />
+      <File FileName="Ripple-Client-Gtk/Source/NetworkInterface.cs" Line="418" Column="6" />
+      <File FileName="Ripple-Client-Gtk/Source/Debug.cs" Line="48" Column="36" />
+      <File FileName="Ripple-Client-Gtk/Source/MainWindow.cs" Line="70" Column="5" />
+      <File FileName="Ripple-Client-Gtk/Source/OrderBookWidget.cs" Line="24" Column="6" />
+      <File FileName="Ripple-Client-Gtk/Source/OrderBookTableWidget.cs" Line="35" Column="6" />
+      <File FileName="Ripple-Client-Gtk/Ripple-Lib-sharp/Offer.cs" Line="14" Column="1" />
+      <File FileName="Ripple-Client-Gtk/Ripple-Lib-sharp/DenominatedIssuedCurrency.cs" Line="77" Column="1" />
+      <File FileName="Ripple-Client-Gtk/Ripple-Lib-sharp/TransactionType.cs" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="Ripple-Client-Gtk" expanded="True" selected="True" />
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/home/karim/Downloads/ripple-client-gtk-master/Ripple-Client-Gtk/Base58.cs" line="72" />
-      <Breakpoint file="/home/karim/Downloads/ripple-client-gtk-master/Ripple-Client-Gtk/RipplePublicKey.cs" line="14" />
-      <Breakpoint file="/home/karim/Documents/ripple-client-gtk-master/Ripple-Client-Gtk/gtk-gui/RippleClientGtk.FromSecret.cs" line="2" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <AuthorInfo Name="Karim Jouar" Email="karim@live.ca" Copyright="ICE lisence" Company="ICE industries" Trademark="frozen ocean productions" />
