@@ -69,7 +69,6 @@ namespace RippleClientGtk
 			// Container child table1.Gtk.Table+TableChild
 			this.base_fee_label_var = new global::Gtk.Label ();
 			this.base_fee_label_var.Name = "base_fee_label_var";
-			this.base_fee_label_var.LabelProp = "";
 			this.table1.Add (this.base_fee_label_var);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.base_fee_label_var]));
 			w4.TopAttach = ((uint)(4));
@@ -90,7 +89,6 @@ namespace RippleClientGtk
 			// Container child table1.Gtk.Table+TableChild
 			this.build_version_label_var = new global::Gtk.Label ();
 			this.build_version_label_var.Name = "build_version_label_var";
-			this.build_version_label_var.LabelProp = "";
 			this.table1.Add (this.build_version_label_var);
 			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.build_version_label_var]));
 			w6.LeftAttach = ((uint)(1));
@@ -99,7 +97,6 @@ namespace RippleClientGtk
 			// Container child table1.Gtk.Table+TableChild
 			this.complete_ledgers_label_var = new global::Gtk.Label ();
 			this.complete_ledgers_label_var.Name = "complete_ledgers_label_var";
-			this.complete_ledgers_label_var.LabelProp = "";
 			this.table1.Add (this.complete_ledgers_label_var);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.complete_ledgers_label_var]));
 			w7.TopAttach = ((uint)(2));
@@ -122,7 +119,6 @@ namespace RippleClientGtk
 			// Container child table1.Gtk.Table+TableChild
 			this.host_id_label_var = new global::Gtk.Label ();
 			this.host_id_label_var.Name = "host_id_label_var";
-			this.host_id_label_var.LabelProp = "";
 			this.table1.Add (this.host_id_label_var);
 			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.host_id_label_var]));
 			w9.TopAttach = ((uint)(1));
@@ -156,7 +152,6 @@ namespace RippleClientGtk
 			// Container child table1.Gtk.Table+TableChild
 			this.load_factor_label_var = new global::Gtk.Label ();
 			this.load_factor_label_var.Name = "load_factor_label_var";
-			this.load_factor_label_var.LabelProp = "";
 			this.table1.Add (this.load_factor_label_var);
 			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1 [this.load_factor_label_var]));
 			w12.TopAttach = ((uint)(3));
@@ -179,7 +174,6 @@ namespace RippleClientGtk
 			// Container child table1.Gtk.Table+TableChild
 			this.transaction_fee_label_var = new global::Gtk.Label ();
 			this.transaction_fee_label_var.Name = "transaction_fee_label_var";
-			this.transaction_fee_label_var.LabelProp = "";
 			this.table1.Add (this.transaction_fee_label_var);
 			global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.table1 [this.transaction_fee_label_var]));
 			w14.TopAttach = ((uint)(5));

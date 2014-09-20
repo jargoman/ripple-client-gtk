@@ -4975,7 +4975,7 @@ drops</property>
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="RippleClientGtk.WalletManagerWidget" design-size="717 471">
+  <widget class="Gtk.Bin" id="RippleClientGtk.WalletManagerWidget" design-size="717 506">
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -5048,6 +5048,21 @@ drops</property>
                               </packing>
                             </child>
                             <child>
+                              <widget class="Gtk.Button" id="button5">
+                                <property name="MemberName" />
+                                <property name="CanFocus">True</property>
+                                <property name="Type">TextOnly</property>
+                                <property name="Label" translatable="yes">Manage Trust</property>
+                                <property name="UseUnderline">True</property>
+                              </widget>
+                              <packing>
+                                <property name="Position">2</property>
+                                <property name="AutoSize">True</property>
+                                <property name="Expand">False</property>
+                                <property name="Fill">False</property>
+                              </packing>
+                            </child>
+                            <child>
                               <widget class="Gtk.Button" id="networkbutton">
                                 <property name="MemberName" />
                                 <property name="CanFocus">True</property>
@@ -5056,7 +5071,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">2</property>
+                                <property name="Position">3</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5071,7 +5086,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">3</property>
+                                <property name="Position">4</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5086,7 +5101,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">4</property>
+                                <property name="Position">5</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5101,7 +5116,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">5</property>
+                                <property name="Position">6</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5116,7 +5131,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">6</property>
+                                <property name="Position">7</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5131,7 +5146,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">7</property>
+                                <property name="Position">8</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5146,7 +5161,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">8</property>
+                                <property name="Position">9</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5161,7 +5176,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">9</property>
+                                <property name="Position">10</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5176,7 +5191,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">10</property>
+                                <property name="Position">11</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>
@@ -5191,7 +5206,7 @@ drops</property>
                                 <property name="UseUnderline">True</property>
                               </widget>
                               <packing>
-                                <property name="Position">11</property>
+                                <property name="Position">12</property>
                                 <property name="AutoSize">True</property>
                                 <property name="Expand">False</property>
                                 <property name="Fill">False</property>

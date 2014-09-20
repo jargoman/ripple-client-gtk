@@ -33,6 +33,7 @@ namespace RippleClientGtk
 			this.vbox2.Spacing = 6;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
+			this.label1.Name = "label1";
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("<big><b><u>Wallet</u></b></big>");
 			this.label1.UseMarkup = true;
 			this.vbox2.Add (this.label1);
@@ -112,7 +113,6 @@ namespace RippleClientGtk
 			this.label10 = new global::Gtk.Label ();
 			this.label10.Name = "label10";
 			this.label10.Xalign = 0F;
-			this.label10.LabelProp = "";
 			this.table1.Add (this.label10);
 			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.label10]));
 			w7.TopAttach = ((uint)(2));
@@ -161,7 +161,6 @@ namespace RippleClientGtk
 			this.label8 = new global::Gtk.Label ();
 			this.label8.Name = "label8";
 			this.label8.Xalign = 0F;
-			this.label8.LabelProp = "";
 			this.label8.Selectable = true;
 			this.table1.Add (this.label8);
 			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.label8]));
@@ -172,7 +171,6 @@ namespace RippleClientGtk
 			this.label9 = new global::Gtk.Label ();
 			this.label9.Name = "label9";
 			this.label9.Xalign = 0F;
-			this.label9.LabelProp = "";
 			this.label9.Selectable = true;
 			this.table1.Add (this.label9);
 			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1 [this.label9]));

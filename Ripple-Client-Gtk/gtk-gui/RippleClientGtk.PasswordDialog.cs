@@ -30,6 +30,7 @@ namespace RippleClientGtk
 			this.vbox2.Spacing = 6;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
+			this.label1.Name = "label1";
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("<big><u><b>Password</b></u></big>");
 			this.label1.UseMarkup = true;
 			this.vbox2.Add (this.label1);

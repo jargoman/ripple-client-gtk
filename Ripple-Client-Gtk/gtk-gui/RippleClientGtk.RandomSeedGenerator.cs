@@ -50,6 +50,7 @@ namespace RippleClientGtk
 			w3.Fill = false;
 			// Container child vbox2.Gtk.Box+BoxChild
 			this.label1 = new global::Gtk.Label ();
+			this.label1.Name = "label1";
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Enter an alpha-numeric phrase of minimum 10 characters to use as a salt for the seed generation");
 			this.label1.UseMarkup = true;
 			this.label1.Wrap = true;
